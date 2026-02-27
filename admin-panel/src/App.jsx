@@ -6,9 +6,9 @@ import { Outlet } from 'react-router-dom'
 function App() {
 
   return (
-    <div className='flex flex-row'>
+    <div className='flex flex-row w-full h-dvh'>
       <SideMenu />
-      <main className='w-full'>
+      <main className='lg:w-full w-fit'>
         <Header />
         <Outlet />
       </main>

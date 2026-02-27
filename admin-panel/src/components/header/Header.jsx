@@ -12,7 +12,7 @@ function Header() {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div className={`px-8 ${isDark ? "" : "border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between`}>
+    <div className={`px-8 ${isDark ? "" : "border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between full`}>
       <div className='relative w-1/2 flex flex-row justify-center items-center'>
         <input
           value={input}

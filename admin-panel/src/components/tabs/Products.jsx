@@ -121,7 +121,7 @@ function Products() {
     }
 
     return (
-        <section className={`p-4 space-y-4 min-h-dvh`}>
+        <section className={`p-4 space-y-4 min-h-[85dvh] w-fit lg:w-full`}>
             {show &&
                 <div className={`absolute top-0 left-0 h-full w-full bg-gray-50/30 z-99 shadow-lg border flex justify-center items-center`}>
                     {products && products[index] && (
@@ -196,7 +196,7 @@ function Products() {
                         <thead className="sticky top-0 z-50 bg-slate-100 divide-y divide-slate-200">
                             <tr className="text-left divide-x divide-slate-200">
                                 <th className="px-4 py-4 w-[5%] font-semibold">Id</th>
-                                <th className="px-4 py-4 w-[30%] font-semibold">Product</th>
+                                <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Product</th>
                                 <th className="px-4 py-4 w-[15%] font-semibold">Category</th>
                                 <th className="px-4 py-4 w-[12%] font-semibold">Brand</th>
                                 <th className="px-4 py-4 w-[8%] font-semibold">Stock</th>
@@ -265,7 +265,7 @@ function Products() {
                                         </td>
 
                                         <td className="px-4 py-3">
-                                            ₹{product.price}
+                                            ₹{product.price.toLocaleString("en-IN")}
                                         </td>
 
                                         <td className="px-4 py-3">
