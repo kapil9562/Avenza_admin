@@ -1,107 +1,159 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MdHome } from "react-icons/md";
 import { LiaEnvelopeOpen } from "react-icons/lia";
 import { AiOutlineProduct } from "react-icons/ai";
-import { HiUser } from "react-icons/hi2";
+import { HiUser, HiMiniBars3BottomLeft } from "react-icons/hi2";
 import { GoGraph } from "react-icons/go";
 import { IoMdSettings } from "react-icons/io";
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom'
-import { HiMiniBars3BottomLeft } from "react-icons/hi2";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 
 function SideMenu() {
+
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isDark } = useTheme();
+
   const tab = location.pathname.replace('/', "");
   const [activetab, setActiveTab] = useState(!tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1));
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(true);
-  const { isDark } = useTheme();
+  const [open, setOpen] = useState({
+    type: "",
+    status: false
+  });
 
   useEffect(() => {
     const current = !tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1);
     setActiveTab(current);
   }, [location.pathname]);
 
-  const baseTabs = [
-    { icon: <MdHome size={26} />, tab: "Dashboard", color: "blue" },
-    { icon: <AiOutlineProduct size={26} />, tab: "Products", color: "green" },
-    { icon: <LiaEnvelopeOpen size={26} />, tab: "Orders", color: "teal" },
-    { icon: <HiUser size={26} />, tab: "Customers", color: "orange" },
-    { icon: <GoGraph size={26} />, tab: "Analytics", color: "purple" },
-    { icon: <IoMdSettings size={26} />, tab: "Settings", color: "pink" },
-  ];
+  /* ✅ STATIC COLOR SYSTEM (SAFE FOR TAILWIND) */
 
-  const tabs = baseTabs.map(item => ({
-    ...item,
-    className: isDark
-      ? `text-${item.color}-400`
-      : `text-${item.color}-600`,
-    bg: isDark
-      ? `bg-${item.color}-900/40 border border-${item.color}-700`
-      : `bg-${item.color}-100 border border-${item.color}-300`,
-    hoverColors: {
-      blue: {
-        light: "hover:bg-blue-100",
-        dark: "hover:bg-blue-900/40",
-      },
-      green: {
-        light: "hover:bg-green-100",
-        dark: "hover:bg-green-900/40",
-      },
-      teal: {
-        light: "hover:bg-teal-100",
-        dark: "hover:bg-teal-900/40",
-      },
-      orange: {
-        light: "hover:bg-orange-100",
-        dark: "hover:bg-orange-900/40",
-      },
-      purple: {
-        light: "hover:bg-purple-100",
-        dark: "hover:bg-purple-900/40",
-      },
-      pink: {
-        light: "hover:bg-pink-100",
-        dark: "hover:bg-pink-900/40",
-      },
+  const colorVariants = {
+    Dashboard: {
+      light: "text-blue-600 hover:bg-blue-100",
+      dark: "text-blue-400 hover:bg-blue-900/40",
+      activeLight: "bg-blue-100 border border-blue-300",
+      activeDark: "bg-blue-900/40 border border-blue-700"
+    },
+    Products: {
+      light: "text-green-600 hover:bg-green-100",
+      dark: "text-green-400 hover:bg-green-900/40",
+      activeLight: "bg-green-100 border border-green-300",
+      activeDark: "bg-green-900/40 border border-green-700"
+    },
+    Orders: {
+      light: "text-teal-600 hover:bg-teal-100",
+      dark: "text-teal-400 hover:bg-teal-900/40",
+      activeLight: "bg-teal-100 border border-teal-300",
+      activeDark: "bg-teal-900/40 border border-teal-700"
+    },
+    Customers: {
+      light: "text-orange-600 hover:bg-orange-100",
+      dark: "text-orange-400 hover:bg-orange-900/40",
+      activeLight: "bg-orange-100 border border-orange-300",
+      activeDark: "bg-orange-900/40 border border-orange-700"
+    },
+    Analytics: {
+      light: "text-purple-600 hover:bg-purple-100",
+      dark: "text-purple-400 hover:bg-purple-900/40",
+      activeLight: "bg-purple-100 border border-purple-300",
+      activeDark: "bg-purple-900/40 border border-purple-700"
+    },
+    Settings: {
+      light: "text-pink-600 hover:bg-pink-100",
+      dark: "text-pink-400 hover:bg-pink-900/40",
+      activeLight: "bg-pink-100 border border-pink-300",
+      activeDark: "bg-pink-900/40 border border-pink-700"
     }
-  }));
+  };
+
+  const tabs = [
+    { icon: <MdHome size={24} />, tab: "Dashboard" },
+    { icon: <AiOutlineProduct size={24} />, tab: "Products" },
+    { icon: <LiaEnvelopeOpen size={24} />, tab: "Orders" },
+    { icon: <HiUser size={24} />, tab: "Customers" },
+    { icon: <GoGraph size={24} />, tab: "Analytics" },
+    { icon: <IoMdSettings size={24} />, tab: "Settings" },
+  ];
 
   const handleTab = (tab) => {
     setActiveTab(tab);
-    const param = tab.toLowerCase();
-    if (tab === "Dashboard") {
-      navigate('/');
-    } else {
-      navigate(`/${param}`);
-    }
-  }
+    tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
+  };
 
   return (
-    <div className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} min-h-dvh border-r-2 transition-transform duration-300 pb-20 ${open ? "w-60" : "w-17"}`} >
-      <div className={`px-6 border-b-2 flex justify-center items-center min-h-15 gap-4 ${isDark ? "border-b-slate-800" : "border-b-gray-300"}`}>
-        <img src="/logo.png" alt="logo" className={`object-contain h-10 transition-all duration-300   ${open ? "opacity-100" : "opacity-0 w-0 overflow-hidden hidden"}`} />
-        <button className={`cursor-pointer ${isDark ? "text-gray-300" : "text-gray-800"}`}>
-          <HiMiniBars3BottomLeft size={24} onClick={() => setOpen(!open)} />
+    <div
+      className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
+      min-h-dvh border-r-2 transition-all duration-300 pb-20
+      ${open.status ? "w-60" : "w-16"} overflow-hidden`}
+    >
+
+      {/* TOP */}
+      <div className={`px-4 border-b-2 flex items-center justify-between min-h-15
+        ${isDark ? "border-slate-800" : "border-gray-300"}`}
+      >
+        <img
+          src="/logo.png"
+          alt="logo"
+          className={`h-10 transition-opacity duration-300 ${open.status ? "opacity-100" : "opacity-0 w-0"}`}
+        />
+
+        <button
+          onClick={() => setOpen({
+            type: "manual",
+            status: !open.status
+          })}
+          className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer`}
+        >
+          <HiMiniBars3BottomLeft size={22} />
         </button>
       </div>
-      <div className='flex flex-col pt-2 text-lg gap-1' onMouseEnter={() => setOpen(true)}>
-        {tabs.map((item, idx) => (
-          <div className={`flex flex-row items-center px-4 py-2 gap-2 font-semibold rounded-r-full cursor-pointer  transition-transform duration-300 ${item.className} ${activetab === item.tab && item.bg} ${isDark
-            ? item.hoverColors[item.color].dark
-            : item.hoverColors[item.color].light
-            }`} key={idx} onClick={() => handleTab(item.tab)}>
-            <span className="text-xl">
-              {item.icon}
-            </span>
-            <h1 className={`${item.className} whitespace-nowrap transition-all duration-200  ${open ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}>{item.tab}</h1>
-          </div>
-        ))}
+
+      {/* MENU */}
+      <div className="flex flex-col mt-4 gap-1 h-full"
+        onMouseEnter={() => {
+          if (!open.status) {
+            setOpen({ type: "hover", status: true });
+          }
+        }}
+
+        onMouseLeave={() => {
+          if (open.type === "hover") {
+            setOpen({ type: "", status: false });
+          }
+        }}>
+
+        {tabs.map((item, idx) => {
+
+          const variant = colorVariants[item.tab];
+
+          return (
+            <div
+              key={idx}
+              onClick={() => handleTab(item.tab)}
+              className={`
+                flex items-center gap-2 px-4 py-2 cursor-pointer
+                rounded-r-full font-semibold
+                ${isDark ? variant.dark : variant.light}
+                ${activetab === item.tab ?
+                  (isDark ? variant.activeDark : variant.activeLight) : "border border-transparent"}
+              `}
+            >
+              <span className='text-xl'>{item.icon}</span>
+
+              <span
+                className={`whitespace-nowrap transition-all duration-200 text-lg
+                ${open.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
+              >
+                {item.tab}
+              </span>
+            </div>
+          );
+        })}
+
       </div>
     </div>
-  )
+  );
 }
 
-export default SideMenu
+export default SideMenu;
