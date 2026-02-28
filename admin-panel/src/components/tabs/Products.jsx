@@ -106,10 +106,18 @@ function Products() {
     }, [cacheKey, cacheKey, category, page, inStock, isDeleted]);
 
     const statusColors = {
-        InStock: "bg-green-100 text-green-600 border border-green-300 shadow-md",
-        LowStock: "bg-orange-100 text-orange-600 border border-yellow-300 shadow-md",
-        OutofStock: "bg-red-100 text-red-600 border border-red-300 shadow-md",
-    };
+  InStock: isDark
+    ? "bg-green-900/40 text-green-400 border border-green-700"
+    : "bg-green-100 text-green-600 border border-green-300 shadow-md",
+
+  LowStock: isDark
+    ? "bg-yellow-900/40 text-yellow-400 border border-yellow-700"
+    : "bg-orange-100 text-orange-600 border border-yellow-300 shadow-md",
+
+  OutofStock: isDark
+    ? "bg-red-900/40 text-red-400 border border-red-700"
+    : "bg-red-100 text-red-600 border border-red-300 shadow-md",
+};
 
     const handleCategory = (filter) => {
         if (category === filter) return;
@@ -121,7 +129,7 @@ function Products() {
     }
 
     return (
-        <section className={`p-4 space-y-4 min-h-[85dvh] w-fit lg:w-full`}>
+        <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-fit lg:w-full ${isDark? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {show &&
                 <div className={`absolute top-0 left-0 h-full w-full bg-gray-50/30 z-99 shadow-lg border flex justify-center items-center`}>
                     {products && products[index] && (
@@ -134,26 +142,25 @@ function Products() {
                 </div>
             }
             <div className='flex flex-row gap-4'>
-                <div className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 border relative group cursor-pointer ${isDark ? "" : "border-gray-200 text-gray-700"}`}>
+                <div className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark ? "border-slate-700 text-gray-300  border-2" : "border border-gray-200 text-gray-700"}`}>
                     <h1>Category</h1>
                     <IoIosArrowDown className={`group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
-                    <div className='absolute group-hover:flex hidden w-fit left-0 top-full z-99 bg-white flex-col border-gray-200 border-2 rounded-md'>
+                    <div className={`absolute group-hover:flex hidden w-fit left-0 top-full z-99 flex-col border-2 rounded-md ${isDark? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200 "}`}>
                         <div
                             onClick={() => handleCategory("All")}
-                            className='flex flex-row justify-between items-center relative group py-1 px-2 hover:bg-gray-100'>
+                            className={`flex flex-row justify-between items-center relative group py-2 px-3 rounded-sm ${isDark? "hover:bg-slate-800" : "hover:bg-gray-100"}`}>
                             <span>All</span>
-                            <IoIosArrowForward />
                         </div>
                         {categories?.map((item, idx) => (
-                            <div key={idx} className='flex flex-row justify-between items-center relative group py-1 px-2 hover:bg-gray-100' onMouseEnter={() => setOpenIndex(idx)} onMouseLeave={() => setOpenIndex(null)}>
+                            <div key={idx} className={`flex flex-row justify-between items-center relative rounded-sm group py-2 px-3 ${isDark? "hover:bg-slate-800" : "hover:bg-gray-100"}`} onMouseEnter={() => setOpenIndex(idx)} onMouseLeave={() => setOpenIndex(null)}>
                                 <span className='whitespace-nowrap'>{item.parentCategory}</span>
                                 <IoIosArrowForward />
 
-                                <div className={`absolute z-99 left-full w-fit flex-col top-0 ml-0.5 bg-white border-gray-200 border-2 rounded-md ${openIndex === idx ? "flex" : "hidden"}`} >
+                                <div className={`absolute z-99 left-full w-fit flex-col top-0 ml-0.5 border-2 rounded-md ${openIndex === idx ? "flex" : "hidden"} ${isDark? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200 "}`} >
                                     {item?.categories?.map((sub, i) => (
                                         <span
                                             key={i}
-                                            className='whitespace-nowrap py-1 px-2 hover:bg-gray-100'
+                                            className={`whitespace-nowrap py-2 px-3 rounded-sm ${isDark? "hover:bg-slate-800" : "hover:bg-gray-100"}`}
                                             onClick={() => handleCategory(sub)}>
                                             {sub}
                                         </span>
@@ -163,15 +170,15 @@ function Products() {
                         ))}
                     </div>
                 </div>
-                <div className={`flex flex-row gap-4 items-center shadow font-semibold w-fit rounded-md px-2 py-1 border ${isDark ? "" : "border-gray-200 text-gray-700"}`}>
+                <div className={`flex flex-row gap-4 items-center font-semibold w-fit rounded-md px-2 py-1 ${isDark ? "border-2 border-slate-700 text-gray-300" : "border border-gray-200 text-gray-700 shadow"}`}>
                     <h1>In Stock</h1>
                     <div className='flex justify-center items-center text-[12px]'>
                         <button
-                            className={`relative w-13 h-6 rounded-full hidden items-center transition-all  shadow-gray-400 bg-purple-200 duration-500 cursor-pointer ${isDark ? " " : " "} shadow-inner md:flex`}
+                            className={`relative w-13 h-6 rounded-full hidden items-center transition-all bg-purple-300 duration-500 cursor-pointer border ${isDark ? "shadow-black border-gray-300 bg-purple-400" : "shadow-gray-400 border-transparent"} shadow-inner md:flex`}
                             onClick={handleStockToggle}
                         >
                             {/* Knob */}
-                            <span className={`absolute w-4 h-4 z-10 rounded-full shadow-md flex items-center justify-center transition-all duration-500 bg-white ${inStock === 'true' ? "translate-x-8" : "translate-x-1"}`}
+                            <span className={`absolute w-4 h-4 z-10 rounded-full flex items-center justify-center transition-transform duration-500 ${inStock === 'true' ? "translate-x-8" : "translate-x-1"} ${isDark? "bg-[#1b2744] shadow-gray-600 shadow" : "bg-white shadow-md"}`}
                             >
                             </span>
                             {inStock === "true" ? (<span className='absolute left-2 text-white font-semibold'>ON</span>) : (<span className='absolute right-2 text-white font-semibold'>OFF</span>)}
@@ -179,22 +186,22 @@ function Products() {
                     </div>
                 </div>
                 <button
-                    className={`px-2 py-1 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 ${isDark ? "" : "text-white shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
+                    className={`px-2 py-1 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
                     onClick={() => navigate('/addproduct')}>
                     <HiPlus size={26} />
                     <span>Add Product</span>
                 </button>
             </div>
             {/* Table Container */}
-            <div className={`border-2 rounded-lg overflow-hidden ${isDark ? "" : "border-gray-300 shadow-xl"}`}>
+            <div className={`border-2 rounded-lg overflow-hidden ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-300 shadow-xl"}`}>
 
                 {/* TABLE */}
-                <div className="h-[73vh] overflow-y-auto tableBody scroll-smooth">
+                <div className="h-[70dvh] overflow-y-auto tableBody scroll-smooth">
                     <table className="w-full border-collapse">
 
                         {/* Header */}
-                        <thead className="sticky top-0 z-50 bg-slate-100 divide-y divide-slate-200">
-                            <tr className="text-left divide-x divide-slate-200">
+                        <thead className={`sticky top-0 z-50 ${isDark? " bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
+                            <tr className={`text-left divide-slate-200 divide-x ${isDark? "divide-slate-700" : "divide-slate-200"}`}>
                                 <th className="px-4 py-4 w-[5%] font-semibold">Id</th>
                                 <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Product</th>
                                 <th className="px-4 py-4 w-[15%] font-semibold">Category</th>
@@ -207,7 +214,7 @@ function Products() {
                         </thead>
 
                         {/* Body */}
-                        <tbody className={`text-gray-800 font-semibold divide-y divide-slate-200 ${products?.length>0 ? "border-b border-b-slate-200": "h-[65vh]"}`}>
+                        <tbody className={`font-semibold divide-y ${isDark? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length>0 ? (isDark? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[65vh]"}`}>
                             {loading ? (
                                 <tr>
                                     <td colSpan="8" className="text-center py-20">
@@ -231,20 +238,20 @@ function Products() {
                                 </tr>
                             ) : (
                                 products?.map((product, idx) => (
-                                    <tr key={idx} className="divide-x divide-slate-200">
+                                    <tr key={idx} className={`divide-x ${isDark? "divide-slate-700" : "divide-slate-200"}`}>
 
                                         {/* Id */}
-                                        <td className="px-4 py-3 text-gray-500">
+                                        <td className={`px-4 py-1 ${isDark? "text-gray-400" : "text-gray-500"}`}>
                                             #{product.productId}
                                         </td>
 
                                         {/* Product */}
-                                        <td className="px-4 py-3">
+                                        <td className="px-4 py-1">
                                             <div className="flex items-center gap-4">
                                                 <img
                                                     src={product.thumbnail}
                                                     alt="thumbnail"
-                                                    className="w-14 h-14 object-contain bg-linear-to-br from-blue-100 to-purple-100 rounded-sm"
+                                                    className={`w-14 h-14 object-contain rounded-sm ${isDark? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
                                                 />
                                                 <span className="line-clamp-2">
                                                     {product.title}
@@ -252,31 +259,31 @@ function Products() {
                                             </div>
                                         </td>
 
-                                        <td className="px-4 py-3 text-gray-500">
+                                        <td className={`px-4 py-1 ${isDark? "text-gray-400" : "text-gray-500"}`}>
                                             {product.category}
                                         </td>
 
-                                        <td className="px-4 py-3">
-                                            <span className='text-gray-600 line-clamp-2'>{product.brand || "-"}</span>
+                                        <td className="px-4 py-1">
+                                            <span className={`line-clamp-2 ${isDark? "text-gray-400" : "text-gray-600"}`}>{product.brand || "-"}</span>
                                         </td>
 
-                                        <td className="px-4 py-3">
+                                        <td className="px-4 py-1">
                                             {product.stock}
                                         </td>
 
-                                        <td className="px-4 py-3">
+                                        <td className="px-4 py-1">
                                             ₹{product.price.toLocaleString("en-IN")}
                                         </td>
 
-                                        <td className="px-4 py-3">
+                                        <td className="px-4 py-1">
                                             <button className={`px-4 py-1 rounded-full whitespace-nowrap ${statusColors[product.availabilityStatus.replace(/\s/g, "")]}`}>
                                                 {product.availabilityStatus}
                                             </button>
                                         </td>
 
-                                        <td className="px-4 py-3">
+                                        <td className="px-4 py-1">
                                             <div className="flex gap-2">
-                                                <button className="text-purple-600 bg-slate-100 p-2 rounded-lg cursor-pointer" onClick={() => navigate(`/edit-product/${product._id}`)}>
+                                                <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark? "bg-slate-800" : "bg-slate-100"}`} onClick={() => navigate(`/edit-product/${product._id}`)}>
                                                     <FaPencil />
                                                 </button>
                                                 <button
@@ -284,7 +291,7 @@ function Products() {
                                                         setShow(true);
                                                         setIdx(idx);
                                                     }}
-                                                    className="text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer"
+                                                    className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark? "bg-slate-800" : "bg-slate-100"}`}
                                                 >
                                                     <ImBin />
                                                 </button>
@@ -297,7 +304,7 @@ function Products() {
                         </tbody>
                     </table>
                 </div>
-                <div className='flex flex-row justify-between items-center px-4 border-t-2 border-t-gray-100 min-h-13'>
+                <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark? "border-t-gray-800" : "border-t-gray-100"}`}>
                     <div>
                         <span className='font-semibold text-gray-400'>Showing {skip + 1} to {(skip + 30) < total ? skip + 30 : total} of {total} entries</span>
                     </div>
@@ -314,13 +321,13 @@ function Products() {
                                             prevPage();
                                         }}
                                         disabled={page === 1 || loading}
-                                        className={`${isDark ? "" : ""} flex flex-row justify-center items-center text-white  disabled:opacity-50 border border-gray-200 shadow  cursor-pointer px-3 py-1 rounded-lg`}
+                                        className={`${isDark ? "border-gray-700 text-gray-300 border-2" : "border-gray-200 text-white"} flex flex-row justify-center items-center disabled:opacity-50 border shadow  cursor-pointer px-3 py-1 rounded-lg disabled:cursor-not-allowed`}
                                     >
                                         <span className='font-semibold text-gray-400'>Prev</span>
                                     </button>
 
                                     {/* Pages */}
-                                    <div className="border font-semibold text-gray-400 border-gray-200 rounded-lg shadow flex justify-center items-center px-1 py-1">
+                                    <div className={`border font-semibold text-gray-400 rounded-lg shadow flex justify-center items-center px-1 py-1 ${isDark? "border-gray-700 border-2" : "border-gray-200"}`}>
                                         <input
                                             disabled={loading}
                                             type="number"
@@ -349,7 +356,7 @@ function Products() {
                                             nextPage();
                                         }}
                                         disabled={page === totalPages || loading}
-                                        className={`${isDark ? "" : ""} flex flex-row justify-center items-center text-white  disabled:opacity-50 border border-gray-200 shadow  cursor-pointer px-3 py-1 rounded-lg`}
+                                        className={`${isDark ? "border-gray-700 text-gray-300 border-2" : "border-gray-200 text-white"} flex flex-row justify-center items-center disabled:opacity-50 border shadow  cursor-pointer px-3 py-1 rounded-lg disabled:cursor-not-allowed`}
                                     >
                                         <span className='font-semibold text-gray-400'>Next</span>
                                     </button>

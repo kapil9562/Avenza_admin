@@ -31,7 +31,7 @@ const pieData = [
 
 const Dashboard = () => {
   return (
-    <div className="max-h-dvh bg-[#F9F9FF] p-8 font-sans text-slate-700 overflow-y-scroll no-scrollbar pb-20 scroll-smooth">
+    <div className="h-[calc(100dvh-60px)] w-fit lg:w-full bg-[#F9F9FF] p-8 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ">
       {/* 1. Stats Overview Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <StatCard icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color="bg-pink-100 text-pink-500" className="bg-linear-to-b from-white via-white to-pink-50 border-b-4 border-b-pink-200" />

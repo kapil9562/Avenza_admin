@@ -459,7 +459,7 @@ function AddProduct() {
     };
 
     return (
-        <div className="p-6 bg-gray-50 max-h-[92dvh] overflow-y-scroll scroll-smooth h-dvh pb-20 relative">
+        <div className="p-6 bg-[#F9F9FF] overflow-y-scroll scroll-smooth max-h-[calc(100dvh-60px)] pb-20 relative">
             {alert?.code === 1 &&
                 <div className='fixed top-20 left-1/2 flex justify-center z-50'>
                     <div className={`bg-red-100 text-red-600 flex justify-center items-center p-1 border-l-3 border-red-400 rounded-md gap-5 px-2 z-999 transition-all ease-out animate-fadeDown duration-300 will-change-transform shadow-lg w-fit`}>

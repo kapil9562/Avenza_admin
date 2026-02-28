@@ -12,7 +12,7 @@ function Header() {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div className={`px-8 ${isDark ? "" : "border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between full`}>
+    <div className={`px-8 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between full`}>
       <div className='relative w-1/2 flex flex-row justify-center items-center'>
         <input
           value={input}
@@ -31,7 +31,7 @@ function Header() {
           {/* Toggle for destop */}
           <button
             onClick={toggleTheme}
-            className={`relative w-18 h-8 rounded-full hidden items-center transition-all duration-500 cursor-pointer ${isDark ? "bg-[#2d323a] shadow-black" : "bg-[#e9ecef] shadow-gray-400"} shadow-inner md:flex`}
+            className={`relative w-18 h-8 rounded-full items-center transition-all duration-500 cursor-pointer ${isDark ? "bg-[#2d323a] shadow-black" : "bg-[#e9ecef] shadow-gray-400"} shadow-inner flex`}
           >
             {/* Knob */}
             <span className={`absolute w-6 h-6 z-10 rounded-full shadow-md flex items-center justify-center transition-all duration-500 ${isDark ? "translate-x-11 bg-[#15171b] shadow-black" : "translate-x-1 bg-white"}`}
