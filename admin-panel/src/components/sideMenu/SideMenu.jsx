@@ -18,7 +18,7 @@ function SideMenu() {
   const [activetab, setActiveTab] = useState(!tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1));
   const [open, setOpen] = useState({
     type: "",
-    status: false
+    status: true
   });
 
   useEffect(() => {

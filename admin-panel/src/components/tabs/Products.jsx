@@ -131,7 +131,7 @@ function Products() {
     return (
         <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-fit lg:w-full ${isDark? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {show &&
-                <div className={`absolute top-0 left-0 h-full w-full bg-gray-50/30 z-99 shadow-lg border flex justify-center items-center`}>
+                <div className={`absolute top-0 left-0 h-full w-full z-99 shadow-lg border flex justify-center items-center ${isDark? "bg-gray-900/50" : "bg-gray-50/30"}`}>
                     {products && products[index] && (
                         <DeleteProduct
                             setShow={setShow}
