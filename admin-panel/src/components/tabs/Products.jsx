@@ -174,7 +174,7 @@ function Products() {
                     <h1>In Stock</h1>
                     <div className='flex justify-center items-center text-[12px]'>
                         <button
-                            className={`relative w-13 h-6 rounded-full hidden items-center transition-all bg-purple-300 duration-500 cursor-pointer border ${isDark ? "shadow-black border-gray-300 bg-purple-400" : "shadow-gray-400 border-transparent"} shadow-inner md:flex`}
+                            className={`relative w-13 h-6 rounded-full items-center transition-all bg-purple-300 duration-500 cursor-pointer border ${isDark ? "shadow-black border-gray-300 bg-purple-400" : "shadow-gray-400 border-transparent"} shadow-inner flex`}
                             onClick={handleStockToggle}
                         >
                             {/* Knob */}
@@ -251,7 +251,7 @@ function Products() {
                                                 <img
                                                     src={product.thumbnail}
                                                     alt="thumbnail"
-                                                    className={`w-14 h-14 object-contain rounded-sm ${isDark? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
+                                                    className={`min-w-14 min-h-14 max-w-14 max-h-14 object-contain rounded-sm ${isDark? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
                                                 />
                                                 <span className="line-clamp-2">
                                                     {product.title}

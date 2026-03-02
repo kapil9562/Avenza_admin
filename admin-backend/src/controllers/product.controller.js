@@ -69,7 +69,7 @@ const addNewProduct = async (req, res) => {
             .sort({ productId: -1 })
             .select("productId");
 
-        const nextProductId = data?.productId ? data?.productId : lastProduct ? lastProduct.productId + 1 : 1;
+        const nextProductId = (data?.productId) ? (data?.productId) : (lastProduct ? ( lastProduct?.productId + 1) : 1);
 
         const product = new Product({
             ...data,
@@ -106,11 +106,11 @@ const updateProduct = async (req, res) => {
 
         console.log(productId)
 
-        if(!productId) {
+        if (!productId) {
             return res.status(404).json({ message: "Product Id is required" });
         }
 
-        const product = await Product.findById({_id: productId});
+        const product = await Product.findById({ _id: productId });
 
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
@@ -153,20 +153,35 @@ const updateProduct = async (req, res) => {
             product.thumbnail = result.secure_url;
         }
 
-        // 🔥 Update Images (optional replace)
-        if (req.files?.images) {
-            let imageUrls = [];
+        // 🔥 Handle Images Properly
+        const existingImages = JSON.parse(req.body.existingImages || "[]");
 
+        // Old DB images
+        const oldImages = product.images || [];
+
+        // 1️⃣ Delete removed images from Cloudinary
+        const imagesToDelete = oldImages.filter(
+            (img) => !existingImages.includes(img)
+        );
+
+        for (let imgUrl of imagesToDelete) {
+            const publicId = imgUrl.split("/").slice(-2).join("/").split(".")[0];
+            await cloudinary.uploader.destroy(publicId);
+        }
+
+        let newImageUrls = [];
+
+        if (req.files?.images) {
             for (let file of req.files.images) {
                 const result = await uploadToCloudinary(
                     file.buffer,
                     "products/images"
                 );
-                imageUrls.push(result.secure_url);
+                newImageUrls.push(result.secure_url);
             }
-
-            product.images = imageUrls;
         }
+
+        product.images = [...existingImages, ...newImageUrls];
 
         // 🔥 Update QR (optional)
         if (req.files?.qrCode) {

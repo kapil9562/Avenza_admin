@@ -27,6 +27,7 @@ function AddProduct() {
     const [sub, setSub] = useState("");
     const [openParent, setOpenParent] = useState(false);
     const [openSub, setOpenSub] = useState(false);
+    const navigate = useNavigate();
 
     const categories = {
         "Beauty": ["skin-care", "fragrances", "beauty"],
@@ -82,8 +83,10 @@ function AddProduct() {
                 const res = await getSingleProduct({ productId: id });
                 const data = res?.data?.products[0];
                 const formattedImages = data.images?.map(url => ({
+                    id: crypto.randomUUID(),
                     file: null,
-                    preview: url
+                    preview: url,
+                    isExisting: true
                 }));
 
                 setProduct({
@@ -150,16 +153,14 @@ function AddProduct() {
     // Handle image upload
     const MAX_IMAGES = 4;
 
-    const handleRemoveImage = (index) => {
-        setProduct((prev) => {
-            const updatedImages = [...(prev.images || [])];
-
-            // Revoke preview URL to avoid memory leak
-            if (updatedImages[index]?.preview) {
-                URL.revokeObjectURL(updatedImages[index].preview);
-            }
-
-            updatedImages.splice(index, 1);
+    const handleRemoveImage = (id) => {
+        setProduct(prev => {
+            const updatedImages = prev.images.filter(img => {
+                if (img.id === id && img.preview) {
+                    URL.revokeObjectURL(img.preview);
+                }
+                return img.id !== id;
+            });
 
             return {
                 ...prev,
@@ -194,13 +195,15 @@ function AddProduct() {
         const filesToAdd = acceptedFiles.slice(0, remainingSlots);
 
         const newImages = filesToAdd.map(file => ({
+            id: crypto.randomUUID(),
             file,
-            preview: URL.createObjectURL(file)
+            preview: URL.createObjectURL(file),
+            isExisting: false
         }));
 
         setProduct(prev => ({
             ...prev,
-            images: [...prev.images, ...newImages]
+            images: [...(prev.images || []), ...newImages]
         }));
     };
 
@@ -258,13 +261,20 @@ function AddProduct() {
     useEffect(() => {
         return () => {
             product.images?.forEach(img => {
-                if (img.preview) URL.revokeObjectURL(img.preview);
+                if (!img.isExisting && img.preview) {
+                    URL.revokeObjectURL(img.preview);
+                }
             });
 
-            if (preview) URL.revokeObjectURL(preview);
-            if (qrPreview) URL.revokeObjectURL(qrPreview);
+            if (preview && preview.startsWith("blob:")) {
+                URL.revokeObjectURL(preview);
+            }
+
+            if (qrPreview && qrPreview.startsWith("blob:")) {
+                URL.revokeObjectURL(qrPreview);
+            }
         };
-    }, [product.images, preview, qrPreview]);
+    }, []);
 
     const isChanged = () => {
         if (!originalProduct) return false;
@@ -350,7 +360,7 @@ function AddProduct() {
 
             // Basic fields
             formData.append("title", product.title);
-            formData.append("productId", product.productId);
+            formData.append("productId", ((product?.productId) ? product?.productId : ""));
             formData.append("description", product.description);
             formData.append("category", product.category);
             formData.append("parentCategory", product.parentCategory);
@@ -385,7 +395,15 @@ function AddProduct() {
             if (product.thumbnail instanceof File) {
                 formData.append("thumbnail", product.thumbnail);
             }
-            // Multiple Images
+
+
+            const existingImages = product.images
+                .filter(img => img.isExisting)
+                .map(img => img.preview);
+
+            formData.append("existingImages", JSON.stringify(existingImages));
+
+
             product.images.forEach((img) => {
                 if (img.file) {
                     formData.append("images", img.file);
@@ -453,11 +471,15 @@ function AddProduct() {
         } catch (error) {
             console.log("Add product error ::", error);
             setLoading(false);
+            setAlert({
+                code: 1,
+                msg: error?.response?.data?.message || error?.message || "something went wrong !"
+            });
         }
     };
 
     return (
-        <div className={`p-6 overflow-y-scroll scroll-smooth max-h-[calc(100dvh-60px)] pb-20 relative ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+        <div className={`p-6 overflow-y-scroll scroll-smooth max-h-[calc(100dvh-60px)] w-fit lg:w-full pb-20 relative ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {alert?.code === 1 &&
                 <div className='fixed top-20 left-1/2 flex justify-center z-50'>
                     <div className={`bg-red-100 text-red-600 flex justify-center items-center p-1 border-l-3 border-red-400 rounded-md gap-5 px-2 z-999 transition-all ease-out animate-fadeDown duration-300 will-change-transform shadow-lg w-fit`}>
@@ -520,7 +542,7 @@ function AddProduct() {
                                         type="number"
                                         placeholder="Enter productId"
                                         onChange={handleNumberChange}
-                                        className={`border-2 p-3 w-full rounded-xl outline-none ${isEdit && "cursor-not-allowed bg-gray-100"} ${isDark ? "border-gray-700 text-gray-200 placeholder:text-gray-500" : "bg-white border-gray-200 text-gray-700 placeholder:text-gray-400"}`}
+                                        className={`border-2 p-3 w-full rounded-xl outline-none ${isEdit && "cursor-not-allowed"} ${isDark ? "border-gray-700 text-gray-200 placeholder:text-gray-500" : "bg-white border-gray-200 text-gray-700 placeholder:text-gray-400"}`}
                                         onKeyDown={(e) => {
                                             if (["e", "E", "+", "-", "ArrowUp", "ArrowDown"].includes(e.key)) {
                                                 e.preventDefault();
@@ -786,7 +808,7 @@ function AddProduct() {
                                         </label>
                                     </div>
                                 )}
-                                <label className={`cursor-pointer hover:underline font-semibold text-center rounded-full p-2 absolute top-2 right-2 ${isDark? "text-slate-300 bg-gray-700/80" : "text-slate-700 bg-gray-300/40"} ${preview ? "block" : "hidden"}`}>
+                                <label className={`cursor-pointer hover:underline font-semibold text-center rounded-full p-2 absolute top-2 right-2 ${isDark ? "text-slate-300 bg-gray-700/80" : "text-slate-700 bg-gray-300/40"} ${preview ? "block" : "hidden"}`}>
                                     <FaPencilAlt />
                                     <input
                                         type="file"
@@ -797,10 +819,10 @@ function AddProduct() {
                                 </label>
                             </div>
                             <div className="w-full flex flex-row gap-2">
-                                {product?.images?.map((img, idx) => (
-                                    <div className={`relative border-2 rounded-xl ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`} key={idx}>
-                                        <img src={img?.preview} alt="img" className="h-20 w-20 rounded-xl" />
-                                        <button className={`absolute -top-2 -right-2 rounded-full p-1 flex items-center justify-center cursor-pointer ${isDark? "text-slate-300 bg-gray-700/80" : "text-slate-700 bg-gray-300/80"}`} onClick={() => handleRemoveImage(idx)}>
+                                {product?.images?.map((img) => (
+                                    <div className={`relative flex justify-center items-center border-2 rounded-xl ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`} key={img?.id}>
+                                        <img src={img?.preview} alt="img" className="h-20 w-20 object-contain rounded-xl" />
+                                        <button className={`absolute -top-2 -right-2 rounded-full p-1 flex items-center justify-center cursor-pointer ${isDark ? "text-slate-300 bg-gray-700/80" : "text-slate-700 bg-gray-300/80"}`} onClick={() => handleRemoveImage(img.id)}>
                                             <RxCross2 />
                                         </button>
                                     </div>
