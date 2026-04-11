@@ -12,8 +12,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
-  "http://localhost:5173"
+  "https://myavenza-admin.onrender.com"
 ];
+
+if(process.env.NODE_ENV === "test") {
+  allowedOrigins.push("http://localhost:5173");
+}
 
 app.use(cors({
   origin: function (origin, callback) {
