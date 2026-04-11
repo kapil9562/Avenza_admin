@@ -86,7 +86,7 @@ webApi.interceptors.response.use(
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(() => api(originalRequest));
+        }).then(() => webApi(originalRequest));
       }
 
       isRefreshing = true;
@@ -94,7 +94,7 @@ webApi.interceptors.response.use(
       try {
         await refreshAccessToken();
         processQueue(null);
-        return api(originalRequest);
+        return webApi(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
         return Promise.reject(refreshError);
