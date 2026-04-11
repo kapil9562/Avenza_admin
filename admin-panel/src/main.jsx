@@ -8,7 +8,7 @@ import { Dashboard, Products, Orders, Settings, Analytics, Customers } from './c
 import AddProduct from './helpers/AddProduct.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
-import ProtectedRoute from './helpers/protectedRoute.jsx';
+import ProtectedRoute from './helpers/ProtectedRoute.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 
 createRoot(document.getElementById('root')).render(
