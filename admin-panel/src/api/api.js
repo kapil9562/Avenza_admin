@@ -50,11 +50,11 @@ export const updateProduct = (productId, data) =>
 
 export const emailLogin = ({email, password}) => adminApi.post('/auth/email-login', {email, password});
 
-export const refreshAccessToken = () => webApi.post('/auth/refresh');
+export const refreshAccessToken = () => adminApi.post('/auth/refresh');
 
-export const getCurrentUser = () => webApi.get('/auth/get-current-user');
+export const getCurrentUser = () => adminApi.get('/auth/get-current-user');
 
-export const logoutUser = () => webApi.post('/auth/logout');
+export const logoutUser = () => adminApi.post('/auth/logout');
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -71,7 +71,7 @@ const processQueue = (error, response = null) => {
   failedQueue = [];
 };
 
-webApi.interceptors.response.use(
+adminApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -86,7 +86,7 @@ webApi.interceptors.response.use(
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(() => webApi(originalRequest));
+        }).then(() => adminApi(originalRequest));
       }
 
       isRefreshing = true;
@@ -94,7 +94,7 @@ webApi.interceptors.response.use(
       try {
         await refreshAccessToken();
         processQueue(null);
-        return webApi(originalRequest);
+        return adminApi(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
         return Promise.reject(refreshError);

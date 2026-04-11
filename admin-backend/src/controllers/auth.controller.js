@@ -80,3 +80,78 @@ export const emailLogin = async (req, res) => {
         });
     }
 };
+
+export const logout = async (req, res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                refreshToken: undefined
+            }
+        },
+        {
+            returnDocument: "after"
+        }
+    );
+
+    res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json({
+            message: "logout successfully"
+        })
+
+}
+
+export const refreshAccessToken = async (req, res) => {
+    const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+
+    if (!incomingRefreshToken) {
+        return res.status(401).json({
+            message: "unauthorized request!"
+        });
+    }
+
+    try {
+        const decodedToken = jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
+
+        const user = await User.findById(decodedToken?._id);
+
+        if (!user) {
+            return res.status(401).json({
+                message: "Invalid refresh token!"
+            })
+        }
+
+        if (incomingRefreshToken !== user?.refreshToken) {
+            return res.status(401).json({
+                message: "Refresh token is expired or used!"
+            });
+        }
+
+        const { refreshToken: newRefreshToken, accessToken } = await generateAccessAndRefreshToken(user._id);
+
+        res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", newRefreshToken, options)
+            .json({
+                message: "Access token refreshed."
+            });
+    } catch (error) {
+        return res.status(401).json({
+            message: "Invalid or expired refresh token!"
+        });
+    }
+
+}
+
+export const getCurrentUser = async (req, res) => {
+    res.status(200).json({
+        user: req.user,
+    });
+};
