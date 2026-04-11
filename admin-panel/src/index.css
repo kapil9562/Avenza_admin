@@ -121,3 +121,7 @@ input:-webkit-autofill {
   -webkit-text-fill-color: #ffffff !important;
   caret-color: #ffffff;
 }
+
+.nunitoFont {
+  font-family: 'Nunito', sans-serif;
+}

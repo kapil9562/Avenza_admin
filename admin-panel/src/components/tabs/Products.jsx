@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io'
 import { useTheme } from '../../context/ThemeContext'
 import { HiPlus } from "react-icons/hi";
-import { FaCircleArrowLeft, FaCircleArrowRight, FaPencil } from "react-icons/fa6";
+import { FaPencil } from "react-icons/fa6";
 import { ImBin } from "react-icons/im";
 import { useProducts } from '../../context/ProductsContext';
 import { getAllCategory, getProducts } from '../../api/api';
@@ -18,7 +18,7 @@ function Products() {
     const [inputValue, setInputValue] = useState("1");
     const [category, setCategory] = useState("All");
     const [page, setPage] = useState(1);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [openIndex, setOpenIndex] = useState();
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
@@ -57,10 +57,10 @@ function Products() {
     useEffect(() => {
         const getCategories = async () => {
             try {
+                setError("");
                 const res = await getAllCategory();
                 setCategories(res?.data);
             } catch (error) {
-                console.log(error);
                 setError(error);
             }
         }
@@ -78,8 +78,8 @@ function Products() {
 
                 const res = await getProducts(params);
 
-                if (!res?.data?.total) {
-                    setError("No any product found !")
+                if (res?.data?.total === 0) {
+                    setError("No any product found !");
                 }
 
                 setTotal(res?.data?.total);
@@ -92,12 +92,12 @@ function Products() {
                     setPage(prev => prev - 1);
                     return;
                 }
-                setLoading(false);
-                setIsDeleted(false);
+                
             } catch (err) {
-                setLoading(false);
                 setError(err?.response?.data?.message || err?.message || "Something went wrong !")
                 console.error(err);
+            } finally {
+                setLoading(false);
                 setIsDeleted(false);
             }
         };
@@ -106,18 +106,18 @@ function Products() {
     }, [cacheKey, cacheKey, category, page, inStock, isDeleted]);
 
     const statusColors = {
-  InStock: isDark
-    ? "bg-green-900/40 text-green-400 border border-green-700"
-    : "bg-green-100 text-green-600 border border-green-300 shadow-md",
+        InStock: isDark
+            ? "bg-green-900/40 text-green-400 border border-green-700"
+            : "bg-green-100 text-green-600 border border-green-300 shadow-md",
 
-  LowStock: isDark
-    ? "bg-yellow-900/40 text-yellow-400 border border-yellow-700"
-    : "bg-orange-100 text-orange-600 border border-yellow-300 shadow-md",
+        LowStock: isDark
+            ? "bg-yellow-900/40 text-yellow-400 border border-yellow-700"
+            : "bg-orange-100 text-orange-600 border border-yellow-300 shadow-md",
 
-  OutofStock: isDark
-    ? "bg-red-900/40 text-red-400 border border-red-700"
-    : "bg-red-100 text-red-600 border border-red-300 shadow-md",
-};
+        OutofStock: isDark
+            ? "bg-red-900/40 text-red-400 border border-red-700"
+            : "bg-red-100 text-red-600 border border-red-300 shadow-md",
+    };
 
     const handleCategory = (filter) => {
         if (category === filter) return;
@@ -129,9 +129,9 @@ function Products() {
     }
 
     return (
-        <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-fit lg:w-full ${isDark? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+        <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-fit lg:w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {show &&
-                <div className={`absolute top-0 left-0 h-full w-full z-99 shadow-lg border flex justify-center items-center ${isDark? "bg-gray-900/50" : "bg-gray-50/30"}`}>
+                <div className={`absolute top-0 left-0 h-full w-full z-99 shadow-lg border flex justify-center items-center ${isDark ? "bg-gray-900/50" : "bg-gray-50/30"}`}>
                     {products && products[index] && (
                         <DeleteProduct
                             setShow={setShow}
@@ -145,22 +145,22 @@ function Products() {
                 <div className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark ? "border-slate-700 text-gray-300  border-2" : "border border-gray-200 text-gray-700"}`}>
                     <h1>Category</h1>
                     <IoIosArrowDown className={`group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
-                    <div className={`absolute group-hover:flex hidden w-fit left-0 top-full z-99 flex-col border-2 rounded-md ${isDark? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200 "}`}>
+                    <div className={`absolute group-hover:flex hidden w-fit left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200 "}`}>
                         <div
                             onClick={() => handleCategory("All")}
-                            className={`flex flex-row justify-between items-center relative group py-2 px-3 rounded-sm ${isDark? "hover:bg-slate-800" : "hover:bg-gray-100"}`}>
+                            className={`flex flex-row justify-between items-center relative group py-2 px-3 rounded-sm ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"}`}>
                             <span>All</span>
                         </div>
                         {categories?.map((item, idx) => (
-                            <div key={idx} className={`flex flex-row justify-between items-center relative rounded-sm group py-2 px-3 ${isDark? "hover:bg-slate-800" : "hover:bg-gray-100"}`} onMouseEnter={() => setOpenIndex(idx)} onMouseLeave={() => setOpenIndex(null)}>
+                            <div key={idx} className={`flex flex-row justify-between items-center relative rounded-sm group py-2 px-3 ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"}`} onMouseEnter={() => setOpenIndex(idx)} onMouseLeave={() => setOpenIndex(null)}>
                                 <span className='whitespace-nowrap'>{item.parentCategory}</span>
                                 <IoIosArrowForward />
 
-                                <div className={`absolute z-99 left-full w-fit flex-col top-0 ml-0.5 border-2 rounded-md ${openIndex === idx ? "flex" : "hidden"} ${isDark? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200 "}`} >
+                                <div className={`absolute z-99 left-full w-fit flex-col top-0 ml-0.5 border-2 rounded-md ${openIndex === idx ? "flex" : "hidden"} ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200 "}`} >
                                     {item?.categories?.map((sub, i) => (
                                         <span
                                             key={i}
-                                            className={`whitespace-nowrap py-2 px-3 rounded-sm ${isDark? "hover:bg-slate-800" : "hover:bg-gray-100"}`}
+                                            className={`whitespace-nowrap py-2 px-3 rounded-sm ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"}`}
                                             onClick={() => handleCategory(sub)}>
                                             {sub}
                                         </span>
@@ -176,9 +176,10 @@ function Products() {
                         <button
                             className={`relative w-13 h-6 rounded-full items-center transition-all bg-purple-300 duration-500 cursor-pointer border ${isDark ? "shadow-black border-gray-300 bg-purple-400" : "shadow-gray-400 border-transparent"} shadow-inner flex`}
                             onClick={handleStockToggle}
+                            disabled={loading}
                         >
                             {/* Knob */}
-                            <span className={`absolute w-4 h-4 z-10 rounded-full flex items-center justify-center transition-transform duration-500 ${inStock === 'true' ? "translate-x-8" : "translate-x-1"} ${isDark? "bg-[#1b2744] shadow-gray-600 shadow" : "bg-white shadow-md"}`}
+                            <span className={`absolute w-4 h-4 z-10 rounded-full flex items-center justify-center transition-transform duration-500 ${inStock === 'true' ? "translate-x-8" : "translate-x-1"} ${isDark ? "bg-[#1b2744] shadow-gray-600 shadow" : "bg-white shadow-md"}`}
                             >
                             </span>
                             {inStock === "true" ? (<span className='absolute left-2 text-white font-semibold'>ON</span>) : (<span className='absolute right-2 text-white font-semibold'>OFF</span>)}
@@ -200,8 +201,8 @@ function Products() {
                     <table className="w-full border-collapse">
 
                         {/* Header */}
-                        <thead className={`sticky top-0 z-50 ${isDark? " bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
-                            <tr className={`text-left divide-slate-200 divide-x ${isDark? "divide-slate-700" : "divide-slate-200"}`}>
+                        <thead className={`sticky top-0 z-50 ${isDark ? " bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
+                            <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
                                 <th className="px-4 py-4 w-[5%] font-semibold">Id</th>
                                 <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Product</th>
                                 <th className="px-4 py-4 w-[15%] font-semibold">Category</th>
@@ -214,7 +215,7 @@ function Products() {
                         </thead>
 
                         {/* Body */}
-                        <tbody className={`font-semibold divide-y ${isDark? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length>0 ? (isDark? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[65vh]"}`}>
+                        <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[65vh]"}`}>
                             {loading ? (
                                 <tr>
                                     <td colSpan="8" className="text-center py-20">
@@ -238,10 +239,10 @@ function Products() {
                                 </tr>
                             ) : (
                                 products?.map((product, idx) => (
-                                    <tr key={idx} className={`divide-x ${isDark? "divide-slate-700" : "divide-slate-200"}`}>
+                                    <tr key={idx} className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
 
                                         {/* Id */}
-                                        <td className={`px-4 py-1 ${isDark? "text-gray-400" : "text-gray-500"}`}>
+                                        <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                                             #{product.productId}
                                         </td>
 
@@ -251,7 +252,7 @@ function Products() {
                                                 <img
                                                     src={product.thumbnail}
                                                     alt="thumbnail"
-                                                    className={`min-w-14 min-h-14 max-w-14 max-h-14 object-contain rounded-sm ${isDark? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
+                                                    className={`min-w-14 min-h-14 max-w-14 max-h-14 object-contain rounded-sm ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
                                                 />
                                                 <span className="line-clamp-2">
                                                     {product.title}
@@ -259,12 +260,12 @@ function Products() {
                                             </div>
                                         </td>
 
-                                        <td className={`px-4 py-1 ${isDark? "text-gray-400" : "text-gray-500"}`}>
+                                        <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                                             {product.category}
                                         </td>
 
                                         <td className="px-4 py-1">
-                                            <span className={`line-clamp-2 ${isDark? "text-gray-400" : "text-gray-600"}`}>{product.brand || "-"}</span>
+                                            <span className={`line-clamp-2 ${isDark ? "text-gray-400" : "text-gray-600"}`}>{product.brand || "-"}</span>
                                         </td>
 
                                         <td className="px-4 py-1">
@@ -283,7 +284,7 @@ function Products() {
 
                                         <td className="px-4 py-1">
                                             <div className="flex gap-2">
-                                                <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark? "bg-slate-800" : "bg-slate-100"}`} onClick={() => navigate(`/edit-product/${product._id}`)}>
+                                                <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`} onClick={() => navigate(`/edit-product/${product._id}`)}>
                                                     <FaPencil />
                                                 </button>
                                                 <button
@@ -291,7 +292,7 @@ function Products() {
                                                         setShow(true);
                                                         setIdx(idx);
                                                     }}
-                                                    className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark? "bg-slate-800" : "bg-slate-100"}`}
+                                                    className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
                                                 >
                                                     <ImBin />
                                                 </button>
@@ -304,7 +305,7 @@ function Products() {
                         </tbody>
                     </table>
                 </div>
-                <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark? "border-t-gray-800" : "border-t-gray-100"}`}>
+                <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
                     <div>
                         <span className='font-semibold text-gray-400'>Showing {skip + 1} to {(skip + 30) < total ? skip + 30 : total} of {total} entries</span>
                     </div>
@@ -327,7 +328,7 @@ function Products() {
                                     </button>
 
                                     {/* Pages */}
-                                    <div className={`border font-semibold text-gray-400 rounded-lg shadow flex justify-center items-center px-1 py-1 ${isDark? "border-gray-700 border-2" : "border-gray-200"}`}>
+                                    <div className={`border font-semibold text-gray-400 rounded-lg shadow flex justify-center items-center px-1 py-1 ${isDark ? "border-gray-700 border-2" : "border-gray-200"}`}>
                                         <input
                                             disabled={loading}
                                             type="number"

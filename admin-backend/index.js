@@ -5,12 +5,31 @@ import connectDB from './src/db/db.js';
 import express from "express";
 import cors from "cors";
 import { productRouter } from './src/routes/product.router.js';
+import { authRouter } from "./src/routes/auth.router.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.get('/', (req, res) => {
@@ -22,6 +41,7 @@ app.get("/ping", (req, res) => {
 });
 
 app.use('/api', productRouter);
+app.use('/api', authRouter);
 
 // Connect DB then start server
 connectDB()

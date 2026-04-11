@@ -11,6 +11,7 @@ import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, 
   CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
 } from 'recharts';
+import { useTheme } from '../../context/ThemeContext';
 
 // Mock Data for Charts
 const salesData = [
@@ -29,23 +30,32 @@ const pieData = [
   { name: 'Beauty', value: 20, color: '#B9A3FF' },
 ];
 
+
 const Dashboard = () => {
+  
+  const {isDark} = useTheme();
+  
   return (
-    <div className="h-[calc(100dvh-60px)] w-fit lg:w-full bg-[#F9F9FF] p-8 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ">
+    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-8 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* 1. Stats Overview Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <StatCard icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color="bg-pink-100 text-pink-500" className="bg-linear-to-b from-white via-white to-pink-50 border-b-4 border-b-pink-200" />
-        <StatCard icon={<FiClipboard />} label="Orders" value="320" color="bg-purple-100 text-purple-500" className="bg-linear-to-b from-white via-white to-purple-50 border-b-4 border-b-purple-200"/>
-        <StatCard icon={<FiUsers />} label="Customers" value="1,210" color="bg-green-100 text-green-500" className="bg-linear-to-b from-white via-white to-green-50 border-b-4 border-b-green-200"/>
-        <StatCard icon={<FiDollarSign />} label="Revenue" value="$8,750" color="bg-orange-100 text-orange-500" className="bg-linear-to-b from-white via-white to-orange-50 border-b-4 border-b-orange-200"/>
+
+        <StatCard isDark={isDark} icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color={`${isDark? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500" }`} className={`${isDark? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} />
+
+        <StatCard isDark={isDark} icon={<FiClipboard />} label="Orders" value="320" color={`${isDark? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500" }`} className={`${isDark? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`}/>
+
+        <StatCard isDark={isDark} icon={<FiUsers />} label="Customers" value="1,210" color={`${isDark? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500" }`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`}/>
+
+        <StatCard isDark={isDark} icon={<FiDollarSign />} label="Revenue" value="$8,750" color={`${isDark? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500" }`} className={`${isDark? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`}/>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-8">
           {/* 2. Recent Orders Table */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <h3 className="text-xl font-bold mb-6">Recent Orders</h3>
+          <div className={`rounded-3xl p-6 shadow-sm ${isDark? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+            <h3 className={`text-xl font-bold mb-6 ${isDark? "text-gray-100" : "text-gray-800"}`}>Recent Orders</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -129,12 +139,12 @@ const Dashboard = () => {
 };
 
 // Sub-components for cleaner code
-const StatCard = ({ icon, label, value, color, className }) => (
-  <div className={`bg-white p-5 rounded-3xl shadow-xl flex items-center gap-4 ${className}`}>
+const StatCard = ({ icon, label, value, color, className, isDark }) => (
+  <div className={` p-5 rounded-3xl shadow-xl flex items-center gap-4 ${className}`}>
     <div className={`p-3 rounded-2xl ${color} text-xl`}>{icon}</div>
     <div>
-      <p className="text-slate-400 text-sm font-medium">{label}</p>
-      <p className="text-2xl font-bold text-slate-700">{value}</p>
+      <p className={`text-sm ${isDark? "text-slate-100" : "text-slate-400"} font-medium`}>{label}</p>
+      <p className={`text-2xl font-bold ${isDark? "text-white" : "text-slate-700"} `}>{value}</p>
     </div>
   </div>
 );
