@@ -44,7 +44,7 @@ function Header() {
           }}
           type="text"
           placeholder='Type to search...'
-          className={`z-10 w-full p-2 pl-10 rounded-4xl border-2 border-gray-300 font-semibold text-gray-700 ${isDark ? "focus:border-white focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white" : "focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`} />
+          className={`z-10 w-full p-2 pl-10 rounded-4xl border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`} />
         <IoIosSearch className='absolute left-3 text-2xl font-semibold text-[#8b90c7] z-20' />
       </div>
       <div className='flex flex-row gap-4 justify-center items-center'>

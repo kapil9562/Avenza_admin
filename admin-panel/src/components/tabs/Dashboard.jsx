@@ -1,15 +1,17 @@
 import React from 'react';
-import { 
-  FiShoppingBag, 
-  FiUsers, 
-  FiDollarSign, 
-  FiClipboard, 
-  FiPlus, 
-  FiEye 
+import {
+  FiShoppingBag,
+  FiUsers,
+  FiDollarSign,
+  FiClipboard,
+  FiPlus,
+  FiEye
 } from 'react-icons/fi';
-import { 
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, 
-  CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
+import {
+  BarChart, Bar, LineChart, Line, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
+  ComposedChart,
+  Sector
 } from 'recharts';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -30,23 +32,56 @@ const pieData = [
   { name: 'Beauty', value: 20, color: '#B9A3FF' },
 ];
 
+const renderPercentLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+  const RADIAN = Math.PI / 180;
+
+  // text ko slice ke andar place karne ke liye
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
+
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#fff"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize={12}
+      fontWeight={600}
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+const renderSlice = (props) => {
+  return (
+    <Sector
+      {...props}
+      fill={props.payload.color}
+      stroke="none"
+    />
+  );
+};
 
 const Dashboard = () => {
-  
-  const {isDark} = useTheme();
-  
+
+  const { isDark } = useTheme();
+
   return (
     <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-8 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* 1. Stats Overview Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
-        <StatCard isDark={isDark} icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color={`${isDark? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500" }`} className={`${isDark? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} />
+        <StatCard isDark={isDark} icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color={`${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`} className={`${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} />
 
-        <StatCard isDark={isDark} icon={<FiClipboard />} label="Orders" value="320" color={`${isDark? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500" }`} className={`${isDark? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`}/>
+        <StatCard isDark={isDark} icon={<FiClipboard />} label="Orders" value="320" color={`${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`} className={`${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`} />
 
-        <StatCard isDark={isDark} icon={<FiUsers />} label="Customers" value="1,210" color={`${isDark? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500" }`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`}/>
+        <StatCard isDark={isDark} icon={<FiUsers />} label="Customers" value="1,210" color={`${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`} />
 
-        <StatCard isDark={isDark} icon={<FiDollarSign />} label="Revenue" value="$8,750" color={`${isDark? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500" }`} className={`${isDark? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`}/>
+        <StatCard isDark={isDark} icon={<FiDollarSign />} label="Revenue" value="$8,750" color={`${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`} className={`${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`} />
 
       </div>
 
@@ -54,24 +89,24 @@ const Dashboard = () => {
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-8">
           {/* 2. Recent Orders Table */}
-          <div className={`rounded-3xl p-6 shadow-sm ${isDark? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
-            <h3 className={`text-xl font-bold mb-6 ${isDark? "text-gray-100" : "text-gray-800"}`}>Recent Orders</h3>
+          <div className={`rounded-3xl shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+            <h3 className={`text-xl font-bold border-b py-4 px-6 ${isDark ? "text-gray-100 border-slate-600" : "text-gray-800 border-slate-50"} nunitoFont`}>Recent Orders</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="text-slate-400 border-b border-slate-50">
-                    <th className="pb-4 font-medium">Order ID</th>
-                    <th className="pb-4 font-medium">Customer</th>
-                    <th className="pb-4 font-medium">Product</th>
-                    <th className="pb-4 font-medium">Status</th>
-                    <th className="pb-4 font-medium">Date</th>
+                  <tr className={`${isDark ? "text-slate-300 border-slate-700" : "text-slate-400 border-slate-50"} border-b`}>
+                    <th className="px-6 py-4 font-medium">Order ID</th>
+                    <th className="px-6 py-4 font-medium">Customer</th>
+                    <th className="px-6 py-4 font-medium">Product</th>
+                    <th className="px-6 py-4 font-medium">Status</th>
+                    <th className="px-6 py-4 font-medium">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
-                  <OrderRow id="#10234" name="Emily Johnson" item="Wireless Headphones" status="Shipped" date="Apr 22, 2024" />
-                  <OrderRow id="#10233" name="Michael Smith" item="Smartwatch" status="Processing" date="Apr 21, 2024" />
-                  <OrderRow id="#10232" name="Sarah Lee" item="Running Shoes" status="Delivered" date="Apr 20, 2024" />
-                  <OrderRow id="#10231" name="David Brown" item="Laptop Bag" status="Pending" date="Apr 18, 2024" />
+                <tbody className={`divide-y ${isDark ? "divide-slate-700" : "divide-slate-50"}`}>
+                  <OrderRow isDark={isDark} id="#10234" name="Emily Johnson" item="Wireless Headphones" status="Shipped" date="Apr 22, 2024" />
+                  <OrderRow isDark={isDark} id="#10233" name="Michael Smith" item="Smartwatch" status="Processing" date="Apr 21, 2024" />
+                  <OrderRow isDark={isDark} id="#10232" name="Sarah Lee" item="Running Shoes" status="Delivered" date="Apr 20, 2024" />
+                  <OrderRow isDark={isDark} id="#10231" name="David Brown" item="Laptop Bag" status="Cancelled" date="Apr 18, 2024" />
                 </tbody>
               </table>
             </div>
@@ -81,30 +116,47 @@ const Dashboard = () => {
         {/* Right Column (1/3 width) */}
         <div className="space-y-8">
           {/* 3. Sales Analytics */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <h3 className="text-lg font-bold">Sales Analytics</h3>
+          <div className={`rounded-3xl p-6 shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+            <h3 className={`text-lg font-bold nunitoFont ${isDark ? "text-gray-200" : "text-gray-800"}`}>Sales Analytics</h3>
             <p className="text-slate-400 text-sm mb-4">Monthly Sales</p>
             <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={salesData}>
+              <ResponsiveContainer>
+                <ComposedChart data={salesData} accessibilityLayer={false}>
+                  <defs>
+                    <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#FF8A8A" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#FF3E9B" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+
                   <Tooltip cursor={false} />
-                  <Line type="monotone" dataKey="trend" stroke="#6395F9" strokeWidth={3} dot={{ r: 4, fill: '#6395F9' }} />
-                  <Bar dataKey="sales" fill="#FF8A8A" radius={[4, 4, 0, 0]} />
-                </LineChart>
+
+                  <Bar
+                    dataKey="sales"
+                    fill="url(#salesGradient)"
+                    radius={[4, 4, 0, 0]}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="trend"
+                    stroke="#6395F9"
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: "#6395F9" }}
+                  />
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* 4. Product Categories */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <h3 className="text-lg font-bold mb-4">Product Categories</h3>
+          <div className={`rounded-3xl p-6 shadow-sm border ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+            <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>Product Categories</h3>
             <div className="flex items-center">
               <div className="w-1/2 h-40">
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={pieData} innerRadius={0} outerRadius={70} paddingAngle={0} dataKey="value">
-                      {pieData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
-                    </Pie>
+                  <PieChart stroke="none" >
+                    <Pie stroke="none" data={pieData} innerRadius={0} outerRadius={70} paddingAngle={0} dataKey="value" shape={renderSlice} labelLine={false} label={renderPercentLabel} isAnimationActive={true}/>
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -112,8 +164,8 @@ const Dashboard = () => {
                 {pieData.map((item) => (
                   <div key={item.name} className="flex items-center text-xs">
                     <span className="w-3 h-3 rounded-sm mr-2" style={{ backgroundColor: item.color }}></span>
-                    <span className="text-slate-500">{item.name}</span>
-                    <span className="ml-auto font-bold">{item.value}%</span>
+                    <span className={`${isDark? "text-slate-200" : "text-slate-500"}`}>{item.name}</span>
+                    <span className={`ml-auto font-bold ${isDark? "text-slate-200" : "text-slate-500"}`}>{item.value}%</span>
                   </div>
                 ))}
               </div>
@@ -121,13 +173,13 @@ const Dashboard = () => {
           </div>
 
           {/* 5. Quick Actions */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
+          <div className={`rounded-3xl p-6 shadow-sm border ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+            <h3 className={`text-lg font-bold mb-4 ${isDark? "text-gray-200" : "text-gray-800"}`}>Quick Actions</h3>
             <div className="flex gap-4">
-              <button className="flex-1 bg-[#FF8A8A] text-white py-2 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition">
+              <button className="flex-1 bg-linear-to-b from-orange-400 to-pink-400 text-white py-2 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition cursor-pointer font-semibold">
                 <FiPlus size={16} /> Add Product
               </button>
-              <button className="flex-1 bg-[#8F89FF] text-white py-2 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition">
+              <button className="flex-1 bg-linear-to-b from-blue-400 to-teal-400 text-white py-2 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition cursor-pointer font-semibold">
                 <FiEye size={16} /> View Orders
               </button>
             </div>
@@ -143,30 +195,41 @@ const StatCard = ({ icon, label, value, color, className, isDark }) => (
   <div className={` p-5 rounded-3xl shadow-xl flex items-center gap-4 ${className}`}>
     <div className={`p-3 rounded-2xl ${color} text-xl`}>{icon}</div>
     <div>
-      <p className={`text-sm ${isDark? "text-slate-100" : "text-slate-400"} font-medium`}>{label}</p>
-      <p className={`text-2xl font-bold ${isDark? "text-white" : "text-slate-700"} `}>{value}</p>
+      <p className={`text-sm ${isDark ? "text-slate-100" : "text-slate-400"} font-medium`}>{label}</p>
+      <p className={`text-2xl font-bold ${isDark ? "text-white" : "text-slate-700"} `}>{value}</p>
     </div>
   </div>
 );
 
-const OrderRow = ({ id, name, item, status, date }) => {
+const OrderRow = ({ id, name, item, status, date, isDark }) => {
   const statusColors = {
-    Shipped: "bg-green-100 text-green-600",
-    Processing: "bg-orange-100 text-orange-600",
-    Delivered: "bg-teal-100 text-teal-600",
-    Pending: "bg-red-100 text-red-600",
+    Delivered: isDark
+      ? "bg-green-900/40 text-green-400 border border-green-700"
+      : "bg-green-100 text-green-600 border border-green-300 shadow-md",
+
+    Processing: isDark
+      ? "bg-yellow-900/40 text-yellow-400 border border-yellow-700"
+      : "bg-orange-100 text-orange-600 border border-yellow-300 shadow-md",
+
+    Shipped: isDark
+      ? "bg-teal-900/40 text-teal-400 border border-teal-700"
+      : "bg-teal-100 text-teal-600 border border-teal-300 shadow-md",
+
+    Cancelled: isDark
+      ? "bg-red-900/40 text-red-400 border border-red-700"
+      : "bg-red-100 text-red-600 border border-red-300 shadow-md",
   };
   return (
-    <tr className="group hover:bg-slate-50 transition">
-      <td className="py-4 font-bold text-slate-600">{id}</td>
-      <td className="py-4 text-slate-500">{name}</td>
-      <td className="py-4 text-slate-500">{item}</td>
-      <td className="py-4">
-        <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusColors[status]}`}>
+    <tr className={`group transition cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-slate-50"}`}>
+      <td className={`px-6 py-4  font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}>{id}</td>
+      <td className={`px-6 py-4  ${isDark ? "text-slate-200" : "text-slate-500"} `}>{name}</td>
+      <td className={`px-6 py-4  ${isDark ? "text-slate-200" : "text-slate-500"} `}>{item}</td>
+      <td className="px-6 py-4">
+        <span className={`px-3 py-1 rounded-lg text-sm font-bold nunitoFont ${statusColors[status]}`}>
           {status}
         </span>
       </td>
-      <td className="py-4 text-slate-400 text-sm">{date}</td>
+      <td className={`px-6 py-4 text-sm ${isDark ? "text-slate-300" : "text-slate-400"}`}>{date}</td>
     </tr>
   );
 };

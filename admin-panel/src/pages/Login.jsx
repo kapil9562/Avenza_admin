@@ -66,7 +66,7 @@ export default function Login() {
     return (
         <div className={`${isDark ? "bg-linear-to-br from-[#020617] via-[#0F172A] to-slate-800" : "bg-linear-to-br from-[#CAD0FD] to-[#F9E1FE]"} flex items-center justify-center px-4 h-dvh w-full relative`}>
 
-            <div className={`${isDark ? "bg-[#0F172A90] shadow-lg shadow-[#0F172A] border-gray-800 border" : "bg-[#FFFFFF60]"} flex flex-row items-center rounded-4xl h-fit lg:gap-30 gap-5`}>
+            <div className={`${isDark ? "bg-[#0F172A90] shadow-lg shadow-[#0F172A] border-gray-800 border-2" : "bg-[#FFFFFF60]"} flex flex-row items-center rounded-4xl h-fit lg:gap-30 gap-5`}>
                 <div className={`md:min-h-[75dvh] min-h-[70dvh] md:max-w-md max-w-lg rounded-4xl md:rounded-r-none p-5 sm:p-8 flex flex-col items-center`}>
                     {/* Header */}
                     <div className="flex flex-col gap-2 items-center">
@@ -144,7 +144,7 @@ export default function Login() {
                     </div>
                 </div>
                 <div className={`hidden md:block min-w-xs relative min-h-[75dvh] rounded-4xl ${isDark ? "bg-[#a7366b]" : "bg-[#e47eae]"} `}>
-                    <img src="/loginImg.png" alt="img" className="h-90 object-contain absolute -left-10 bottom-0"/>
+                    <img src="/loginImg.webp" alt="img" loading="eager" decoding="sync" className="h-90 object-contain absolute -left-10 bottom-0"/>
                 </div>
             </div>
         </div>

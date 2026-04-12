@@ -125,3 +125,24 @@ input:-webkit-autofill {
 .nunitoFont {
   font-family: 'Nunito', sans-serif;
 }
+
+
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible,
+.recharts-surface:focus,
+.recharts-surface:focus-visible,
+.recharts-responsive-container:focus,
+.recharts-responsive-container:focus-visible,
+.recharts-layer:focus,
+.recharts-layer:focus-visible,
+.recharts-bar-rectangle:focus,
+.recharts-line-dot:focus,
+.recharts-rectangle:focus,
+.recharts-dot:focus,
+.recharts-curve:focus,
+.recharts-tooltip-wrapper:focus,
+.recharts-wrapper *:focus,
+.recharts-wrapper *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

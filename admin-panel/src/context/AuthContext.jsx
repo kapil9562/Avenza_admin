@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
+        console.log("started")
         const res = await getCurrentUser();
         setUser(res?.data?.user || null);
       } catch (error) {
