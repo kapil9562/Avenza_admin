@@ -8,7 +8,7 @@ import { IoMdSettings } from "react-icons/io";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 
-function SideMenu() {
+function SideMenu({ sideMenu, setSideMenu }) {
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function SideMenu() {
     setActiveTab(current);
   }, [location.pathname]);
 
-  /* ✅ STATIC COLOR SYSTEM (SAFE FOR TAILWIND) */
+  /*  STATIC COLOR SYSTEM (SAFE FOR TAILWIND) */
 
   const colorVariants = {
     Dashboard: {
@@ -81,76 +81,91 @@ function SideMenu() {
     tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
   };
 
+  console.log(sideMenu)
+
   return (
-    <div
-      className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
-      min-h-dvh border-r-2 transition-all duration-300 pb-20
+    <div>
+      <div className={`${isDark? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full z-100 ${sideMenu? "block" : "hidden"}`}></div>
+      <div
+        className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
+      min-h-dvh border-r-2 transition-all duration-300 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 ${sideMenu ? "translate-x-0" : "-translate-x-full"}
       ${open.status ? "w-60" : "w-16"} overflow-hidden`}
-    >
-
-      {/* TOP */}
-      <div className={`px-4 border-b-2 flex items-center justify-between min-h-15
-        ${isDark ? "border-slate-800" : "border-gray-300"}`}
       >
-        <img
-          src="/logo.png"
-          alt="logo"
-          className={`h-10 transition-opacity duration-300 ${open.status ? "opacity-100" : "opacity-0 w-0"}`}
-        />
 
-        <button
-          onClick={() => setOpen({
-            type: "manual",
-            status: !open.status
-          })}
-          className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer`}
+        {/* TOP */}
+        <div className={`px-4 border-b-2 flex items-center justify-between min-h-15
+        ${isDark ? "border-slate-800" : "border-gray-300"}`}
         >
-          <HiMiniBars3BottomLeft size={22} />
-        </button>
-      </div>
+          <img
+            src="/logo.png"
+            alt="logo"
+            className={`h-10 transition-opacity duration-300 ${open.status ? "opacity-100" : "opacity-0 w-0"}`}
+          />
 
-      {/* MENU */}
-      <div className="flex flex-col mt-4 gap-1 h-full"
-        onMouseEnter={() => {
-          if (!open.status) {
-            setOpen({ type: "hover", status: true });
-          }
-        }}
+          <button
+            onClick={() => setOpen({
+              type: "manual",
+              status: !open.status
+            })}
+            className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer hidden lg:block`}
+          >
+            <HiMiniBars3BottomLeft size={22} />
+          </button>
 
-        onMouseLeave={() => {
-          if (open.type === "hover") {
-            setOpen({ type: "", status: false });
-          }
-        }}>
+          <button
+            onClick={() => setSideMenu(false)}
+            className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer lg:hidden`}
+          >
+            <HiMiniBars3BottomLeft size={22} />
+          </button>
+        </div>
 
-        {tabs.map((item, idx) => {
+        {/* MENU */}
+        <div className="flex flex-col mt-4 gap-1 h-full"
+          onMouseEnter={() => {
+            if (!open.status) {
+              setOpen({ type: "hover", status: true });
+            }
+          }}
 
-          const variant = colorVariants[item.tab];
+          onMouseLeave={() => {
+            if (open.type === "hover") {
+              setOpen({ type: "", status: false });
+            }
+          }}>
 
-          return (
-            <div
-              key={idx}
-              onClick={() => handleTab(item.tab)}
-              className={`
+          {tabs.map((item, idx) => {
+
+            const variant = colorVariants[item.tab];
+
+            return (
+              <div
+                key={idx}
+                onClick={() => {
+                  handleTab(item.tab);
+                  setSideMenu(false);
+                }}
+                className={`
                 flex items-center gap-2 px-4 py-2 cursor-pointer
                 rounded-r-full font-semibold
                 ${isDark ? variant.dark : variant.light}
                 ${activetab === item.tab ?
-                  (isDark ? variant.activeDark : variant.activeLight) : "border border-transparent"}
+                    (isDark ? variant.activeDark : variant.activeLight) : "border border-transparent"}
               `}
-            >
-              <span className='text-xl'>{item.icon}</span>
-
-              <span
-                className={`whitespace-nowrap transition-all duration-200 text-lg
-                ${open.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
               >
-                {item.tab}
-              </span>
-            </div>
-          );
-        })}
+                <span className='text-xl'>{item.icon}</span>
 
+                <span
+                  className={`whitespace-nowrap transition-all duration-200 text-lg
+                ${open.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
+                >
+                  {item.tab}
+                </span>
+              </div>
+            );
+          })}
+
+        </div>
       </div>
     </div>
   );

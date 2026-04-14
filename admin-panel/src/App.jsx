@@ -5,11 +5,13 @@ import { Outlet } from 'react-router-dom'
 
 function App() {
 
+  const [sideMenu, setSideMenu] = useState(false);
+
   return (
-    <div className='flex flex-row w-full h-dvh'>
-      <SideMenu />
-      <main className='lg:w-full w-fit'>
-        <Header />
+    <div className='flex flex-row w-full h-dvh overflow-x-hidden'>
+      <SideMenu sideMenu={sideMenu} setSideMenu={setSideMenu}/>
+      <main className='w-full'>
+        <Header setSideMenu={setSideMenu}/>
         <Outlet />
       </main>
     </div>

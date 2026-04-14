@@ -129,7 +129,7 @@ function Products() {
     }
 
     return (
-        <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-fit lg:w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+        <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {show &&
                 <div className={`absolute top-0 left-0 h-full w-full z-99 shadow-lg border flex justify-center items-center ${isDark ? "bg-gray-900/50" : "bg-gray-50/30"}`}>
                     {products && products[index] && (
@@ -194,7 +194,7 @@ function Products() {
                 </button>
             </div>
             {/* Table Container */}
-            <div className={`border-2 rounded-lg overflow-hidden ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-300 shadow-xl"}`}>
+            <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-300 shadow-xl"}`}>
 
                 {/* TABLE */}
                 <div className="h-[70dvh] overflow-y-auto tableBody scroll-smooth">

@@ -7,8 +7,9 @@ import { BsMoonStarsFill } from "react-icons/bs";
 import { useAuth } from '../../context/AuthContext';
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { FiLogOut } from "react-icons/fi";
+import { HiMiniBars3BottomLeft } from 'react-icons/hi2';
 
-function Header() {
+function Header({ setSideMenu }) {
 
   const [input, setInput] = useState("");
   const [searchType, setSearchType] = useState("");
@@ -33,7 +34,13 @@ function Header() {
   };
 
   return (
-    <div className={`px-8 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between`}>
+    <div className={`lg:px-8 px-2 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between`}>
+      <button
+        onClick={() => setSideMenu(true)}
+        className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer lg:hidden`}
+      >
+        <HiMiniBars3BottomLeft size={22} />
+      </button>
       <div className='relative w-1/2 flex flex-row justify-center items-center'>
         <input
           value={input}
