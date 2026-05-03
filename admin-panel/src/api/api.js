@@ -13,8 +13,8 @@ export const adminApi = axios.create({
 export const getProducts = ({ skip = 0, category, limit, title, productId, productIds, inStock }) => {
   const params = new URLSearchParams();
 
-  params.append('skip', skip);       // always add skip
-  if (category) params.append('category', category); // only if defined
+  params.append('skip', skip);
+  if (category) params.append('category', category);
   if (limit) params.append('limit', limit);
   if (title) params.append('search', title);
   if (productId) params.append('productId', productId);
@@ -75,6 +75,10 @@ adminApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    if (originalRequest.url.includes("/auth/email-login")) {
+      return Promise.reject(error);
+    }
 
     if (
       error.response?.status === 401 &&

@@ -26,12 +26,13 @@ const options = {
 export const emailLogin = async (req, res) => {
     const { email, password } = req.body;
 
-    // Basic validation
     if (!email || !password) {
         return res.status(400).json({
             message: "Email and password are required !"
         });
     }
+
+    const INVALID_MSG = "Invalid email or password!";
 
     try {
 
@@ -39,11 +40,11 @@ export const emailLogin = async (req, res) => {
 
         if (!user) {
             return res.status(404).json({
-                message: "Invalid credentials!",
+                message: INVALID_MSG,
             });
         } else if (!user.isActive) {
             return res.status(403).json({
-                message: "This account has been temporarily frozen.",
+                message: "Account temporarily disabled.",
             });
         } else if (!user.passwordHash && user.googleLogin) {
             return res.status(403).json({
@@ -53,7 +54,7 @@ export const emailLogin = async (req, res) => {
             const isValid = await user.isPasswordCorrect(password);
 
             if (!isValid) {
-                return res.status(401).json({ message: "Invalid credentials !" });
+                return res.status(401).json({ message: INVALID_MSG });
             } else if (user.role !== "admin") {
                 return res.status(403).json({
                     message: "Access denied",

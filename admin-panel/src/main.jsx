@@ -8,7 +8,7 @@ import { Dashboard, Products, Orders, Settings, Analytics, Customers } from './c
 import AddProduct from './helpers/AddProduct.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
-import ProtectedRoute from './helpers/ProtectedRoute.jsx';
+import ProtectedRoute from './helpers/ProtectedRoute.jsx'
 import { ToastProvider } from './context/ToastContext.jsx';
 
 createRoot(document.getElementById('root')).render(
@@ -18,21 +18,27 @@ createRoot(document.getElementById('root')).render(
         <ProductsProvider>
           <ToastProvider>
             <Routes>
-              <Route path='/login' element={<Login />} />
-              <Route element={
-                <ProtectedRoute>
-                  <App />
-                </ProtectedRoute>
-              }>
-                <Route index element={<Dashboard />} />
-                <Route path='/products' element={<Products />} />
-                <Route path='/orders' element={<Orders />} />
-                <Route path='/settings' element={<Settings />} />
-                <Route path='/analytics' element={<Analytics />} />
-                <Route path='/customers' element={<Customers />} />
-                <Route path='/addproduct' element={<AddProduct />} />
-                <Route path="/edit-product/:id" element={<AddProduct />} />
+
+              {/* Public Route */}
+              <Route path="/login" element={<Login />} />
+
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+
+                {/* Layout Route */}
+                <Route element={<App />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="products" element={<Products />} />
+                  <Route path="orders" element={<Orders />} />
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="analytics" element={<Analytics />} />
+                  <Route path="customers" element={<Customers />} />
+                  <Route path="addproduct" element={<AddProduct />} />
+                  <Route path="edit-product/:id" element={<AddProduct />} />
+                </Route>
+
               </Route>
+
             </Routes>
           </ToastProvider>
         </ProductsProvider>

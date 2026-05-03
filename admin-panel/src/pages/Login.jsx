@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdEmail } from "react-icons/md";
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { emailLogin } from "../api/api";
 import { IoIosLock } from "react-icons/io";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -10,34 +10,62 @@ import Lottie from "lottie-react";
 import loader from "../assets/loader2.json";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "../context/ToastContext";
+import { IoWarning } from "react-icons/io5";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("");
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+        other: "",
+    });
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const { isDark } = useTheme();
+    const emailRef = useRef(null);
+    const passRef = useRef(null);
 
-    const { login } = useAuth();
+    const { login, isAuthenticated, loading: authloading } = useAuth();
+
+    useEffect(() => {
+        if (authloading) return;
+
+        if (isAuthenticated) {
+            navigate('/');
+        }
+
+    }, [isAuthenticated])
 
     const navigate = useNavigate();
 
     {/* Email login */ }
     const handleEmailLogin = async () => {
-        // Clear previous error
-        setError("");
 
-        if (!emailRegex.test(email)) {
-            setError("Please enter a valid email address !");
-            return;
+        let newErrors = { email: "", password: "", other: "" };
+
+        if (!email && !password) {
+            newErrors.email = "Email cannot be blank";
+            newErrors.password = "Password cannot be blank";
+            emailRef.current.focus();
+
+        } else if (!email) {
+            newErrors.email = "Email cannot be blank";
+            emailRef.current.focus();
+        }
+        else if (!emailRegex.test(email)) {
+            newErrors.email = "Invalid email";
+            emailRef.current.focus();
+        }
+        else if (!password) {
+            newErrors.password = "Password cannot be blank";
+            passRef.current.focus();
         }
 
-        if (!password) {
-            setError("Password is required !");
-            return;
-        }
+        setErrors(newErrors);
+
+        if (newErrors.email || newErrors.password) return;
 
         try {
             setLoading(true);
@@ -53,15 +81,30 @@ export default function Login() {
             }
 
         } catch (err) {
+            console.log(err?.response)
             setLoading(false);
             const backendMessage = err?.response?.data?.message;
             const error =
                 typeof backendMessage === "string"
                     ? backendMessage
                     : err?.message || "Something went wrong";
-            setError(error);
+            setErrors((prev) => ({
+                ...prev,
+                other: error
+            }));
+            setPassword("");
         }
     };
+
+    useEffect(() => {
+        if (!errors.email && !errors.password) return;
+
+        setErrors((prev) => ({
+            ...prev,
+            email: email ? "" : prev.email,
+            password: password ? "" : prev.password,
+        }));
+    }, [email, password]);
 
     return (
         <div className={`${isDark ? "bg-linear-to-br from-[#020617] via-[#0F172A] to-slate-800" : "bg-linear-to-br from-[#CAD0FD] to-[#F9E1FE]"} flex items-center justify-center px-4 h-dvh w-full relative`}>
@@ -84,46 +127,67 @@ export default function Login() {
                     <div className={`${isDark ? "bg-gray-800" : "bg-gray-100"} w-full h-px mt-5 sm:mt-4`} />
 
                     {/* Email login */}
-                    <div className="mt-10 space-y-4 w-full">
-                        <div className={`${isDark ? "bg-[#0F172A] border-gray-800 shadow-[#0F172A] border-2" : "bg-[#F9FAFB] border border-[#E5E7EB] shadow-gray-200"} flex flex-row shadow-sm rounded-xl px-3 items-center gap-2`}>
-                            <MdEmail className="text-[#8b90c7] text-2xl" />
-                            <input
-                                type="email"
-                                value={email}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        handleEmailLogin();
-                                    }
-                                }}
-                                onChange={(e) => { setEmail(e.target.value) }}
-                                placeholder="Email Address"
-                                className={`${isDark ? "text-gray-100" : "text-[#374151]"} w-full h-full py-3 text-[#374151] font-semibold focus:outline-none placeholder:font-semibold placeholder:text-[#9CA3AF]`}
-                            />
+                    <div className="mt-8 space-y-4 w-full">
+                        <div>
+                            <div className={`${isDark ? "bg-[#0F172A] border-gray-800 shadow-[#0F172A] border-2" : "bg-[#F9FAFB] border border-[#E5E7EB] shadow-gray-200"} flex flex-row shadow-sm rounded-xl px-3 items-center gap-2  ${errors.email && "border border-red-600"}`}>
+                                <MdEmail className="text-[#8b90c7] text-2xl" />
+                                <input
+                                    ref={emailRef}
+                                    type="email"
+                                    value={email}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            handleEmailLogin();
+                                        }
+                                    }}
+                                    onChange={(e) => { setEmail(e.target.value) }}
+                                    placeholder="Email Address"
+                                    className={`${isDark ? "text-gray-100" : "text-[#374151]"} w-full h-full py-3 text-[#374151] font-semibold focus:outline-none placeholder:font-semibold placeholder:text-[#9CA3AF]`}
+                                />
+                            </div>
+                            {errors.email && (
+                                <div className="flex flex-row gap-1 items-center text-red-600 text-sm">
+                                    <IoWarning />
+                                    <p>{errors.email}</p>
+                                </div>
+                            )}
                         </div>
 
-                        <div className={`${isDark ? "bg-[#0F172A] border-gray-800 shadow-[#0F172A] border-2" : "bg-[#F9FAFB] border border-[#E5E7EB] shadow-gray-200"} flex flex-row shadow-sm rounded-xl p-3 items-center gap-2`}>
-                            <IoIosLock className="text-[#8b90c7] text-xl" />
-                            <input
-                                value={password}
-                                onChange={(e) => { setPassword(e.target.value) }}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        handleEmailLogin();
-                                    }
-                                }}
-                                type={showPass ? "text" : "password"}
-                                placeholder="Password"
-                                maxLength={20}
-                                className={`${isDark ? "text-gray-100" : "text-[#374151]"} w-full font-semibold focus:outline-none placeholder:font-semibold placeholder:text-[#9CA3AF]`}
-                            />
-                            <button
-                                onClick={() => setShowPass(!showPass)}
-                                className="cursor-pointer">
-                                {showPass ? <FaEye className="text-[#8b90c7] text-xl" /> : <FaEyeSlash className="text-[#8b90c7] text-xl" />}
-                            </button>
+                        <div>
+                            <div className={`${isDark ? "bg-[#0F172A] border-gray-800 shadow-[#0F172A] border-2" : "bg-[#F9FAFB] border border-[#E5E7EB] shadow-gray-200"} flex flex-row shadow-sm rounded-xl p-3 items-center gap-2 ${errors.password && "border border-red-500"}`}>
+                                <IoIosLock className="text-[#8b90c7] text-xl" />
+                                <input
+                                    ref={passRef}
+                                    value={password}
+                                    onChange={(e) => { setPassword(e.target.value) }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            handleEmailLogin();
+                                        }
+                                    }}
+                                    type={showPass ? "text" : "password"}
+                                    placeholder="Password"
+                                    maxLength={20}
+                                    className={`${isDark ? "text-gray-100" : "text-[#374151]"} w-full font-semibold focus:outline-none placeholder:font-semibold placeholder:text-[#9CA3AF]`}
+                                />
+                                <button
+                                    onClick={() => setShowPass(!showPass)}
+                                    className="cursor-pointer">
+                                    {showPass ? <FaEye className="text-[#8b90c7] text-xl" /> : <FaEyeSlash className="text-[#8b90c7] text-xl" />}
+                                </button>
+                            </div>
+                            {errors.password && (
+                                <div className="flex flex-row gap-1 items-center text-red-600 text-sm">
+                                    <IoWarning />
+                                    <p>{errors.password}</p>
+                                </div>
+                            )}
                         </div>
-                        {error && (
-                            <p className="text-red-500 font-semibold">{error}</p>
+                        {errors.other && (
+                            <div className="flex flex-row gap-1 items-center text-red-600 text-sm">
+                                <IoWarning />
+                                <p>{errors.other}</p>
+                            </div>
                         )}
 
                         <button
@@ -143,8 +207,8 @@ export default function Login() {
                         </button>
                     </div>
                 </div>
-                <div className={`hidden md:block min-w-xs relative min-h-[75dvh] rounded-4xl ${isDark ? "bg-[#a7366b]" : "bg-[#e47eae]"} `}>
-                    <img src="/loginImg.webp" alt="img" loading="eager" decoding="sync" className="h-90 object-contain absolute -left-10 bottom-0"/>
+                <div className={`hidden md:block min-w-xs relative h-[75dvh] rounded-4xl ${isDark ? "bg-[#a7366b]" : "bg-[#e47eae]"} `}>
+                    <img src="/loginImg.webp" alt="img" loading="eager" decoding="sync" className="h-90 object-contain absolute -left-10 bottom-0" />
                 </div>
             </div>
         </div>
