@@ -11,6 +11,7 @@ import loader from "../assets/loader2.json";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "../context/ToastContext";
 import { IoWarning } from "react-icons/io5";
+import { BsMoonStarsFill } from "react-icons/bs";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ export default function Login() {
         other: "",
     });
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    const { isDark } = useTheme();
+    const { isDark, toggleTheme } = useTheme();
     const emailRef = useRef(null);
     const passRef = useRef(null);
 
@@ -109,7 +110,7 @@ export default function Login() {
     return (
         <div className={`${isDark ? "bg-linear-to-br from-[#020617] via-[#0F172A] to-slate-800" : "bg-linear-to-br from-[#CAD0FD] to-[#F9E1FE]"} flex items-center justify-center px-4 h-dvh w-full relative`}>
 
-            <div className={`${isDark ? "bg-[#0F172A90] shadow-lg shadow-[#0F172A] border-gray-800 border-2" : "bg-[#FFFFFF60]"} flex flex-row items-center rounded-4xl h-fit lg:gap-30 gap-5`}>
+            <div className={`${isDark ? "bg-[#0F172A90] shadow-lg shadow-[#0F172A] border-gray-800 border-2" : "bg-[#FFFFFF60]"} flex flex-row items-center rounded-4xl h-fit lg:gap-30 gap-5 relative`}>
                 <div className={`md:min-h-[75dvh] min-h-[70dvh] md:max-w-md max-w-lg rounded-4xl md:rounded-r-none p-5 sm:p-8 flex flex-col items-center`}>
                     {/* Header */}
                     <div className="flex flex-col gap-2 items-center">
@@ -210,6 +211,11 @@ export default function Login() {
                 <div className={`hidden md:block min-w-xs relative h-[75dvh] rounded-4xl ${isDark ? "bg-[#a7366b]" : "bg-[#e47eae]"} `}>
                     <img src="/loginImg.webp" alt="img" loading="eager" decoding="sync" className="h-90 object-contain absolute -left-10 bottom-0" />
                 </div>
+
+                <button onClick={toggleTheme} className='flex justify-center items-center cursor-pointer absolute top-5 right-5'>
+                    {isDark ? <img src="https://images.emojiterra.com/google/noto-emoji/unicode-16.0/color/svg/2600.svg" alt="" className='min-h-6 min-w-6' /> : <BsMoonStarsFill className='text-yellow-400 text-xl' />}
+                </button>
+
             </div>
         </div>
     );
