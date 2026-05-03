@@ -18,6 +18,14 @@
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Style+Script&display=swap" rel="stylesheet">
 
+  <!-- {preloads} -->
+   <link rel="preload" as="image" href="/avenza.png" />
+   <link rel="preload" as="image" href="/avenza2.png" />
+   <link rel="preload" as="image" href="/loginImg.webp" />
+   <link rel="preload" as="image" href="/logo.png" />
+   <link rel="preload" as="image" href="/user.png" />
+   <link rel="preload" as="image" href="/userLight.png" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avenza-adminPanel</title>
 </head>
@@ -25,6 +33,23 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <script>
+    window.addEventListener('load', () => {
+      const preloaded = [
+        "/avenza.png",
+        "/avenza2.png",
+        "/loginImg.webp",
+        "/logo.png",
+        "/user.png",
+        "/userLight.png",
+      ];
+
+      preloaded.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    });
+  </script>
 </body>
 
 </html>
