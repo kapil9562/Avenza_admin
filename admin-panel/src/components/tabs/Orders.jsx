@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { IoIosArrowDown, IoIosArrowForward, IoIosSearch } from 'react-icons/io'
+import { IoIosArrowDown, IoIosSearch } from 'react-icons/io'
 import { useTheme } from '../../context/ThemeContext'
 import { HiPlus } from "react-icons/hi";
-import { FaPencil } from "react-icons/fa6";
-import { ImBin } from "react-icons/im";
-import { useProducts } from '../../context/ProductsContext';
-import { getAllCategory, getOrders, getProducts } from '../../api/api';
+import { getOrders } from '../../api/api';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useMemo } from 'react';
