@@ -45,10 +45,21 @@ export const updateProduct = (productId, data) =>
     }
   });
 
+// {order apis}
+export const getOrders = ({skip = 0, status, paymentMethod, search}) => {
+  const params = new URLSearchParams();
+
+  params.append('skip', skip);
+  if (status) params.append('status', status);
+  if (paymentMethod) params.append('paymentMethod', paymentMethod);
+  if (search) params.append('search', search);
+
+  return adminApi.get(`/get-orders?${params.toString()}`);
+}
 
 // {auth apis} 
 
-export const emailLogin = ({email, password}) => adminApi.post('/auth/email-login', {email, password});
+export const emailLogin = ({ email, password }) => adminApi.post('/auth/email-login', { email, password });
 
 export const refreshAccessToken = () => adminApi.post('/auth/refresh');
 

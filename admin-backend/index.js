@@ -7,6 +7,7 @@ import cors from "cors";
 import { productRouter } from './src/routes/product.router.js';
 import { authRouter } from "./src/routes/auth.router.js";
 import cookieParser from "cookie-parser";
+import { orderRouter } from "./src/routes/order.router.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,6 +47,7 @@ app.get("/ping", (req, res) => {
 
 app.use('/api', productRouter);
 app.use('/api', authRouter);
+app.use('/api', orderRouter);
 
 // Connect DB then start server
 connectDB()

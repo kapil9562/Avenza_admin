@@ -81,8 +81,6 @@ function SideMenu({ sideMenu, setSideMenu }) {
     tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
   };
 
-  console.log(sideMenu)
-
   return (
     <div>
       <div className={`${isDark? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full z-100 ${sideMenu? "block" : "hidden"}`}></div>

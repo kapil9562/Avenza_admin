@@ -61,7 +61,8 @@ function Products() {
                 const res = await getAllCategory();
                 setCategories(res?.data);
             } catch (error) {
-                setError(error);
+                const msg = err?.response?.data?.message || err?.message || "Something went wrong !"
+                setError(msg);
             }
         }
         getCategories();
@@ -94,8 +95,8 @@ function Products() {
                 }
                 
             } catch (err) {
-                setError(err?.response?.data?.message || err?.message || "Something went wrong !")
-                console.error(err);
+                const msg = err?.response?.data?.message || err?.message || "Something went wrong !"
+                setError(msg);
             } finally {
                 setLoading(false);
                 setIsDeleted(false);
@@ -103,7 +104,7 @@ function Products() {
         };
 
         fetchProducts();
-    }, [cacheKey, cacheKey, category, page, inStock, isDeleted]);
+    }, [cacheKey, category, page, inStock, isDeleted]);
 
     const statusColors = {
         InStock: isDark
@@ -307,11 +308,11 @@ function Products() {
                 </div>
                 <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
                     <div>
-                        <span className='font-semibold text-gray-400'>Showing {skip + 1} to {(skip + 30) < total ? skip + 30 : total} of {total} entries</span>
+                        <span className='font-semibold text-gray-400'>Showing {total>0 ? (skip + 1) : "0"} to {(skip + 30) < total ? skip + 30 : total} of {total} entries</span>
                     </div>
                     <div className='flex flex-row gap-4 items-center w-fit'>
 
-                        <span className='font-semibold text-gray-400'>Page {page} of {totalPages}</span>
+                        <span className='font-semibold text-gray-400'>Page {totalPages>0 ? page : "0"} of {totalPages}</span>
 
                         {showPagination && (
                             <div className="flex justify-center items-center">

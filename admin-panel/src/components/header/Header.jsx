@@ -14,7 +14,7 @@ function Header({ setSideMenu }) {
   const [input, setInput] = useState("");
   const [searchType, setSearchType] = useState("");
   const { isDark, toggleTheme } = useTheme();
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(false);
 
   const { user, logout } = useAuth();
 
@@ -75,7 +75,7 @@ function Header({ setSideMenu }) {
         <div className={`relative group`} onClick={handleDropDown} >
           <div className={`flex flex-row gap-2 justify-center items-center cursor-pointer py-2 ${isActive && "shadow-[inset_0_-2px_0_0_#ff1774]"} group-hover:shadow-[inset_0_-2px_0_0_#ff1774]`}>
             <div>
-              <img src={user?.avatar || (isDark ? "/user.png" : "/userLight.png")} alt="pfp" className='h-10 rounded-full' />
+              <img src={normalizeGooglePhoto(user?.avatar) || (isDark ? "/user.png" : "/userLight.png")} alt="pfp" className='h-10 rounded-full' />
             </div>
             <div className='flex flex-col'>
               <h1 className={`font-semibold text-sm ${isDark ? "text-gray-300" : "text-gray-800"}`}>Hi, {user?.name?.trim().split(" ")[0]}</h1>
@@ -89,34 +89,19 @@ function Header({ setSideMenu }) {
           {/* {dropDown} */}
           <div className={`transition-all duration-300 origin-top-right will-change-transform transform-gpu ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-50 pointer-events-none"} ${isDark ? "bg-[#0F172A] shadow-[#0F172A90] shadow-md border-gray-700" : "bg-white border-gray-200 shadow-md"} absolute top-full flex flex-col justify-center text-lg font-semibold border-2 lg:group-hover:opacity-100 lg:group-hover:scale-100 scale-50 lg:pointer-events-none lg:group-hover:pointer-events-auto rounded-lg overflow-hidden z-90 right-0`}>
             <button className={`${isDark ? "hover:bg-[#2e3d5f]" : "hover:bg-pink-100"} flex flex-row items-center whitespace-nowrap gap-2 px-4 py-2 cursor-pointer`}>
-              {(user?.avatar) ? (
-                <img
-                  src={normalizeGooglePhoto(user?.avatar)}
-                  alt="pfp"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                  className='md:max-h-12 md:max-w-12 max-h-10 max-w-10 rounded-full object-cover' />
-              ) : (
-                <div className={`flex flex-col justify-center items-center text-sm md:text-lg group-hover:text-pink-500 relative group cursor-pointer ${isDark ? "text-gray-300" : "text-[#373951]"}`}>
-                  <img src={`${isDark ? '/assets/user.png' : '/assets/userLight.png'}`} alt="pfp" className='h-8 w-8 rounded-full' />
-                </div>
-              )}
+              <img
+                src={normalizeGooglePhoto(user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                alt="pfp"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                className='md:max-h-12 md:max-w-12 max-h-10 max-w-10 rounded-full object-cover'
+              />
               <span className={`text-start ${isDark ? "text-gray-200" : "text-gray-700"}`}>
                 <p className=''>Hi, {(user?.name) ? user?.name.split(" ")[0] : "User"}</p>
                 <p className='text-sm font-medium'>{user?.email}</p>
               </span>
             </button>
             <div className={`${isDark ? "border-gray-700" : "border-gray-200"} w-full border-t-2`}></div>
-            {/* <button className={`${isDark ? "text-gray-200 hover:bg-[#2e3d5f] active:bg-[#2e3d5f]" : "hover:bg-pink-100 active:bg-pink-100 text-gray-700"} flex flex-row items-center whitespace-nowrap gap-2 px-4 py-2 cursor-pointer text-green-500`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsActive(false);
-                navigate('/my-account/my-orders');
-              }}>
-              <LiaShoppingBagSolid className='text-xl' />
-              <span>My Orders</span>
-            </button>
-            <div className={`${isDark ? "border-gray-700" : "border-gray-200"} w-full border-t-2`}></div> */}
             <button
               className={`${isDark ? "hover:bg-[#2e3d5f]" : "hover:bg-pink-100"} flex flex-row items-center whitespace-nowrap gap-2 text-red-500 px-4 py-2 cursor-pointer`}
               onClick={(e) => {
