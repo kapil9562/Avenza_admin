@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
 
-    orderId : {
+    orderId: {
         type: String,
         required: true,
         unique: true,
@@ -35,9 +35,13 @@ const orderSchema = new mongoose.Schema({
     orderItems: [orderItemSchema],
 
     shippingAddress: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
-        required: true
+        addressId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Address",
+            required: true
+        },
+
+        address: String
     },
 
     paymentMethod: {
@@ -63,7 +67,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
 
-    deliveryCharge:{
+    deliveryCharge: {
         type: Number,
         default: 0
     },

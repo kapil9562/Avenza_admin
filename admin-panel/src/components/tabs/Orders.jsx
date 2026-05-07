@@ -11,6 +11,7 @@ import { useOrders } from '../../context/OrderContext';
 import { GoEye } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaClipboardList } from "react-icons/fa6";
+import OrderDetail from '../../helpers/OrderDetail';
 
 function Orders() {
   const { isDark } = useTheme();
@@ -22,6 +23,7 @@ function Orders() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
   const [payment, setPayment] = useState("All");
+  const [showDetail, setShowDetail] = useState([]);
 
   const { cache, setOrders, setCache, total, setTotal, stats, setStats, paymentMethods, setPaymentMethods } = useOrders();
   const cacheKey = `${status}-${page}-${payment}-${search}`;
@@ -135,7 +137,7 @@ function Orders() {
     return `${base}=s200`;
   };
 
-  const formateDate = (date) => {
+  const formatDate = (date) => {
     const d = new Date(date);
 
     const day = d.getDate();
@@ -159,7 +161,7 @@ function Orders() {
   };
 
   useEffect(() => {
-    if(!input) return;
+    if (!input) return;
     const timer = setTimeout(() => {
       setSearch(input);
       setPage(1);
@@ -169,8 +171,16 @@ function Orders() {
     return () => clearTimeout(timer);
   }, [input]);
 
+  const handleToggle = (id) => {
+    setShowDetail((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
   return (
-    <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <section className={`p-4 relative space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       <div className='grid grid-cols-6 gap-4 w-full'>
         <StatCard icon={<FaClipboardList />} label="Total Orders" value={stats?.total} color={`${isDark ? "bg-blue-900/50 text-blue-600" : "bg-blue-100 text-blue-500"}`} className={`${isDark ? "bg-blue-900/40 text-blue-400 border-blue-700 border" : "bg-linear-to-b from-white via-white to-blue-50 border-b-blue-200"} border-b-4`} isDark={isDark}
         />
@@ -307,90 +317,116 @@ function Orders() {
                 </tr>
               ) : (
                 orders?.map((order, idx) => (
-                  <tr key={idx} className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
+                  <React.Fragment key={order?._id || idx}>
+                    <tr className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"} `}>
 
-                    {/* Order ID */}
-                    <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                      #{order.orderId}
-                    </td>
+                      {/* Order ID */}
+                      <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                        #{order.orderId}
+                      </td>
 
-                    {/* Customer */}
-                    <td className="px-4 py-1">
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
-                          alt="thumbnail"
-                          className={`min-w-10 min-h-10 max-w-10 max-h-10 object-contain rounded-full ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
-                        />
-                        <div className='flex flex-col'>
-                          <span>
-                            {order?.userId?.name}
-                          </span>
-                          <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm`}>
-                            {order?.userId?.email}
-                          </span>
+                      {/* Customer */}
+                      <td className="px-4 py-1">
+                        <div className="flex items-center gap-4">
+                          <img
+                            src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                            alt="thumbnail"
+                            className={`min-w-10 min-h-10 max-w-10 max-h-10 object-contain rounded-full ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
+                          />
+                          <div className='flex flex-col'>
+                            <span>
+                              {order?.userId?.name}
+                            </span>
+                            <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm`}>
+                              {order?.userId?.email}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* date & time */}
-                    <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                      <div className='flex flex-col'>
-                        <span className={`${isDark ? "text-gray-300" : "text-gray-800"}`}>{formateDate(order?.createdAt)}</span>
-                        <span className='text-sm'>{formatTime(order?.createdAt)}</span>
-                      </div>
-                    </td>
+                      {/* date & time */}
+                      <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                        <div className='flex flex-col'>
+                          <span className={`${isDark ? "text-gray-300" : "text-gray-800"}`}>{formatDate(order?.createdAt)}</span>
+                          <span className='text-sm'>{formatTime(order?.createdAt)}</span>
+                        </div>
+                      </td>
 
-                    <td className="px-4 py-1">
-                      <div className='flex flex-row gap-1 items-center'>
-                        <img
-                          src={order?.orderItems[0]?.image}
-                          alt="img"
-                          className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} h-8 w-8 object-contain rounded`}
-                        />
-                        {order?.orderItems?.length > 1 && (
-                          <span
-                            className={`ml-1 text-sm font-medium px-2 py-0.5 rounded-full ${isDark
-                              ? "bg-gray-700 text-gray-300"
-                              : "bg-gray-200 text-gray-600"
+                      <td className="px-4 py-1">
+                        <div className='flex flex-row gap-1 items-center'>
+                          <img
+                            src={order?.orderItems[0]?.image}
+                            alt="img"
+                            className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} h-8 w-8 object-contain rounded`}
+                          />
+                          {order?.orderItems?.length > 1 && (
+                            <span
+                              className={`ml-1 text-sm font-medium px-2 py-0.5 rounded-full ${isDark
+                                ? "bg-gray-700 text-gray-300"
+                                : "bg-gray-200 text-gray-600"
+                                }`}
+                            >
+                              +{order.orderItems.length - 1}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-1">
+                        ₹{order?.totalAmount?.toLocaleString("en-IN")}
+                      </td>
+
+                      <td className="px-4 py-1">
+                        <button className={`px-4 text-sm py-1 rounded-full whitespace-nowrap ${getPaymentBadge(order?.paymentMethod)}`}>
+                          {order?.paymentMethod}
+                        </button>
+                      </td>
+
+                      <td className="px-4 py-1">
+                        <button className={`px-4 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order.orderStatus.replace(/\s/g, "")]}`}>
+                          {order?.orderStatus}
+                        </button>
+                      </td>
+
+                      <td className="px-4 py-1">
+                        <div className="flex gap-2">
+                          <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                            onClick={() => handleToggle(order._id)}>
+                            <GoEye />
+                          </button>
+                          <button
+                            className={`bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800 text-gray-400" : "bg-slate-100 text-gray-800"}`}
+                          >
+                            <PiDotsThreeVerticalBold />
+                          </button>
+                        </div>
+                      </td>
+
+                    </tr>
+                      <tr>
+                        <td colSpan={8} className="p-0 border-0">
+                          <div
+                            className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${showDetail.includes(order._id)
+                                ? "grid-rows-[1fr]"
+                                : "grid-rows-[0fr]"
                               }`}
                           >
-                            +{order.orderItems.length - 1}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-1">
-                      ₹{order?.totalAmount?.toLocaleString("en-IN")}
-                    </td>
-
-                    <td className="px-4 py-1">
-                      <button className={`px-4 text-sm py-1 rounded-full whitespace-nowrap ${getPaymentBadge(order?.paymentMethod)}`}>
-                        {order?.paymentMethod}
-                      </button>
-                    </td>
-
-                    <td className="px-4 py-1">
-                      <button className={`px-4 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order.orderStatus.replace(/\s/g, "")]}`}>
-                        {order?.orderStatus}
-                      </button>
-                    </td>
-
-                    <td className="px-4 py-1">
-                      <div className="flex gap-2">
-                        <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}>
-                          <GoEye />
-                        </button>
-                        <button
-                          className={`bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800 text-gray-400" : "bg-slate-100 text-gray-800"}`}
-                        >
-                          <PiDotsThreeVerticalBold />
-                        </button>
-                      </div>
-                    </td>
-
-                  </tr>
+                            <div className="min-h-0 overflow-hidden">
+                              <OrderDetail
+                                order={order}
+                                formatPfpUrl={normalizeGooglePhoto}
+                                getPaymentBadge={getPaymentBadge}
+                                statusColors={statusColors}
+                                formatTime={formatTime}
+                                formatDate={formatDate}
+                                setShowDetail={setShowDetail}
+                                idx={order._id}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                  </React.Fragment>
                 ))
               )}
             </tbody>
@@ -398,11 +434,11 @@ function Orders() {
         </div>
         <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
           <div>
-            <span className='font-semibold text-gray-400'>Showing {total>0 ? (skip + 1) : "0"} to {(skip + 10) < total ? skip + 10 : total} of {total} entries</span>
+            <span className='font-semibold text-gray-400'>Showing {total > 0 ? (skip + 1) : "0"} to {(skip + 10) < total ? skip + 10 : total} of {total} entries</span>
           </div>
           <div className='flex flex-row gap-4 items-center w-fit'>
 
-            <span className='font-semibold text-gray-400'>Page {totalPages>0 ? page : "0"} of {totalPages}</span>
+            <span className='font-semibold text-gray-400'>Page {totalPages > 0 ? page : "0"} of {totalPages}</span>
 
             {showPagination && (
               <div className="flex justify-center items-center">
