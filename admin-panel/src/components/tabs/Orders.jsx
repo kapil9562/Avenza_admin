@@ -8,7 +8,7 @@ import adminLoader from '../../assets/adminLoader.json'
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrders } from '../../context/OrderContext';
-import { GoEye } from "react-icons/go";
+import { GoDotFill, GoEye } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaClipboardList } from "react-icons/fa6";
 import OrderDetail from '../../helpers/OrderDetail';
@@ -383,9 +383,14 @@ function Orders() {
                       </td>
 
                       <td className="px-4 py-1">
-                        <button className={`px-4 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order.orderStatus.replace(/\s/g, "")]}`}>
-                          {order?.orderStatus}
-                        </button>
+                        <div className={`flex flex-row items-center gap-1 px-4 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order.orderStatus.replace(/\s/g, "")]}`}>
+                          <span>
+                            <GoDotFill size={10} />
+                          </span>
+                          <span>
+                            {order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1)}
+                          </span>
+                        </div>
                       </td>
 
                       <td className="px-4 py-1">
@@ -403,29 +408,29 @@ function Orders() {
                       </td>
 
                     </tr>
-                      <tr>
-                        <td colSpan={8} className="p-0 border-0">
-                          <div
-                            className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${showDetail.includes(order._id)
-                                ? "grid-rows-[1fr]"
-                                : "grid-rows-[0fr]"
-                              }`}
-                          >
-                            <div className="min-h-0 overflow-hidden">
-                              <OrderDetail
-                                order={order}
-                                formatPfpUrl={normalizeGooglePhoto}
-                                getPaymentBadge={getPaymentBadge}
-                                statusColors={statusColors}
-                                formatTime={formatTime}
-                                formatDate={formatDate}
-                                setShowDetail={setShowDetail}
-                                idx={order._id}
-                              />
-                            </div>
+                    <tr>
+                      <td colSpan={8} className="p-0 border-0">
+                        <div
+                          className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${showDetail.includes(order._id)
+                            ? "grid-rows-[1fr]"
+                            : "grid-rows-[0fr]"
+                            }`}
+                        >
+                          <div className="min-h-0 overflow-hidden">
+                            <OrderDetail
+                              order={order}
+                              formatPfpUrl={normalizeGooglePhoto}
+                              getPaymentBadge={getPaymentBadge}
+                              statusColors={statusColors}
+                              formatTime={formatTime}
+                              formatDate={formatDate}
+                              setShowDetail={setShowDetail}
+                              idx={order._id}
+                            />
                           </div>
-                        </td>
-                      </tr>
+                        </div>
+                      </td>
+                    </tr>
                   </React.Fragment>
                 ))
               )}
