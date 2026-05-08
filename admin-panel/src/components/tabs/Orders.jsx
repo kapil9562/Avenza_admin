@@ -330,6 +330,7 @@ function Orders() {
                         <div className="flex items-center gap-4">
                           <img
                             src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                            referrerPolicy="no-referrer"
                             alt="thumbnail"
                             className={`min-w-10 min-h-10 max-w-10 max-h-10 object-contain rounded-full ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
                           />

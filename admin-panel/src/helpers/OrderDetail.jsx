@@ -34,7 +34,11 @@ function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, forma
           <div className={`${isDark ? "border-gray-700 bg-[#0F1729]" : "bg-white border-gray-200"} py-2 px-4 rounded-md space-y-6 pb-20 w-1/3 border`}>
             <h1>Customer Information</h1>
             <div className='flex flex-row gap-2 items-center'>
-              <img src={formatPfpUrl(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")} alt="img" className='min-w-10 min-h-10 max-w-10 max-h-10 rounded-full' />
+              <img src={formatPfpUrl(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                referrerPolicy="no-referrer"
+                alt="img"
+                className='min-w-10 min-h-10 max-w-10 max-h-10 rounded-full'
+              />
               <div className='flex flex-col'>
                 <span>
                   {order?.userId?.name}
@@ -158,7 +162,7 @@ function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, forma
                   <span className={`text-sm font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`}>Order Status</span>
                   <div className={`px-2 text-xs flex items-center gap-1 rounded-full whitespace-nowrap ${statusColors[order.orderStatus.replace(/\s/g, "")]}`}>
                     <span>
-                      <GoDotFill size={10}/>
+                      <GoDotFill size={10} />
                     </span>
                     <span>
                       {order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1)}
