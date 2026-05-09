@@ -1,9 +1,29 @@
 import express from "express"
-import { getOrders } from "../controllers/order.controller.js";
+import { getOrders, updateOrder } from "../controllers/order.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
+import rateLimit from "express-rate-limit"
+import slowDown from "express-slow-down";
 
 const orderRouter = express.Router();
 
-orderRouter.get("/get-orders", verifyJWT, getOrders);
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: "Too many login attempts. Please try again later."
+    },
+});
+
+const speedLimiter = slowDown({
+    windowMs: 15 * 60 * 1000,
+    delayAfter: 10,
+    delayMs: (hits) => (hits - 3) * 1000,
+});
+
+orderRouter.get("/get-orders", speedLimiter, verifyJWT, getOrders);
+orderRouter.patch("/update-order/status/:orderId", speedLimiter, limiter, verifyJWT, updateOrder);
 
 export {orderRouter};

@@ -8,10 +8,18 @@ import adminLoader from '../../assets/adminLoader.json'
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrders } from '../../context/OrderContext';
-import { GoDotFill, GoEye } from "react-icons/go";
+import { GoDotFill, GoEye, GoTriangleUp } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaClipboardList } from "react-icons/fa6";
 import OrderDetail from '../../helpers/OrderDetail';
+import { BiPencil } from "react-icons/bi";
+import { FiCheckCircle, FiPrinter, FiRefreshCw } from "react-icons/fi";
+import { LuDownload } from "react-icons/lu";
+import { ImBin } from 'react-icons/im';
+import { RiDeleteBin6Line } from "react-icons/ri";
+import UpdateStatusModal from '../../helpers/UpdateStatusModal';
+import { MdCancel, MdOutlineLocalShipping } from 'react-icons/md';
+import { FaShippingFast } from 'react-icons/fa';
 
 function Orders() {
   const { isDark } = useTheme();
@@ -24,6 +32,12 @@ function Orders() {
   const [status, setStatus] = useState("All");
   const [payment, setPayment] = useState("All");
   const [showDetail, setShowDetail] = useState([]);
+  const [showActions, setShowActions] = useState([]);
+  const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [orderStatus, setOrderStatus] = useState("");
+
+  const actionBtnClass = `flex gap-2 items-center px-3 py-1 text-sm font-medium w-full cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`
 
   const { cache, setOrders, setCache, total, setTotal, stats, setStats, paymentMethods, setPaymentMethods } = useOrders();
   const cacheKey = `${status}-${page}-${payment}-${search}`;
@@ -84,7 +98,6 @@ function Orders() {
       } catch (err) {
         const msg = err?.response?.data?.message || err?.message || "Something went wrong !"
         setError(msg);
-        console.log(err)
       } finally {
         setLoading(false);
       }
@@ -96,6 +109,7 @@ function Orders() {
   const statusColors = {
     processing: "text-yellow-600 bg-yellow-600/10 border border-yellow-400",
     shipped: "text-blue-600 bg-blue-600/10 border border-blue-400",
+    out_for_delivery: "text-pink-600 bg-pink-600/10 border border-pink-400",
     delivered: "text-green-600 bg-green-600/10 border border-green-400",
     cancelled: "text-red-600 bg-red-600/10 border border-red-400",
   };
@@ -179,20 +193,28 @@ function Orders() {
     );
   };
 
+  const handleShowActions = (id) => {
+    setShowActions((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
   return (
-    <section className={`p-4 relative space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       <div className='grid grid-cols-6 gap-4 w-full'>
         <StatCard icon={<FaClipboardList />} label="Total Orders" value={stats?.total} color={`${isDark ? "bg-blue-900/50 text-blue-600" : "bg-blue-100 text-blue-500"}`} className={`${isDark ? "bg-blue-900/40 text-blue-400 border-blue-700 border" : "bg-linear-to-b from-white via-white to-blue-50 border-b-blue-200"} border-b-4`} isDark={isDark}
         />
-        <StatCard icon={<FaClipboardList />} label="Processing" value={stats?.processing} color={`${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`} className={`${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`} isDark={isDark}
+        <StatCard icon={<FiRefreshCw />} label="Processing" value={stats?.processing} color={`${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`} className={`${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`} isDark={isDark}
         />
-        <StatCard icon={<FaClipboardList />} label="Shipped" value={stats?.shipped} color={`${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`} className={`${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`} isDark={isDark}
+        <StatCard icon={<MdOutlineLocalShipping />} label="Shipped" value={stats?.shipped} color={`${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`} className={`${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`} isDark={isDark}
         />
-        <StatCard icon={<FaClipboardList />} label="Out For Delivery" value={stats?.out_for_delivery} color={`${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`} className={`${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} isDark={isDark}
+        <StatCard icon={<FaShippingFast />} label="Out For Delivery" value={stats?.out_for_delivery} color={`${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`} className={`${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} isDark={isDark}
         />
-        <StatCard icon={<FaClipboardList />} label="Delivered" value={stats?.delivered} color={`${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`} isDark={isDark}
+        <StatCard icon={<FiCheckCircle />} label="Delivered" value={stats?.delivered} color={`${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`} isDark={isDark}
         />
-        <StatCard icon={<FaClipboardList />} label="Cancelled" value={stats?.cancelled} color={`${isDark ? "bg-red-900/50 text-red-600" : "bg-red-100 text-red-500"}`} className={`${isDark ? "bg-red-900/40 text-red-400 border-red-700 border" : "bg-linear-to-b from-white via-white to-red-50 border-b-red-200"} border-b-4`} isDark={isDark}
+        <StatCard icon={<MdCancel />} label="Cancelled" value={stats?.cancelled} color={`${isDark ? "bg-red-900/50 text-red-600" : "bg-red-100 text-red-500"}`} className={`${isDark ? "bg-red-900/40 text-red-400 border-red-700 border" : "bg-linear-to-b from-white via-white to-red-50 border-b-red-200"} border-b-4`} isDark={isDark}
         />
       </div>
 
@@ -256,10 +278,10 @@ function Orders() {
         </div>
 
         <button
-          className={`px-2 py-1 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
-          onClick={() => navigate('/addproduct')}>
+          className={`px-2 py-1 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)] from-purple-500 to-purple-700" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)] from-purple-300 to-purple-500"} hover:brightness-110`}
+        >
           <HiPlus size={26} />
-          <span>Add Product</span>
+          <span>Update Order</span>
         </button>
       </div>
       {/* Table Container */}
@@ -348,11 +370,12 @@ function Orders() {
                       {/* date & time */}
                       <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                         <div className='flex flex-col'>
-                          <span className={`${isDark ? "text-gray-300" : "text-gray-800"}`}>{formatDate(order?.createdAt)}</span>
+                          <span className={`${isDark ? "text-gray-300" : "text-gray-800"} text-sm whitespace-nowrap`}>{formatDate(order?.createdAt)}</span>
                           <span className='text-sm'>{formatTime(order?.createdAt)}</span>
                         </div>
                       </td>
 
+                      {/* order items */}
                       <td className="px-4 py-1">
                         <div className='flex flex-row gap-1 items-center'>
                           <img
@@ -361,14 +384,29 @@ function Orders() {
                             className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} h-8 w-8 object-contain rounded`}
                           />
                           {order?.orderItems?.length > 1 && (
-                            <span
-                              className={`ml-1 text-sm font-medium px-2 py-0.5 rounded-full ${isDark
+                            <div
+                              className={`ml-1 text-sm font-medium px-2 py-0.5 group rounded-full relative cursor-pointer ${isDark
                                 ? "bg-gray-700 text-gray-300"
                                 : "bg-gray-200 text-gray-600"
                                 }`}
                             >
                               +{order.orderItems.length - 1}
-                            </span>
+
+                              <div className={`absolute p-1 z-50 left-0 ${idx !== orders?.length - 1 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex animate-fadeIn ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
+                                <div className={`absolute ${idx !== orders?.length - 1 ? "-top-4" : "-bottom-4 rotate-180"} left-1 ${isDark ? "text-gray-800" : "text-gray-200"}`}>
+                                  <GoTriangleUp size={26} />
+                                </div>
+                                {order?.orderItems?.slice(1).map((item, i) => (
+                                  <div className='' key={i}>
+                                    <img
+                                      src={item?.image}
+                                      alt="img"
+                                      className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
                           )}
                         </div>
                       </td>
@@ -378,18 +416,18 @@ function Orders() {
                       </td>
 
                       <td className="px-4 py-1">
-                        <button className={`px-4 text-sm py-1 rounded-full whitespace-nowrap ${getPaymentBadge(order?.paymentMethod)}`}>
+                        <button className={`px-3 text-sm py-1 rounded-full whitespace-nowrap ${getPaymentBadge(order?.paymentMethod)}`}>
                           {order?.paymentMethod}
                         </button>
                       </td>
 
                       <td className="px-4 py-1">
-                        <div className={`flex flex-row items-center gap-1 px-4 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order.orderStatus.replace(/\s/g, "")]}`}>
+                        <div className={`flex flex-row w-fit items-center gap-1 px-2 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order?.orderStatus.replace(/\s/g, "")]}`}>
                           <span>
                             <GoDotFill size={10} />
                           </span>
                           <span>
-                            {order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1)}
+                            {formatStatus(order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1))}
                           </span>
                         </div>
                       </td>
@@ -397,14 +435,37 @@ function Orders() {
                       <td className="px-4 py-1">
                         <div className="flex gap-2">
                           <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                            onClick={() => handleToggle(order._id)}>
+                            onClick={() => handleToggle(order?._id)}>
                             <GoEye />
                           </button>
-                          <button
-                            className={`bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800 text-gray-400" : "bg-slate-100 text-gray-800"}`}
+                          <div
+                            className={`bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800 text-gray-400" : "bg-slate-100 text-gray-800"} relative`}
+                            onClick={() => handleShowActions(order?._id)}
                           >
                             <PiDotsThreeVerticalBold />
-                          </button>
+                            {showActions.includes(order._id) && (
+                              <div>
+                                <div className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
+                                  <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Order Actions</h1>
+                                  <button className={`${actionBtnClass} text-blue-600`}><BiPencil size={16} />Edit Order</button>
+                                  <button
+                                    className={`${actionBtnClass} text-violet-600`}
+                                    onClick={() => {
+                                      setOrderId(order?.orderId)
+                                      setOrderStatus(order?.orderStatus)
+                                      setShowUpdateStatusModal(true);
+                                    }}
+                                  >
+                                    <FiRefreshCw size={16} />
+                                    <span>Update Status</span>
+                                  </button>
+                                  <button className={`${actionBtnClass} text-emerald-600`}><FiPrinter size={16} />Print Invoice</button>
+                                  <button className={`${actionBtnClass} text-cyan-600`}><LuDownload size={16} />Download Invoice</button>
+                                  <button className={`${actionBtnClass} text-red-600`}><RiDeleteBin6Line size={16} />Delete Order</button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </td>
 
@@ -425,6 +486,7 @@ function Orders() {
                               statusColors={statusColors}
                               formatTime={formatTime}
                               formatDate={formatDate}
+                              formatStatus={formatStatus}
                               setShowDetail={setShowDetail}
                               idx={order._id}
                             />
@@ -501,6 +563,7 @@ function Orders() {
           </div>
         </div>
       </div>
+      {showUpdateStatusModal && <UpdateStatusModal setShowUpdateStatusModal={setShowUpdateStatusModal} orderId={orderId} setOrderId={setOrderId} setCache={setCache} currentStatus={orderStatus} formatStatus={formatStatus} />}
     </section>
   )
 }

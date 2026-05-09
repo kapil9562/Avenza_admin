@@ -57,6 +57,8 @@ export const getOrders = ({skip = 0, status, paymentMethod, search}) => {
   return adminApi.get(`/get-orders?${params.toString()}`);
 }
 
+export const updateStatus = ({status, orderId}) => adminApi.patch(`update-order/status/${orderId}`, {status});
+
 // {auth apis} 
 
 export const emailLogin = ({ email, password }) => adminApi.post('/auth/email-login', { email, password });

@@ -5,7 +5,7 @@ import { IoIosArrowUp } from 'react-icons/io';
 import { RxCross2 } from "react-icons/rx";
 import { GoDotFill } from "react-icons/go";
 
-function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, formatDate, formatTime, setShowDetail }) {
+function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, formatDate, formatTime, setShowDetail, formatStatus }) {
   const { isDark } = useTheme();
   const [showAllItems, setShowAllItems] = useState(false);
 
@@ -165,7 +165,7 @@ function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, forma
                       <GoDotFill size={10} />
                     </span>
                     <span>
-                      {order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1)}
+                      {formatStatus(order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1))}
                     </span>
                   </div>
                 </div>

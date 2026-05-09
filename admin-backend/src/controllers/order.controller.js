@@ -115,3 +115,44 @@ export const getOrders = async (req, res) => {
         });
     }
 };
+
+export const updateOrder = async (req, res) => {
+    const orderId = req.params.orderId;
+    const { status } = req.body;
+
+    console.log(orderId)
+
+    if (!orderId || !status) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid order status!"
+        })
+    }
+
+    try {
+        const order = await Order.findOneAndUpdate(
+            {orderId},
+            { orderStatus: status },
+            { returnDocument: 'after' }
+        );
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found!"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Order status updated successfully.",
+            order,
+        });
+    } catch (error) {
+        console.log("update status error ::", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to change update status!"
+        })
+    }
+}
