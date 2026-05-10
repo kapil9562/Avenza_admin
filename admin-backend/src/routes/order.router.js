@@ -1,5 +1,5 @@
 import express from "express"
-import { getOrders, updateOrder } from "../controllers/order.controller.js";
+import { deleteOrder, getOrders, updateOrder } from "../controllers/order.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import rateLimit from "express-rate-limit"
 import slowDown from "express-slow-down";
@@ -20,10 +20,11 @@ const limiter = rateLimit({
 const speedLimiter = slowDown({
     windowMs: 15 * 60 * 1000,
     delayAfter: 10,
-    delayMs: (hits) => (hits - 3) * 1000,
+    delayMs: (hits) => (hits - 3) * 500,
 });
 
 orderRouter.get("/get-orders", speedLimiter, verifyJWT, getOrders);
 orderRouter.patch("/update-order/status/:orderId", speedLimiter, limiter, verifyJWT, updateOrder);
+orderRouter.delete("/delete-order/:orderId", speedLimiter, limiter, verifyJWT, deleteOrder);
 
 export {orderRouter};

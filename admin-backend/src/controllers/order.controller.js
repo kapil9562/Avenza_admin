@@ -131,7 +131,7 @@ export const updateOrder = async (req, res) => {
 
     try {
         const order = await Order.findOneAndUpdate(
-            {orderId},
+            { orderId },
             { orderStatus: status },
             { returnDocument: 'after' }
         );
@@ -153,6 +153,32 @@ export const updateOrder = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Failed to change update status!"
+        })
+    }
+}
+
+export const deleteOrder = async (req, res) => {
+    const orderId = req.params.orderId;
+
+    if (!orderId) {
+        return res.status(4000).json({
+            success: false,
+            message: "Invalid order id!"
+        });
+    }
+
+    try {
+        await Order.findOneAndDelete({orderId});
+
+        return res.status(200).json({
+            success: true,
+            message: "Order deleted."
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete order!"
         })
     }
 }

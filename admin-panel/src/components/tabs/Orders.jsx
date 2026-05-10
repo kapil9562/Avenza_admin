@@ -20,6 +20,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import UpdateStatusModal from '../../helpers/UpdateStatusModal';
 import { MdCancel, MdOutlineLocalShipping } from 'react-icons/md';
 import { FaShippingFast } from 'react-icons/fa';
+import DeleteOrderModal from '../../helpers/DeleteOrderModal';
 
 function Orders() {
   const { isDark } = useTheme();
@@ -36,6 +37,8 @@ function Orders() {
   const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const actionBtnClass = `flex gap-2 items-center px-3 py-1 text-sm font-medium w-full cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`
 
@@ -461,7 +464,16 @@ function Orders() {
                                   </button>
                                   <button className={`${actionBtnClass} text-emerald-600`}><FiPrinter size={16} />Print Invoice</button>
                                   <button className={`${actionBtnClass} text-cyan-600`}><LuDownload size={16} />Download Invoice</button>
-                                  <button className={`${actionBtnClass} text-red-600`}><RiDeleteBin6Line size={16} />Delete Order</button>
+                                  <button
+                                    className={`${actionBtnClass} text-red-600`}
+                                    onClick={() => {
+                                      setSelectedOrder(order);
+                                      setOpenDeleteModal(true);
+                                    }}
+                                  >
+                                    <RiDeleteBin6Line size={16} />
+                                    <span>Delete Order</span>
+                                  </button>
                                 </div>
                               </div>
                             )}
@@ -564,6 +576,8 @@ function Orders() {
         </div>
       </div>
       {showUpdateStatusModal && <UpdateStatusModal setShowUpdateStatusModal={setShowUpdateStatusModal} orderId={orderId} setOrderId={setOrderId} setCache={setCache} currentStatus={orderStatus} formatStatus={formatStatus} />}
+
+      {openDeleteModal && <DeleteOrderModal order={selectedOrder} setDeleteModal={setOpenDeleteModal} />}
     </section>
   )
 }

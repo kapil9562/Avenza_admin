@@ -44,9 +44,9 @@ export const updateProduct = (productId, data) =>
       "Content-Type": "multipart/form-data"
     }
   });
-
+  
 // {order apis}
-export const getOrders = ({skip = 0, status, paymentMethod, search}) => {
+export const getOrders = ({ skip = 0, status, paymentMethod, search }) => {
   const params = new URLSearchParams();
 
   params.append('skip', skip);
@@ -57,7 +57,9 @@ export const getOrders = ({skip = 0, status, paymentMethod, search}) => {
   return adminApi.get(`/get-orders?${params.toString()}`);
 }
 
-export const updateStatus = ({status, orderId}) => adminApi.patch(`update-order/status/${orderId}`, {status});
+export const updateStatus = ({ status, orderId }) => adminApi.patch(`update-order/status/${orderId}`, { status });
+
+export const deleteOrder = ({orderId}) => adminApi.delete(`/delete-order/${orderId}`);
 
 // {auth apis} 
 
