@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 const ProductsContext = createContext(null);
 
 export const ProductsProvider = ({ children }) => {
-  const [cache, setCache] = useState([]);
+  const [cache, setCache] = useState({});
   const [categories, setCategories] = useState([]);
   const [total, setTotal] = useState(0);
 

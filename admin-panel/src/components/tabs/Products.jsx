@@ -162,8 +162,8 @@ function Products() {
                                         <span
                                             key={i}
                                             className={`whitespace-nowrap py-2 px-3 rounded-sm ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"}`}
-                                            onClick={() => handleCategory(sub)}>
-                                            {sub}
+                                            onClick={() => handleCategory(sub?.name)}>
+                                            {sub?.name}
                                         </span>
                                     ))}
                                 </div>
