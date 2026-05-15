@@ -450,7 +450,12 @@ function Orders() {
                               <div>
                                 <div className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
                                   <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Order Actions</h1>
-                                  <button className={`${actionBtnClass} text-blue-600`}><BiPencil size={16} />Edit Order</button>
+                                  <button 
+                                  className={`${actionBtnClass} text-blue-600`}
+                                  onClick={() => navigate(`/edit-order/${order?.orderId}`, {state: order})}>
+                                    <span><BiPencil size={16} /></span>
+                                    <span>Edit Order</span>
+                                  </button>
                                   <button
                                     className={`${actionBtnClass} text-violet-600`}
                                     onClick={() => {
@@ -459,7 +464,7 @@ function Orders() {
                                       setShowUpdateStatusModal(true);
                                     }}
                                   >
-                                    <FiRefreshCw size={16} />
+                                    <span><FiRefreshCw size={16} /></span>
                                     <span>Update Status</span>
                                   </button>
                                   <button className={`${actionBtnClass} text-emerald-600`}><FiPrinter size={16} />Print Invoice</button>
@@ -471,7 +476,7 @@ function Orders() {
                                       setOpenDeleteModal(true);
                                     }}
                                   >
-                                    <RiDeleteBin6Line size={16} />
+                                    <span><RiDeleteBin6Line size={16} /></span>
                                     <span>Delete Order</span>
                                   </button>
                                 </div>

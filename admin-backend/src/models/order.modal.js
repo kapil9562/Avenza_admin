@@ -6,8 +6,14 @@ const orderItemSchema = new mongoose.Schema({
         ref: "Product",
         required: true
     },
-    name: String,
-    image: String,
+    name: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String,
+        required: true
+    },
     price: {
         type: Number,
         required: true
@@ -18,8 +24,45 @@ const orderItemSchema = new mongoose.Schema({
     }
 }, { _id: false });
 
+const shippingAddressSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+        match: [/^\d{10}$/, "Please enter valid 10 digit phone number"]
+    },
+    addressLine1: {
+        type: String,
+        required: true
+    },
+    addressLine2: {
+        type: String
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    state: {
+        type: String,
+        required: true
+    },
+    country: {
+        type: String,
+        required: true,
+        default: "India"
+    },
+    pinCode: {
+        type: String,
+        required: true
+    }
+}, { _id: false });
+
 const orderSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
@@ -32,17 +75,12 @@ const orderSchema = new mongoose.Schema({
         index: true
     },
 
-    orderItems: [orderItemSchema],
-
-    shippingAddress: {
-        addressId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Address",
-            required: true
-        },
-
-        address: String
+    orderItems: {
+        type: [orderItemSchema],
+        required: true,
     },
+
+    shippingAddress: shippingAddressSchema,
 
     paymentMethod: {
         type: String,

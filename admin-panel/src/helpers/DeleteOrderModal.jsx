@@ -62,21 +62,38 @@ function DeleteOrderModal({ order, setDeleteModal }) {
         }
     }
 
+    const formatDate = (date) => {
+        const d = new Date(date);
+
+        const day = d.getDate();
+        const month = d.toLocaleString("en-IN", { month: "short" });
+        const year = d.getFullYear();
+
+        return `${month} ${day}, ${year}`;
+    }
+
+    const formatTime = (time) => {
+        return new Date(time).toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    }
+
     return (
         <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/40 p-4">
 
             <div
                 className={`
-                    w-full max-w-3xl rounded-xl border shadow-2xl overflow-hidden zoom-modal transform-gpu will-change-transform
+                    w-full max-w-3xl rounded-xl overflow-hidden zoom-modal transform-gpu will-change-transform
                     ${isDark
-                        ? "bg-[#111827] border-gray-800 text-white"
-                        : "bg-white border-gray-200 text-gray-900"
+                        ? "bg-[#0F172A] shadow-black/50 shadow-xl text-gray-200"
+                        : "bg-white shadow-[0_10px_60px_rgba(0,0,0,0.15)] text-gray-800"
                     }
                 `}
             >
 
                 {/* Header */}
-                <div className={`flex items-start justify-between p-6 border-b ${isDark? "border-gray-800" : "border-gray-200"}`}>
+                <div className={`flex items-start justify-between p-6 border-b ${isDark ? "border-gray-800" : "border-gray-200"}`}>
 
                     <div className="flex items-center gap-4">
 
@@ -116,7 +133,7 @@ function DeleteOrderModal({ order, setDeleteModal }) {
 
                     <div
                         className={`
-                            rounded-2xl border p-5
+                            rounded-2xl border overflow-hidden
                             ${isDark
                                 ? "bg-slate-800/40 border-gray-700"
                                 : "bg-gray-50 border-gray-200"
@@ -124,79 +141,96 @@ function DeleteOrderModal({ order, setDeleteModal }) {
                         `}
                     >
 
-                        <div className="flex md:flex-row flex-col justify-between gap-6">
+                        <div className="flex flex-col justify-between gap-6">
 
                             {/* Customer */}
-                            <div className="flex items-center gap-3">
+                            <div className={`w-full flex justify-between px-5 py-3 ${isDark ? " bg-slate-800 text-gray-100" : "bg-gray-200"}`}>
+                                <div className="flex items-center gap-3 shrink-0">
 
-                                <img
-                                    src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
-                                    alt="customer"
-                                    className="w-12 h-12 rounded-full object-cover"
-                                />
+                                    <img
+                                        src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                                        alt="customer"
+                                        className="w-12 h-12 rounded-full object-cover"
+                                    />
 
-                                <div>
-                                    <h3 className="font-semibold text-lg">
-                                        {order?.userId?.name}
-                                    </h3>
+                                    <div className="w-fit">
+                                        <h3 className="font-semibold text-lg">
+                                            {order?.userId?.name}
+                                        </h3>
 
-                                    <p
-                                        className={`text-sm font-semibold ${isDark
-                                            ? "text-gray-400"
-                                            : "text-gray-500"
-                                            }`}
-                                    >
-                                        {order?.userId?.email}
-                                    </p>
+                                        <p
+                                            className={`text-sm font-semibold ${isDark
+                                                ? "text-gray-400"
+                                                : "text-gray-500"
+                                                }`}
+                                        >
+                                            {order?.userId?.email}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <span className={`text-sm font-semibold ${isDark ? "text-gray-200" : "text-gray-800"}`}>{formatDate(order?.createdAt)}</span>
+                                    <span className={`text-sm font-semibold ${isDark ? "text-gray-400" : "text-gray-600"}`}>{formatTime(order?.createdAt)}</span>
                                 </div>
                             </div>
 
-                            <table>
-                                <thead>
-                                    <tr className="text-left leading-none">
-                                        <th className={`px-2 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "" : "text-gray-600"}`}>Order ID</th>
-                                        <th className={`px-2 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "" : "text-gray-600"}`}>Total Amount</th>
-                                        <th className={`px-2 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "" : "text-gray-600"}`}>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
+                            <div className="overflow-auto tableBody scroll-smooth px-5 pb-5">
+                                <table >
+                                    <thead>
+                                        <tr className="text-left leading-none">
+                                            <th className={`px-2 py-1 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "text-gray-400" : "text-gray-600"}`}>Order ID</th>
+                                            <th className={`px-2 py-1 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "text-gray-400" : "text-gray-600"}`}>Total Items</th>
+                                            <th className={`px-2 py-1 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "text-gray-400" : "text-gray-600"}`}>Total Amount</th>
+                                            <th className={`px-2 py-1 leading-none w-[5%] font-semibold whitespace-nowrap ${isDark ? "text-gray-400" : "text-gray-600"}`}>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
 
-                                        {/* Order ID */}
-                                        <td className={`px-2 py-1 leading-none`}>
-                                            <h3 className="font-semibold">
-                                                #{order?.orderId}
-                                            </h3>
-                                        </td>
+                                            {/* Order ID */}
+                                            <td className={`px-2 py-1 leading-none`}>
+                                                <h3 className="font-semibold">
+                                                    #{order?.orderId}
+                                                </h3>
+                                            </td>
 
-                                        {/* Amount */}
-                                        <td className={`px-2 py-1 leading-none`}>
-                                            <h3 className="font-semibold text-lg">
-                                                ₹{order?.totalAmount?.toLocaleString("en-IN")}
-                                            </h3>
-                                        </td>
+                                            {/* Total Item */}
+                                            <td className={`px-2 py-1 leading-none`}>
+                                                <h3 className="font-semibold">
+                                                    {order?.orderItems?.length} {order?.orderItems?.length <= 1 ? "item" : "items"}
+                                                </h3>
+                                            </td>
 
-                                        {/* Status */}
-                                        <td className={`px-2 py-1 leading-none`}>
-                                            <div className={`flex flex-row w-fit font-semibold items-center gap-1 px-2 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order?.orderStatus.replace(/\s/g, "")]}`}>
-                                                <span>
-                                                    <GoDotFill size={10} />
-                                                </span>
-                                                <span>
-                                                    {formatStatus(order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1))}
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                            {/* Amount */}
+                                            <td className={`px-2 py-1 leading-none`}>
+                                                <h3 className="font-semibold text-lg">
+                                                    ₹{order?.totalAmount?.toLocaleString("en-IN")}
+                                                </h3>
+                                            </td>
+
+                                            {/* Status */}
+                                            <td className={`px-2 py-1 leading-none`}>
+                                                <div className={`flex flex-row w-fit font-semibold items-center gap-1 px-2 py-1 text-sm rounded-full whitespace-nowrap ${statusColors[order?.orderStatus.replace(/\s/g, "")]}`}>
+                                                    <span>
+                                                        <GoDotFill size={10} />
+                                                    </span>
+                                                    <span>
+                                                        {formatStatus(order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1))}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
                     {/* Warning Box */}
                     <div
                         className={`
-                            mt-6 rounded-2xl border p-5
+                            mt-6 rounded-2xl border p-2 px-5 text-sm
                             ${isDark
                                 ? "bg-red-500/10 border-red-500/30"
                                 : "bg-red-50 border-red-200"

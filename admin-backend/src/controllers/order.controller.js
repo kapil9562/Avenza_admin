@@ -66,7 +66,7 @@ export const getOrders = async (req, res) => {
 
             // paginated orders
             Order.find(query)
-                .populate("userId", "name email avatar")
+                .populate("user", "name email avatar")
                 .sort(sort)
                 .skip(Number(skip) || 0)
                 .limit(Number(limit)),
@@ -168,7 +168,7 @@ export const deleteOrder = async (req, res) => {
     }
 
     try {
-        await Order.findOneAndDelete({orderId});
+        await Order.findOneAndDelete({ orderId });
 
         return res.status(200).json({
             success: true,
