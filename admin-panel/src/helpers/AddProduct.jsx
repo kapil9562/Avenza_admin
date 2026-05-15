@@ -30,9 +30,9 @@ function AddProduct() {
     const navigate = useNavigate();
 
     const categories = {
-        "Beauty": ["skin-care", "fragrances", "beauty"],
+        "Beauty": ["skin-care", "fragrances", "beauty", "hair-care", "face-care", "organic-beauty"],
         "Electronics": ["smartphones", "mobile-accessories", "tablets", "laptops", "Laptop"],
-        "Fashion": ["sunglasses"],
+        "Fashion": ["sunglasses", "ethnic-wear","western-wear","sportswear","winter-wear","kids-fashion"],
         "Groceries": ["groceries"],
         "Home & Living": ["furniture", "home-decoration", "kitchen-accessories"],
         "Men": ["mens-jacket", "mens-shirts", "mens-T-Shirts", "mens-watches", "mens-shoes"],
