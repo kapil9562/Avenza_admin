@@ -8,32 +8,13 @@ import { IoWarningOutline } from "react-icons/io5";
 import { deleteOrder } from "../api/api";
 import { toast } from "../context/ToastContext";
 import { useOrders } from "../context/OrderContext";
+import { formatDate, formatStatus, formatTime, normalizeGooglePhoto, statusColors } from "../utils/format";
 
 function DeleteOrderModal({ order, setDeleteModal }) {
 
     const { isDark } = useTheme();
     const [loading, setLoading] = useState(false);
     const { setCache } = useOrders();
-
-    const normalizeGooglePhoto = (url) => {
-        if (!url) return null;
-        const base = url.split("=")[0];
-        return `${base}=s200`;
-    };
-
-    const statusColors = {
-        processing: "text-yellow-600 bg-yellow-600/10 border border-yellow-400",
-        shipped: "text-blue-600 bg-blue-600/10 border border-blue-400",
-        out_for_delivery: "text-pink-600 bg-pink-600/10 border border-pink-400",
-        delivered: "text-green-600 bg-green-600/10 border border-green-400",
-        cancelled: "text-red-600 bg-red-600/10 border border-red-400",
-    };
-
-    const formatStatus = (status) => {
-        return status
-            .replaceAll("_", " ")
-            .replace(/\b\w/g, (c) => c.toUpperCase());
-    };
 
     const deleteThisOrder = async () => {
         try {
@@ -60,23 +41,6 @@ function DeleteOrderModal({ order, setDeleteModal }) {
         } finally {
             setLoading(false);
         }
-    }
-
-    const formatDate = (date) => {
-        const d = new Date(date);
-
-        const day = d.getDate();
-        const month = d.toLocaleString("en-IN", { month: "short" });
-        const year = d.getFullYear();
-
-        return `${month} ${day}, ${year}`;
-    }
-
-    const formatTime = (time) => {
-        return new Date(time).toLocaleTimeString("en-IN", {
-            hour: "2-digit",
-            minute: "2-digit",
-        });
     }
 
     return (
@@ -148,14 +112,14 @@ function DeleteOrderModal({ order, setDeleteModal }) {
                                 <div className="flex items-center gap-3 shrink-0">
 
                                     <img
-                                        src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                                        src={normalizeGooglePhoto(order?.user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                                         alt="customer"
                                         className="w-12 h-12 rounded-full object-cover"
                                     />
 
                                     <div className="w-fit">
                                         <h3 className="font-semibold text-lg">
-                                            {order?.userId?.name}
+                                            {order?.user?.name}
                                         </h3>
 
                                         <p
@@ -164,7 +128,7 @@ function DeleteOrderModal({ order, setDeleteModal }) {
                                                 : "text-gray-500"
                                                 }`}
                                         >
-                                            {order?.userId?.email}
+                                            {order?.user?.email}
                                         </p>
                                     </div>
                                 </div>

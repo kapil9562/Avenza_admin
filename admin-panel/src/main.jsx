@@ -11,7 +11,6 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import ProtectedRoute from './helpers/ProtectedRoute.jsx'
 import { ToastProvider } from './context/ToastContext.jsx';
 import { OrdersProvider } from './context/OrderContext.jsx';
-import EditOrder from './helpers/EditOrder.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -38,7 +37,6 @@ createRoot(document.getElementById('root')).render(
                     <Route path="customers" element={<Customers />} />
                     <Route path="addproduct" element={<AddProduct />} />
                     <Route path="edit-product/:id" element={<AddProduct />} />
-                    <Route path="edit-order/:id" element={<EditOrder />} />
                   </Route>
 
                 </Route>

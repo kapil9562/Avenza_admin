@@ -69,7 +69,7 @@ const addNewProduct = async (req, res) => {
             .sort({ productId: -1 })
             .select("productId");
 
-        const nextProductId = (data?.productId) ? (data?.productId) : (lastProduct ? ( lastProduct?.productId + 1) : 1);
+        const nextProductId = (data?.productId) ? (data?.productId) : (lastProduct ? (lastProduct?.productId + 1) : 1);
 
         const product = new Product({
             ...data,
@@ -104,8 +104,6 @@ const updateProduct = async (req, res) => {
         const { productId } = req.params;
         const data = req.body;
 
-        console.log(productId)
-
         if (!productId) {
             return res.status(404).json({ message: "Product Id is required" });
         }
@@ -116,25 +114,51 @@ const updateProduct = async (req, res) => {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        // 🔥 Update Normal Fields (only if provided)
+        const excludedFields = [
+            "dimensions",
+            "tags",
+            "stock",
+            "rating",
+            "images",
+            "thumbnail",
+            "qrCode",
+            "existingImages"
+        ];
+
         Object.keys(data).forEach((key) => {
-            if (key !== "dimensions" && key !== "tags") {
+            if (
+                !excludedFields.includes(key) &&
+                data[key] != null
+            ) {
                 product[key] = data[key];
             }
         });
 
-        // 🔥 Parse dimensions safely
+        // Parse dimensions safely
         if (data.dimensions) {
-            product.dimensions = JSON.parse(data.dimensions);
+            try {
+                product.dimensions = JSON.parse(data.dimensions);
+            } catch {
+                return res.status(400).json({
+                    message: "Invalid dimensions format"
+                });
+            }
         }
 
-        // 🔥 Parse tags safely
+        // Parse tags safely
         if (data.tags) {
-            product.tags = JSON.parse(data.tags);
+            try {
+                product.tags = JSON.parse(data.tags);
+            } catch {
+                return res.status(400).json({
+                    message: "Invalid tags format"
+                });
+            }
         }
 
-        // 🔥 Update Availability (if stock changed)
-        if (data.stock !== undefined) {
+        // Update Availability (if stock changed)
+        if (data.stock !== null) {
+            product.stock == Number(data?.stock);
             if (data.stock >= 10) {
                 product.availabilityStatus = "In Stock";
             } else if (data.stock > 0) {
@@ -144,7 +168,7 @@ const updateProduct = async (req, res) => {
             }
         }
 
-        // 🔥 Update Thumbnail (optional)
+        // Update Thumbnail (optional)
         if (req.files?.thumbnail) {
             const result = await uploadToCloudinary(
                 req.files.thumbnail[0].buffer,
@@ -153,13 +177,13 @@ const updateProduct = async (req, res) => {
             product.thumbnail = result.secure_url;
         }
 
-        // 🔥 Handle Images Properly
+        // Handle Images Properly
         const existingImages = JSON.parse(req.body.existingImages || "[]");
 
         // Old DB images
         const oldImages = product.images || [];
 
-        // 1️⃣ Delete removed images from Cloudinary
+        // Delete removed images from Cloudinary
         const imagesToDelete = oldImages.filter(
             (img) => !existingImages.includes(img)
         );
@@ -183,7 +207,7 @@ const updateProduct = async (req, res) => {
 
         product.images = [...existingImages, ...newImageUrls];
 
-        // 🔥 Update QR (optional)
+        // Update QR (optional)
         if (req.files?.qrCode) {
             const result = await uploadToCloudinary(
                 req.files.qrCode[0].buffer,
@@ -191,6 +215,13 @@ const updateProduct = async (req, res) => {
             );
 
             product.meta.qrCode = result.secure_url;
+        }
+
+
+        const rating = Number(data.rating);
+
+        if (!isNaN(rating)) {
+            product.rating = rating;
         }
 
         await product.save();

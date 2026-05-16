@@ -21,6 +21,9 @@ import UpdateStatusModal from '../../helpers/UpdateStatusModal';
 import { MdCancel, MdOutlineLocalShipping } from 'react-icons/md';
 import { FaShippingFast } from 'react-icons/fa';
 import DeleteOrderModal from '../../helpers/DeleteOrderModal';
+import { IoRefresh } from 'react-icons/io5';
+import { formatDate, formatStatus, formatTime, getPaymentBadge, normalizeGooglePhoto, statusColors } from '../../utils/format';
+import EditOrderModal from '../../helpers/EditOrderModal';
 
 function Orders() {
   const { isDark } = useTheme();
@@ -39,6 +42,7 @@ function Orders() {
   const [orderStatus, setOrderStatus] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
 
   const actionBtnClass = `flex gap-2 items-center px-3 py-1 text-sm font-medium w-full cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`
 
@@ -109,29 +113,6 @@ function Orders() {
     fetchOrders();
   }, [cacheKey, payment, status, page, search]);
 
-  const statusColors = {
-    processing: "text-yellow-600 bg-yellow-600/10 border border-yellow-400",
-    shipped: "text-blue-600 bg-blue-600/10 border border-blue-400",
-    out_for_delivery: "text-pink-600 bg-pink-600/10 border border-pink-400",
-    delivered: "text-green-600 bg-green-600/10 border border-green-400",
-    cancelled: "text-red-600 bg-red-600/10 border border-red-400",
-  };
-
-  const getPaymentBadge = (method) => {
-    switch (method) {
-      case "COD":
-        return "bg-yellow-600/10 text-yellow-600 border border-yellow-400";
-      case "Stripe":
-        return "bg-teal-600/10 text-teal-600 border border-teal-400";
-      case "Razorpay":
-        return "bg-blue-600/10 text-blue-600 border border-blue-400";
-      case "PayPal":
-        return "bg-sky-600/10 text-sky-600 border border-sky-400";
-      default:
-        return "bg-gray-600/10 text-gray-600 border border-gray-400";
-    }
-  };
-
   const handleStatusChange = (filter) => {
     if (status === filter) return;
     setCache({});
@@ -147,35 +128,6 @@ function Orders() {
     setPage(1);
     setInputValue(1);
   }
-
-  const normalizeGooglePhoto = (url) => {
-    if (!url) return null;
-    const base = url.split("=")[0];
-    return `${base}=s200`;
-  };
-
-  const formatDate = (date) => {
-    const d = new Date(date);
-
-    const day = d.getDate();
-    const month = d.toLocaleString("en-IN", { month: "short" });
-    const year = d.getFullYear();
-
-    return `${month} ${day}, ${year}`;
-  }
-
-  const formatTime = (time) => {
-    return new Date(time).toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-
-  const formatStatus = (status) => {
-    return status
-      .replaceAll("_", " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase());
-  };
 
   useEffect(() => {
     if (!input) return;
@@ -279,13 +231,6 @@ function Orders() {
             ))}
           </div>
         </div>
-
-        <button
-          className={`px-2 py-1 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)] from-purple-500 to-purple-700" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)] from-purple-300 to-purple-500"} hover:brightness-110`}
-        >
-          <HiPlus size={26} />
-          <span>Update Order</span>
-        </button>
       </div>
       {/* Table Container */}
       <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-300 shadow-xl"}`}>
@@ -312,6 +257,7 @@ function Orders() {
             <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${orders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[50dvh]"}`}>
               {loading ? (
                 <tr>
+                  {/* {Loading} */}
                   <td colSpan="8" className="text-center py-20">
                     <div className="flex flex-col items-center justify-center relative">
                       <Lottie
@@ -327,6 +273,7 @@ function Orders() {
                 </tr>
               ) : error ? (
                 <tr>
+                  {/* {Error Handler} */}
                   <td colSpan="8" className="py-10">
                     <div className="flex flex-col items-center justify-center text-center">
                       <img
@@ -337,10 +284,19 @@ function Orders() {
                       <p className="text-red-500 font-semibold text-lg">
                         {error}
                       </p>
+                      <button
+                        className={`px-2 py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 text-sm mt-4 text-white ${isDark ? " from-purple-500 to-purple-700" : " from-purple-300 to-purple-500"} hover:brightness-110`}
+                        onClick={() => window.location.reload()}
+                      >
+                        <IoRefresh size={26} />
+                        <span>Refresh Page</span>
+                      </button>
                     </div>
                   </td>
                 </tr>
               ) : (
+
+                // {Orders}
                 orders?.map((order, idx) => (
                   <React.Fragment key={order?._id || idx}>
                     <tr className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"} `}>
@@ -354,17 +310,17 @@ function Orders() {
                       <td className="px-4 py-1">
                         <div className="flex items-center gap-4">
                           <img
-                            src={normalizeGooglePhoto(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                            src={normalizeGooglePhoto(order?.user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                             referrerPolicy="no-referrer"
                             alt="thumbnail"
                             className={`min-w-10 min-h-10 max-w-10 max-h-10 object-contain rounded-full ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
                           />
                           <div className='flex flex-col'>
                             <span>
-                              {order?.userId?.name}
+                              {order?.user?.name}
                             </span>
                             <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm`}>
-                              {order?.userId?.email}
+                              {order?.user?.email}
                             </span>
                           </div>
                         </div>
@@ -450,9 +406,12 @@ function Orders() {
                               <div>
                                 <div className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
                                   <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Order Actions</h1>
-                                  <button 
-                                  className={`${actionBtnClass} text-blue-600`}
-                                  onClick={() => navigate(`/edit-order/${order?.orderId}`, {state: order})}>
+                                  <button
+                                    className={`${actionBtnClass} text-blue-600`}
+                                    onClick={() => {
+                                      setSelectedOrder(order);
+                                      setEditModal(true);
+                                    }}>
                                     <span><BiPencil size={16} /></span>
                                     <span>Edit Order</span>
                                   </button>
@@ -499,11 +458,6 @@ function Orders() {
                             <OrderDetail
                               order={order}
                               formatPfpUrl={normalizeGooglePhoto}
-                              getPaymentBadge={getPaymentBadge}
-                              statusColors={statusColors}
-                              formatTime={formatTime}
-                              formatDate={formatDate}
-                              formatStatus={formatStatus}
                               setShowDetail={setShowDetail}
                               idx={order._id}
                             />
@@ -580,9 +534,10 @@ function Orders() {
           </div>
         </div>
       </div>
-      {showUpdateStatusModal && <UpdateStatusModal setShowUpdateStatusModal={setShowUpdateStatusModal} orderId={orderId} setOrderId={setOrderId} setCache={setCache} currentStatus={orderStatus} formatStatus={formatStatus} />}
+      {showUpdateStatusModal && <UpdateStatusModal setShowUpdateStatusModal={setShowUpdateStatusModal} orderId={orderId} setOrderId={setOrderId} setCache={setCache} currentStatus={orderStatus} />}
 
       {openDeleteModal && <DeleteOrderModal order={selectedOrder} setDeleteModal={setOpenDeleteModal} />}
+      {editModal && <EditOrderModal order={selectedOrder} setEditModal={setEditModal} />}
     </section>
   )
 }

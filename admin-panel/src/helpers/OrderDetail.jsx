@@ -4,8 +4,9 @@ import { FaLocationDot } from "react-icons/fa6";
 import { IoIosArrowUp } from 'react-icons/io';
 import { RxCross2 } from "react-icons/rx";
 import { GoDotFill } from "react-icons/go";
+import { formatAddress, formatDate, formatStatus, formatTime, getPaymentBadge, statusColors } from '../utils/format';
 
-function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, formatDate, formatTime, setShowDetail, formatStatus }) {
+function OrderDetail({ order, formatPfpUrl, setShowDetail }) {
   const { isDark } = useTheme();
   const [showAllItems, setShowAllItems] = useState(false);
 
@@ -34,17 +35,17 @@ function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, forma
           <div className={`${isDark ? "border-gray-700 bg-[#0F1729]" : "bg-white border-gray-200"} py-2 px-4 rounded-md space-y-6 pb-20 w-1/3 border`}>
             <h1>Customer Information</h1>
             <div className='flex flex-row gap-2 items-center'>
-              <img src={formatPfpUrl(order?.userId?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+              <img src={formatPfpUrl(order?.user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                 referrerPolicy="no-referrer"
                 alt="img"
                 className='min-w-10 min-h-10 max-w-10 max-h-10 rounded-full'
               />
               <div className='flex flex-col'>
                 <span>
-                  {order?.userId?.name}
+                  {order?.user?.name}
                 </span>
                 <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm`}>
-                  {order?.userId?.email}
+                  {order?.user?.email}
                 </span>
               </div>
             </div>
@@ -52,11 +53,7 @@ function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, forma
               <h1 className={`text-sm`}>Shipping Address</h1>
               <div className={`flex flex-row gap-2 items-start ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                 <FaLocationDot className='text-purple-600 mt-1' />
-                <address className='font-medium'>{order?.shippingAddress?.address
-                  ?.split(",")
-                  .map(item => item.trim())
-                  .filter(Boolean)
-                  .join(", ")}
+                <address className='font-medium'>{formatAddress(order?.shippingAddress)}
                 </address>
               </div>
             </div>
@@ -65,7 +62,7 @@ function OrderDetail({ order, formatPfpUrl, getPaymentBadge, statusColors, forma
             <div className='flex flex-col gap-2'>
               <h1>Order Items</h1>
               <div className='flex flex-col'>
-                <div className={`border rounded-md ${isDark ? "border-gray-700" : "border-gray-200"}`}>
+                <div className={`border rounded-md max-h-65 overflow-y-auto ${isDark ? "border-gray-700" : "border-gray-200"}`}>
                   <table className="w-full border-collapse">
                     <tbody className={`divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"}`}>
                       {visibleItems?.map((item, idx) => (

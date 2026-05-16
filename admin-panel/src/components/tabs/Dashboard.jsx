@@ -14,6 +14,7 @@ import {
   Sector
 } from 'recharts';
 import { useTheme } from '../../context/ThemeContext';
+import { statusColors } from '../../utils/format';
 
 // Mock Data for Charts
 const salesData = [
@@ -202,23 +203,7 @@ const StatCard = ({ icon, label, value, color, className, isDark }) => (
 );
 
 const OrderRow = ({ id, name, item, status, date, isDark }) => {
-  const statusColors = {
-    Delivered: isDark
-      ? "bg-green-900/40 text-green-400 border border-green-700"
-      : "bg-green-100 text-green-600 border border-green-300 shadow-md",
-
-    Processing: isDark
-      ? "bg-yellow-900/40 text-yellow-400 border border-yellow-700"
-      : "bg-orange-100 text-orange-600 border border-yellow-300 shadow-md",
-
-    Shipped: isDark
-      ? "bg-teal-900/40 text-teal-400 border border-teal-700"
-      : "bg-teal-100 text-teal-600 border border-teal-300 shadow-md",
-
-    Cancelled: isDark
-      ? "bg-red-900/40 text-red-400 border border-red-700"
-      : "bg-red-100 text-red-600 border border-red-300 shadow-md",
-  };
+  
   return (
     <tr className={`group transition cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-slate-50"}`}>
       <td className={`px-6 py-4  font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}>{id}</td>

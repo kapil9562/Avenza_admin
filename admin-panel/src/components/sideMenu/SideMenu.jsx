@@ -86,7 +86,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
       <div className={`${isDark? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full z-100 ${sideMenu? "block" : "hidden"}`}></div>
       <div
         className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
-      min-h-dvh border-r-2 transition-all duration-300 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 ${sideMenu ? "translate-x-0" : "-translate-x-full"}
+      min-h-dvh border-r-2 transition-[width,transform] duration-300 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 ${sideMenu ? "translate-x-0" : "-translate-x-full"}
       ${open.status ? "w-60" : "w-16"} overflow-hidden`}
       >
 
@@ -154,7 +154,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
                 <span className='text-xl'>{item.icon}</span>
 
                 <span
-                  className={`whitespace-nowrap transition-all duration-200 text-lg
+                  className={`whitespace-nowrap transition-[opacity, width] duration-200 text-lg
                 ${open.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
                 >
                   {item.tab}

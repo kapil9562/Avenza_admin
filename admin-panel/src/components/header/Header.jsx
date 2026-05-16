@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { FiLogOut } from "react-icons/fi";
 import { HiMiniBars3BottomLeft } from 'react-icons/hi2';
+import { normalizeGooglePhoto } from '../../utils/format';
 
 function Header({ setSideMenu }) {
 
@@ -26,12 +27,6 @@ function Header({ setSideMenu }) {
   useEffect(() => {
     setIsActive(false);
   }, [user]);
-
-  const normalizeGooglePhoto = (url) => {
-    if (!url) return null;
-    const base = url.split("=")[0];
-    return `${base}=s200`;
-  };
 
   return (
     <div className={`lg:px-8 px-2 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between`}>
