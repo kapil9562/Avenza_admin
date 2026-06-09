@@ -49,7 +49,7 @@ function Orders() {
   const { cache, setOrders, setCache, total, setTotal, stats, setStats, paymentMethods, setPaymentMethods } = useOrders();
   const cacheKey = `${status}-${page}-${payment}-${search}`;
   const orders = cache[cacheKey];
-  const [loading, setLoading] = useState(!cache.hasOwnProperty(cacheKey));
+  const [loading, setLoading] = useState(!(cache?.[cacheKey]));
 
   const totalPages = useMemo(() => Math.ceil(total / 10), [total]);
   const skip = (page - 1) * 10;
@@ -111,7 +111,7 @@ function Orders() {
     };
 
     fetchOrders();
-  }, [cacheKey, payment, status, page, search]);
+  }, [cacheKey, payment, status, page, search, cache, orders, setOrders, setPaymentMethods, setStats, setTotal, skip]);
 
   const handleStatusChange = (filter) => {
     if (status === filter) return;
@@ -138,7 +138,7 @@ function Orders() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [input]);
+  }, [input, setCache]);
 
   const handleToggle = (id) => {
     setShowDetail((prev) =>
@@ -155,6 +155,15 @@ function Orders() {
         : [...prev, id]
     );
   };
+
+  const clearFilters = () => {
+    if(payment || search || status) {
+      setPayment("All");
+      setStatus("All");
+      setSearch("");
+    }
+    return;
+  }
 
   return (
     <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
@@ -285,11 +294,11 @@ function Orders() {
                         {error}
                       </p>
                       <button
-                        className={`px-2 py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 text-sm mt-4 text-white ${isDark ? " from-purple-500 to-purple-700" : " from-purple-300 to-purple-500"} hover:brightness-110`}
-                        onClick={() => window.location.reload()}
+                        className={`px-2 py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 will-change-transform text-sm mt-2 text-white ${isDark ? " from-purple-500 to-purple-700" : " from-purple-300 to-purple-500"} hover:brightness-110`}
+                        onClick={() => clearFilters()}
                       >
                         <IoRefresh size={26} />
-                        <span>Refresh Page</span>
+                        <span>Refresh Orders</span>
                       </button>
                     </div>
                   </td>

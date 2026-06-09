@@ -58,7 +58,7 @@ export const getOrders = async (req, res) => {
             // final query
             query.$or = [
                 { orderId: { $regex: searchTerm, $options: "i" } },
-                { userId: { $in: userIds } },
+                { user: { $in: userIds } },
             ];
         }
 

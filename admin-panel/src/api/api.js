@@ -71,6 +71,8 @@ export const getCurrentUser = () => adminApi.get('/auth/get-current-user');
 
 export const logoutUser = () => adminApi.post('/auth/logout');
 
+export const getAllUsers = ({skip}) => adminApi.get(`/customers/get-users?${skip}`);
+
 let isRefreshing = false;
 let failedQueue = [];
 

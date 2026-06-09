@@ -28,7 +28,7 @@ function Products() {
     const { cache, setProducts, setCache, categories, setCategories, total, setTotal } = useProducts();
     const cacheKey = `${category}-${page}-${inStock}`;
     const products = cache[cacheKey];
-    const [loading, setLoading] = useState(!cache.hasOwnProperty(cacheKey));
+    const [loading, setLoading] = useState(!(cache?.[cacheKey]));
 
     const handleStockToggle = () => {
         setStock(inStock === "true" ? "false" : "true");
@@ -61,12 +61,12 @@ function Products() {
                 const res = await getAllCategory();
                 setCategories(res?.data);
             } catch (error) {
-                const msg = err?.response?.data?.message || err?.message || "Something went wrong !"
+                const msg = error?.response?.data?.message || error?.message || "Something went wrong !"
                 setError(msg);
             }
         }
         getCategories();
-    }, [])
+    }, [setCategories])
 
     useEffect(() => {
         if (cache[cacheKey]) return;
@@ -104,7 +104,7 @@ function Products() {
         };
 
         fetchProducts();
-    }, [cacheKey, category, page, inStock, isDeleted]);
+    }, [cacheKey, category, page, inStock, isDeleted, cache, products, setProducts, setTotal, skip]);
 
     const statusColors = {
         InStock: isDark

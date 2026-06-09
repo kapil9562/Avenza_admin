@@ -23,7 +23,7 @@ const speedLimiter = slowDown({
     delayMs: (hits) => (hits - 3) * 500,
 });
 
-orderRouter.get("/get-orders", speedLimiter, verifyJWT, getOrders);
+orderRouter.get("/get-orders", verifyJWT, getOrders);
 orderRouter.patch("/update-order/status/:orderId", speedLimiter, limiter, verifyJWT, updateOrder);
 orderRouter.delete("/delete-order/:orderId", speedLimiter, limiter, verifyJWT, deleteOrder);
 

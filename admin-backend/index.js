@@ -8,6 +8,7 @@ import { productRouter } from './src/routes/product.router.js';
 import { authRouter } from "./src/routes/auth.router.js";
 import cookieParser from "cookie-parser";
 import { orderRouter } from "./src/routes/order.router.js";
+import { customerRouter } from "./src/routes/customers.router.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -48,6 +49,7 @@ app.get("/ping", (req, res) => {
 app.use('/api', productRouter);
 app.use('/api', authRouter);
 app.use('/api', orderRouter);
+app.use('/api', customerRouter);
 
 // Connect DB then start server
 connectDB()

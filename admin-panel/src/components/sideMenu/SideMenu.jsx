@@ -21,13 +21,6 @@ function SideMenu({ sideMenu, setSideMenu }) {
     status: true
   });
 
-  useEffect(() => {
-    const current = !tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1);
-    setActiveTab(current);
-  }, [location.pathname]);
-
-  /*  STATIC COLOR SYSTEM (SAFE FOR TAILWIND) */
-
   const colorVariants = {
     Dashboard: {
       light: "text-blue-600 hover:bg-blue-100",

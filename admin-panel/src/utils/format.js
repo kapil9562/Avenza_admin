@@ -69,5 +69,13 @@ const getPaymentBadge = (method) => {
             return "bg-gray-600/10 text-gray-600 border border-gray-400";
     }
 };
+const getActiveBadge = (method) => {
+    switch (method) {
+        case "true":
+            return "bg-green-600/10 text-green-600 border border-green-400";
+        default:
+            return "bg-red-600/10 text-red-600 border border-red-400";
+    }
+};
 
-export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge };
+export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge };
