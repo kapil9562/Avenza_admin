@@ -59,7 +59,7 @@ const addNewProduct = async (req, res) => {
         let availabilityStatus = ""
         if (data?.stock >= 10) {
             availabilityStatus = "In Stock"
-        } else if (data?.stock < 10 && data?.stock > 0) {
+        } else if (data?.stock > 0) {
             availabilityStatus = "Low Stock"
         } else {
             availabilityStatus = "Out of Stock"
@@ -158,10 +158,10 @@ const updateProduct = async (req, res) => {
 
         // Update Availability (if stock changed)
         if (data.stock !== null) {
-            product.stock == Number(data?.stock);
+            product.stock = Number(data?.stock);
             if (data.stock >= 10) {
                 product.availabilityStatus = "In Stock";
-            } else if (data.stock > 0) {
+            } else if (data.stock > 0 ) {
                 product.availabilityStatus = "Low Stock";
             } else {
                 product.availabilityStatus = "Out of Stock";

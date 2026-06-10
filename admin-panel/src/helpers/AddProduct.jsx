@@ -32,7 +32,7 @@ function AddProduct() {
     const categories = {
         "Beauty": ["skin-care", "fragrances", "beauty", "hair-care", "face-care", "organic-beauty"],
         "Electronics": ["smartphones", "mobile-accessories", "tablets", "laptops", "Laptop"],
-        "Fashion": ["sunglasses", "ethnic-wear","western-wear","sportswear","winter-wear","kids-fashion"],
+        "Fashion": ["sunglasses", "ethnic-wear", "western-wear", "sportswear", "winter-wear", "kids-fashion"],
         "Groceries": ["groceries"],
         "Home & Living": ["furniture", "home-decoration", "kitchen-accessories"],
         "Men": ["mens-jacket", "mens-shirts", "mens-T-Shirts", "mens-watches", "mens-shoes"],
@@ -328,12 +328,12 @@ function AddProduct() {
     };
 
     const handleSubmit = async () => {
-        if (!isEdit &&
+        if (!isEdit && (
             !product.title ||
             !product.price ||
             !product.category ||
             !product.description ||
-            !product.stock ||
+            (product.stock === null || product.stock === undefined) ||
             !product.discountPercentage ||
             !product.brand ||
             !product.sku ||
@@ -345,7 +345,7 @@ function AddProduct() {
             !product.warrantyInformation ||
             !product.shippingInformation ||
             !product.returnPolicy ||
-            !product.minimumOrderQuantity
+            !product.minimumOrderQuantity)
         ) {
             setAlert({
                 code: 1,

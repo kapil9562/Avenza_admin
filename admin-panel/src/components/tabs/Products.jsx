@@ -37,10 +37,10 @@ function Products() {
         setInputValue(1);
     }
 
-    const totalPages = useMemo(() => Math.ceil(total / 30), [total]);
-    const skip = (page - 1) * 30;
+    const totalPages = useMemo(() => Math.ceil(total / 20), [total]);
+    const skip = (page - 1) * 20;
 
-    const showPagination = total > 30;
+    const showPagination = total > 20;
 
     const nextPage = () => {
         const next = Math.min(page + 1, totalPages);
@@ -308,7 +308,7 @@ function Products() {
                 </div>
                 <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
                     <div>
-                        <span className='font-semibold text-gray-400'>Showing {total>0 ? (skip + 1) : "0"} to {(skip + 30) < total ? skip + 30 : total} of {total} entries</span>
+                        <span className='font-semibold text-gray-400'>Showing {total>0 ? (skip + 1) : "0"} to {(skip + 20) < total ? skip + 20 : total} of {total} entries</span>
                     </div>
                     <div className='flex flex-row gap-4 items-center w-fit'>
 

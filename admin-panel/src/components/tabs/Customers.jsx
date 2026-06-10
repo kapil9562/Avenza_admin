@@ -21,6 +21,7 @@ import adminLoader from '../../assets/adminLoader.json';
 import { useCustomers } from "../../context/CustomerContext";
 import { useTheme } from '../../context/ThemeContext';
 import { formatDate, formatTime, getActiveBadge, normalizeGooglePhoto } from '../../utils/format';
+import { FaEye } from "react-icons/fa6";
 
 export default function Customers() {
   const { isDark } = useTheme();
@@ -136,8 +137,6 @@ export default function Customers() {
     {
       label: "Total Customers",
       value: meta?.total || "-",
-      percentageChange: "12.48%",
-      direction: "up",
       icon: FiUsers,
       light: {
         icon: "bg-pink-100 text-pink-500",
@@ -150,9 +149,8 @@ export default function Customers() {
     },
     {
       label: "New Customers",
-      value: meta?.new,
-      percentageChange: "12.48%",
-      direction: "up",
+      value: meta?.new?.count,
+      percentageChange: meta?.new?.growth,
       icon: LuUserCog,
       light: {
         icon: "bg-purple-100 text-purple-500",
@@ -165,9 +163,8 @@ export default function Customers() {
     },
     {
       label: "Repeat Customers",
-      value: meta.repeat,
-      percentageChange: "12.48%",
-      direction: "up",
+      value: meta?.repeat?.count,
+      percentageChange: meta?.repeat?.growth,
       icon: FiShoppingBag,
       light: {
         icon: "bg-green-100 text-green-500",
@@ -180,9 +177,8 @@ export default function Customers() {
     },
     {
       label: "Top Customers",
-      value: meta.top,
-      percentageChange: "12.48%",
-      direction: "down",
+      value: meta?.top?.count,
+      percentageChange: meta?.top?.growth,
       icon: LuCrown,
       light: {
         icon: "bg-orange-100 text-orange-500",
@@ -305,10 +301,10 @@ export default function Customers() {
                         </p>
                         <button
                           className={`px-2 py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 will-change-transform text-sm mt-2 text-white ${isDark ? " from-purple-500 to-purple-700" : " from-purple-300 to-purple-500"} hover:brightness-110`}
-                          
+
                         >
                           <IoRefresh size={26} />
-                          <span>Refresh Orders</span>
+                          <span>Refresh Customers</span>
                         </button>
                       </div>
                     </td>
@@ -347,11 +343,11 @@ export default function Customers() {
 
                         {/* order items */}
                         <td className="px-4 py-1">
-                          <span>-</span>
+                          <span className={`py-1 px-3 rounded-md bg-pink-600/10 text-pink-600`}>{user.ordersCount}</span>
                         </td>
 
                         <td className="px-4 py-1">
-                          ₹{"-"}
+                          ₹{user.totalSpent.toLocaleString("en-IN")}
                         </td>
 
                         {/* date & time */}
@@ -378,11 +374,11 @@ export default function Customers() {
                               {showActions.includes(user._id) && (
                                 <div>
                                   <div className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
-                                    <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Order Actions</h1>
+                                    <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Customer Actions</h1>
                                     <button
                                       className={`${actionBtnClass} text-blue-600`}>
                                       <span><BiPencil size={16} /></span>
-                                      <span>Edit Order</span>
+                                      <span>Edit Role</span>
                                     </button>
                                     <button
                                       className={`${actionBtnClass} text-violet-600`}
@@ -390,13 +386,12 @@ export default function Customers() {
                                       <span><FiRefreshCw size={16} /></span>
                                       <span>Update Status</span>
                                     </button>
-                                    <button className={`${actionBtnClass} text-emerald-600`}><FiPrinter size={16} />Print Invoice</button>
-                                    <button className={`${actionBtnClass} text-cyan-600`}><LuDownload size={16} />Download Invoice</button>
+                                    <button className={`${actionBtnClass} text-emerald-600`}><FaEye size={16} />View Customer</button>
                                     <button
                                       className={`${actionBtnClass} text-red-600`}
                                     >
                                       <span><RiDeleteBin6Line size={16} /></span>
-                                      <span>Delete Order</span>
+                                      <span>Delete Customer</span>
                                     </button>
                                   </div>
                                 </div>
@@ -497,13 +492,15 @@ const StatCard = ({ item, isDark }) => {
         <p className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
           {item.value}
         </p>
-        <div className="flex flex-row gap-1 font-medium text-sm mt-1">
-          <div className={`${item.direction === "up" ? "text-green-500" : "text-red-500"} flex row gap-1 items-center`}>
-            <IoMdArrowUp className={`${item.direction === "down" && "rotate-180"}`} />
-            <span>{item.percentageChange}</span>
+        {item.percentageChange !== undefined &&
+          <div className="flex flex-row gap-1 font-medium text-sm mt-1">
+            <div className={`${item.percentageChange >= 0 ? "text-green-500" : "text-red-500"} flex row gap-1 items-center`}>
+              <IoMdArrowUp className={`${item.percentageChange < 0 && "rotate-180"}`} />
+              <span>{item.percentageChange}%</span>
+            </div>
+            <p className={`${isDark ? "text-slate-300" : "text-slate-400"}`}>this month</p>
           </div>
-          <p className={`${isDark ? "text-slate-300" : "text-slate-400"}`}>this month</p>
-        </div>
+        }
       </div>
     </div>
   );

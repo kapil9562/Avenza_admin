@@ -1,102 +1,242 @@
-import User from "../models/user.model.js"
+import Order from "../models/order.modal.js";
+import User from "../models/user.model.js";
 
 const getUsers = async (req, res) => {
-    const { skip } = req.query
+    const { skip = 0 } = req.query;
 
     try {
         const now = new Date();
 
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(now.getMonth() - 1);
+        const currentMonthStart = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
 
-        const metaDataRaw = await User.aggregate([
-            {
-                $facet: {
+        const previousMonthStart = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1
+        );
 
-                    // TOTAL USERS
-                    total: [
-                        { $count: "count" }
-                    ],
+        const previousMonthEnd = currentMonthStart;
 
-                    // NEW USERS
-                    new: [
-                        {
-                            $match: {
-                                createdAt: { $gte: oneMonthAgo }
-                            }
-                        },
-                        { $count: "count" }
-                    ],
+        // TOTAL USERS
+        const totalUsers = await User.countDocuments();
 
-                    // REPEAT USERS
-                    repeat: [
-                        {
-                            $lookup: {
-                                from: "orders",
-                                localField: "_id",
-                                foreignField: "user",
-                                as: "orders"
-                            }
-                        },
-                        {
-                            $match: {
-                                "orders.1": { $exists: true }
-                            }
-                        },
-                        { $count: "count" }
-                    ],
+        // NEW USERS
+        const currentNewUsers = await User.countDocuments({
+            createdAt: { $gte: currentMonthStart }
+        });
 
-                    // TOP USERS
-                    top: [
-                        {
-                            $lookup: {
-                                from: "orders",
-                                localField: "_id",
-                                foreignField: "user",
-                                as: "orders"
-                            }
-                        },
-                        {
-                            $addFields: {
-                                orderCount: { $size: "$orders" }
-                            }
-                        },
-                        {
-                            $match: {
-                                orderCount: { $gt: 5 }
-                            }
-                        },
-                        {
-                            $count: "count"
-                        }
-                    ]
+        const previousNewUsers = await User.countDocuments({
+            createdAt: {
+                $gte: previousMonthStart,
+                $lt: previousMonthEnd
+            }
+        });
+
+        // REPEAT USERS (2+ orders in month)
+        const [currentRepeatResult, previousRepeatResult] = await Promise.all([
+            Order.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: currentMonthStart }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$user",
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $match: {
+                        orderCount: { $gte: 2 }
+                    }
+                },
+                {
+                    $count: "count"
                 }
+            ]),
+
+            Order.aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: previousMonthStart,
+                            $lt: previousMonthEnd
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$user",
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $match: {
+                        orderCount: { $gte: 2 }
+                    }
+                },
+                {
+                    $count: "count"
+                }
+            ])
+        ]);
+
+        // TOP USERS (5+ orders in month)
+        const [currentTopResult, previousTopResult] = await Promise.all([
+            Order.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: currentMonthStart }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$user",
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $match: {
+                        orderCount: { $gt: 5 }
+                    }
+                },
+                {
+                    $count: "count"
+                }
+            ]),
+
+            Order.aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: previousMonthStart,
+                            $lt: previousMonthEnd
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$user",
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $match: {
+                        orderCount: { $gt: 5 }
+                    }
+                },
+                {
+                    $count: "count"
+                }
+            ])
+        ]);
+
+        const currentRepeat = currentRepeatResult[0]?.count || 0;
+        const previousRepeat = previousRepeatResult[0]?.count || 0;
+
+        const currentTop = currentTopResult[0]?.count || 0;
+        const previousTop = previousTopResult[0]?.count || 0;
+
+        // Growth Calculator
+        const calculateGrowth = (current, previous) => {
+            if (previous === 0) {
+                return current > 0 ? 100 : 0;
+            }
+
+            return Number(
+                (((current - previous) / previous) * 100).toFixed(1)
+            );
+        };
+
+        const metaData = {
+            total: totalUsers,
+
+            new: {
+                count: currentNewUsers,
+                growth: calculateGrowth(
+                    currentNewUsers,
+                    previousNewUsers
+                )
+            },
+
+            repeat: {
+                count: currentRepeat,
+                growth: calculateGrowth(
+                    currentRepeat,
+                    previousRepeat
+                )
+            },
+
+            top: {
+                count: currentTop,
+                growth: calculateGrowth(
+                    currentTop,
+                    previousTop
+                )
+            }
+        };
+
+        // USERS TABLE DATA
+        const users = await User.aggregate([
+            {
+                $lookup: {
+                    from: "orders",
+                    localField: "_id",
+                    foreignField: "user",
+                    as: "orders"
+                }
+            },
+            {
+                $addFields: {
+                    ordersCount: {
+                        $size: "$orders"
+                    },
+
+                    totalSpent: {
+                        $sum: "$orders.totalAmount"
+                    }
+                }
+            },
+            {
+                $project: {
+                    passwordHash: 0,
+                    refreshToken: 0,
+                    googleLogin: 0,
+                    orders: 0
+                }
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
+            },
+            {
+                $skip: Number(skip)
+            },
+            {
+                $limit: 20
             }
         ]);
 
-        // CLEAN FINAL OUTPUT
-        const metaData = {
-            total: metaDataRaw[0].total[0]?.count || 0,
-            new: metaDataRaw[0].new[0]?.count || 0,
-            repeat: metaDataRaw[0].repeat[0]?.count || 0,
-            top: metaDataRaw[0].top[0]?.count || 0
-        };
-
-        const users = await User.find({}).select("-passwordHash -refreshToken -googleLogin").skip(Number(skip) || 0).limit(20);
-
         res.status(200).json({
             success: true,
-            users: users,
+            users,
             metaData
-        })
+        });
+
     } catch (error) {
         console.error(error);
+
         res.status(500).json({
             success: false,
             message: "Failed to fetch users!"
         });
     }
+};
 
-}
-
-export { getUsers }
+export { getUsers };
