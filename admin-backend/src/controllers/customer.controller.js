@@ -219,7 +219,7 @@ const getUsers = async (req, res) => {
                 $skip: Number(skip)
             },
             {
-                $limit: 20
+                $limit: 10
             }
         ]);
 

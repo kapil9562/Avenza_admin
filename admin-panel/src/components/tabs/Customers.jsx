@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   FiShoppingBag,
   FiUsers
@@ -20,8 +20,9 @@ import { getAllUsers } from '../../api/api';
 import adminLoader from '../../assets/adminLoader.json';
 import { useCustomers } from "../../context/CustomerContext";
 import { useTheme } from '../../context/ThemeContext';
-import { formatDate, formatTime, getActiveBadge, normalizeGooglePhoto } from '../../utils/format';
+import { formatDate, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
 import { FaEye } from "react-icons/fa6";
+import EditRoleModal from "../../helpers/EditRoleModal";
 
 export default function Customers() {
   const { isDark } = useTheme();
@@ -32,13 +33,24 @@ export default function Customers() {
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
   const [showDetail, setShowDetail] = useState([]);
-  const [showActions, setShowActions] = useState([]);
+  const [showActions, setShowActions] = useState();
   const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false);
-  const [orderId, setOrderId] = useState("");
-  const [orderStatus, setOrderStatus] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+
+  const actionRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        actionRef.current?.contains(e.target)
+      ) return;
+
+      setShowActions(false);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const actionBtnClass = `flex gap-2 items-center px-3 py-1 text-sm font-medium w-full cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`
 
@@ -76,7 +88,6 @@ export default function Customers() {
 
         const res = await getAllUsers(params);
 
-        console.log(res)
         if (res?.data?.users?.length === 0) {
           setError("No any user found!");
         }
@@ -126,11 +137,7 @@ export default function Customers() {
   };
 
   const handleShowActions = (id) => {
-    setShowActions((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
-    );
+    (id !== showActions) ? setShowActions(id) : setShowActions("");
   };
 
   const statCard = [
@@ -197,7 +204,7 @@ export default function Customers() {
         }`}
     >
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
         {statCard.map((item) => (
           <StatCard key={item.label} item={item} isDark={isDark} />
         ))}
@@ -263,6 +270,7 @@ export default function Customers() {
                   <th className="px-4 py-2 w-[15%] text-sm font-semibold">Orders</th>
                   <th className="px-4 py-2 w-[12%] text-sm font-semibold">Total Spent</th>
                   <th className="px-4 py-2 w-[8%]  text-sm font-semibold whitespace-nowrap">Joined On</th>
+                  <th className="px-4 py-2 w-[10%] text-sm font-semibold">Role</th>
                   <th className="px-4 py-2 w-[10%] text-sm font-semibold">Status</th>
                   <th className="px-4 py-2 w-[5%]  text-sm font-semibold">Action</th>
                 </tr>
@@ -311,7 +319,7 @@ export default function Customers() {
                   </tr>
                 ) : (
 
-                  // {Orders}
+                  // {users}
                   users?.map((user, idx) => (
                     <React.Fragment key={user?._id || idx}>
                       <tr className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"} `}>
@@ -341,7 +349,7 @@ export default function Customers() {
                           {user.email}
                         </td>
 
-                        {/* order items */}
+                        {/* Total Orders */}
                         <td className="px-4 py-1">
                           <span className={`py-1 px-3 rounded-md bg-pink-600/10 text-pink-600`}>{user.ordersCount}</span>
                         </td>
@@ -358,10 +366,18 @@ export default function Customers() {
                           </div>
                         </td>
 
+                        {/* Role */}
                         <td className="px-4 py-1">
-                          <button className={`px-3 text-sm py-1 rounded-full whitespace-nowrap ${getActiveBadge(user?.isActive ? "true" : "false")}`}>
+                          <span className={`px-3 text-sm py-1 rounded-full whitespace-nowrap ${getRoleBadge(user?.role)}`}>
+                            {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+                          </span>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-4 py-1">
+                          <span className={`px-3 text-sm py-1 rounded-full whitespace-nowrap ${getActiveBadge(user?.isActive ? "true" : "false")}`}>
                             {user?.isActive ? "Active" : "Inactive"}
-                          </button>
+                          </span>
                         </td>
 
                         <td className="px-4 py-1">
@@ -371,29 +387,29 @@ export default function Customers() {
                               onClick={() => handleShowActions(user?._id)}
                             >
                               <PiDotsThreeVerticalBold />
-                              {showActions.includes(user._id) && (
-                                <div>
-                                  <div className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
-                                    <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Customer Actions</h1>
-                                    <button
-                                      className={`${actionBtnClass} text-blue-600`}>
-                                      <span><BiPencil size={16} /></span>
-                                      <span>Edit Role</span>
-                                    </button>
-                                    <button
-                                      className={`${actionBtnClass} text-violet-600`}
-                                    >
-                                      <span><FiRefreshCw size={16} /></span>
-                                      <span>Update Status</span>
-                                    </button>
-                                    <button className={`${actionBtnClass} text-emerald-600`}><FaEye size={16} />View Customer</button>
-                                    <button
-                                      className={`${actionBtnClass} text-red-600`}
-                                    >
-                                      <span><RiDeleteBin6Line size={16} /></span>
-                                      <span>Delete Customer</span>
-                                    </button>
-                                  </div>
+                              {(showActions === user._id) && (
+                                <div ref={actionRef} className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
+                                  <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Customer Actions</h1>
+                                  <button
+                                    className={`${actionBtnClass} text-blue-600`}
+                                    onClick={() => setEditModal(true)}
+                                  >
+                                    <span><BiPencil size={16} /></span>
+                                    <span>Edit Role</span>
+                                  </button>
+                                  <button
+                                    className={`${actionBtnClass} text-violet-600`}
+                                  >
+                                    <span><FiRefreshCw size={16} /></span>
+                                    <span>Update Status</span>
+                                  </button>
+                                  <button className={`${actionBtnClass} text-emerald-600`}><FaEye size={16} />View Customer</button>
+                                  <button
+                                    className={`${actionBtnClass} text-red-600`}
+                                  >
+                                    <span><RiDeleteBin6Line size={16} /></span>
+                                    <span>Delete Customer</span>
+                                  </button>
                                 </div>
                               )}
                             </div>
@@ -471,6 +487,8 @@ export default function Customers() {
           </div>
         </div>
       </div>
+
+      {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} />}
     </div>
   );
 }

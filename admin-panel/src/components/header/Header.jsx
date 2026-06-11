@@ -24,10 +24,6 @@ function Header({ setSideMenu }) {
     else setIsActive(true);
   };
 
-  useEffect(() => {
-    setIsActive(false);
-  }, [user]);
-
   return (
     <div className={`lg:px-8 px-2 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"} min-h-15 flex flex-row items-center justify-between`}>
       <button

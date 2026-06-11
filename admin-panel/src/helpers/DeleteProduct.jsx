@@ -41,7 +41,7 @@ export default function DeleteProduct({ setShow, product, setIsDeleted }) {
             const res = await deleteProductById({ productId: product._id })
             setAlert({
                 code: res?.status,
-                msg: res?.data?.msg
+                msg: res?.data?.message
             });
             setTimeout(() => {
                 setCache({});
@@ -50,10 +50,9 @@ export default function DeleteProduct({ setShow, product, setIsDeleted }) {
                 setShow(false);
             }, 2000);
         } catch (error) {
-            console.log(error);
             setAlert({
-                code: res?.status,
-                msg: res?.data?.msg || "Failed to delete !"
+                code: error?.response?.status || 500,
+                msg: error?.response?.data?.message || error?.data?.message || "Failed to delete !"
             });
         }
     }

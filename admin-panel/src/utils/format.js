@@ -19,7 +19,7 @@ const calSubtotal = (items) => {
 };
 
 const normalizeGooglePhoto = (url) => {
-    if (!url) return null;
+    if (!url) return;
     const base = url.split("=")[0];
     return `${base}=s200`;
 };
@@ -69,6 +69,7 @@ const getPaymentBadge = (method) => {
             return "bg-gray-600/10 text-gray-600 border border-gray-400";
     }
 };
+
 const getActiveBadge = (method) => {
     switch (method) {
         case "true":
@@ -78,4 +79,20 @@ const getActiveBadge = (method) => {
     }
 };
 
-export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge };
+const getRoleBadge = (role) => {
+  switch (role?.toLowerCase()) {
+    case "admin":
+      return "bg-red-600/10 text-red-600 border border-red-400";
+
+    case "moderator":
+      return "bg-purple-600/10 text-purple-600 border border-purple-400";
+
+    case "vendor":
+      return "bg-blue-600/10 text-blue-600 border border-blue-400";
+
+    default:
+      return "bg-emerald-600/10 text-emerald-600 border border-emerald-400";
+  }
+};
+
+export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge, getRoleBadge };
