@@ -74,7 +74,7 @@ export const ToastProvider = ({ children }) => {
         <ToastContext.Provider value={toast}>
             {children}
 
-            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-3 w-fit z-99999">
+            <div className="fixed top-4 left-1/2 -translate-x-1/2 flex flex-col gap-3 w-fit z-99999">
                 {currentToast && (
                     <div
                         key={currentToast.id}

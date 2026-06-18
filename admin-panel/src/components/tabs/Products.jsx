@@ -5,13 +5,14 @@ import { HiPlus } from "react-icons/hi";
 import { FaPencil } from "react-icons/fa6";
 import { ImBin } from "react-icons/im";
 import { useProducts } from '../../context/ProductsContext';
-import { getAllCategory, getProducts } from '../../api/api';
+import { getAllCategory, getProducts, restoreProduct } from '../../api/api';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeleteProduct from '../../helpers/DeleteProduct';
 import { MdOutlineRestore } from 'react-icons/md';
+import { toast } from '../../context/ToastContext';
 
 function Products() {
     const { isDark } = useTheme();
@@ -31,38 +32,44 @@ function Products() {
     const cacheKey = `${category}-${page}-${inStock}`;
     const products = cache[cacheKey];
     const [loading, setLoading] = useState(!(cache?.[cacheKey]));
+    const [restoreLoading, setRestoreLoading] = useState(false);
 
+    // {Stock Toggle}
     const handleStockToggle = () => {
         setStock(inStock === "true" ? "false" : "true");
-        setCache({});
+        setCache([]);
         setPage(1);
         setInputValue(1);
     }
 
+    // {Deleted Items Toggle}
     const handleDeletedToggle = () => {
         setDeletedItems(deletedItems === "true" ? "false" : "true");
-        setCache({});
+        setCache([]);
         setPage(1);
         setInputValue(1);
     }
 
+    // {Pagination handlers}
     const totalPages = useMemo(() => Math.ceil(total / 20), [total]);
     const skip = (page - 1) * 20;
-
     const showPagination = total > 20;
 
+    // {Next page handler}
     const nextPage = () => {
         const next = Math.min(page + 1, totalPages);
         setPage(next);
         setInputValue(next);
     };
 
+    // {Previous page handler}
     const prevPage = () => {
         const prev = Math.max(page - 1, 1);
         setPage(prev);
         setInputValue(prev);
     };
 
+    // {Fetch Categories}
     useEffect(() => {
         const getCategories = async () => {
             try {
@@ -77,6 +84,7 @@ function Products() {
         getCategories();
     }, [setCategories])
 
+    // {Fetch Products}
     useEffect(() => {
         if (cache[cacheKey]) return;
         const fetchProducts = async () => {
@@ -129,13 +137,42 @@ function Products() {
             : "bg-red-100 text-red-600 border border-red-300 shadow-md",
     };
 
+    // { Category filter handler }
     const handleCategory = (filter) => {
         if (category === filter) return;
-        setCache({});
+        setCache([]);
         setCategory(filter);
         setPage(1);
         setInputValue(1);
         setOpenIndex(null);
+    }
+
+    const handleRestore = async (productId) => {
+        if (!productId) return;
+        try {
+            setRestoreLoading(true);
+            const res = await restoreProduct({ productId });
+            toast.success(res?.data?.message);
+            setCache((prev) => {
+                const updated = prev[cacheKey].filter(
+                    (item) => item._id !== productId
+                );
+
+                if (updated.length === 0) {
+                    setError("No any product found!");
+                }
+
+                return {
+                    ...prev,
+                    [cacheKey]: updated,
+                };
+            });
+        } catch (error) {
+            const msg = error?.response?.data?.message || error?.data?.message || "Something went wrong!"
+            toast.error(msg);
+        } finally {
+            setRestoreLoading(false);
+        }
     }
 
     return (
@@ -315,7 +352,7 @@ function Products() {
                                                 <button
                                                     title='Edit'
                                                     className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                                                    onClick={() => navigate(`/edit-product/${product._id}`)}
+                                                    onClick={() => navigate(`/edit-product/${product?._id}`)}
                                                 >
                                                     <FaPencil />
                                                 </button>
@@ -323,9 +360,9 @@ function Products() {
                                                     <button
                                                         title='Restore'
                                                         onClick={() => {
-                                                            setShow(true);
-                                                            setIdx(idx);
+                                                            handleRestore(product?._id);
                                                         }}
+                                                        disabled={restoreLoading}
                                                         className={`text-green-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
                                                     >
                                                         <MdOutlineRestore size={20} />

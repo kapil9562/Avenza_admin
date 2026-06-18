@@ -237,12 +237,13 @@ const updateProduct = async (req, res) => {
     }
 };
 
+// { Delete Product }
 const deleteProduct = async (req, res) => {
     const { productId } = req.body;
 
     if (!productId) {
         return res.status(400).json({
-            msg: "Product Id is required!"
+            message: "Product Id is required!"
         });
     }
 
@@ -253,14 +254,41 @@ const deleteProduct = async (req, res) => {
         );
         setTimeout(() => {
             res.status(200).json({
-                msg: "Product deleted successfully."
+                message: "Product deleted successfully."
             })
-        }, 2000);
+        }, 1000);
     } catch (error) {
         res.status(400).json({
-            msg: "Failed to delete !"
+            message: "Failed to delete !"
         })
     }
 }
 
-export { addNewProduct, updateProduct, deleteProduct };
+// { Restore Product }
+const restoreProduct = async(req, res) => {
+    const { productId } = req.body;
+
+    if (!productId) {
+        return res.status(400).json({
+            message: "Product Id is required!"
+        });
+    }
+
+    try {
+        await Product.findOneAndUpdate(
+            { _id: productId },
+            { isDeleted: false }
+        );
+        setTimeout(() => {
+            res.status(200).json({
+                message: "Product restored successfully."
+            })
+        }, 1000);
+    } catch (error) {
+        res.status(400).json({
+            message: "Failed to restore !"
+        })
+    }
+}
+
+export { addNewProduct, updateProduct, deleteProduct, restoreProduct };

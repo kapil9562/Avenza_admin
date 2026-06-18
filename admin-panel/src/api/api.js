@@ -36,6 +36,7 @@ export const addProduct = (data) =>
 export const getAllCategory = () => webApi.get('/category-list');
 
 export const deleteProductById = ({ productId }) => adminApi.post("/delete-product", { productId });
+export const restoreProduct = ({ productId }) => adminApi.post("/restore-product", { productId });
 
 export const getSingleProduct = ({ productId }) => webApi.get(`/products?productId=${productId}`);
 
@@ -45,7 +46,7 @@ export const updateProduct = (productId, data) =>
       "Content-Type": "multipart/form-data"
     }
   });
-  
+
 // {order apis}
 export const getOrders = ({ skip = 0, status, paymentMethod, search }) => {
   const params = new URLSearchParams();
@@ -60,7 +61,7 @@ export const getOrders = ({ skip = 0, status, paymentMethod, search }) => {
 
 export const updateStatus = ({ status, orderId }) => adminApi.patch(`update-order/status/${orderId}`, { status });
 
-export const deleteOrder = ({orderId}) => adminApi.delete(`/delete-order/${orderId}`);
+export const deleteOrder = ({ orderId }) => adminApi.delete(`/delete-order/${orderId}`);
 
 // {auth apis} 
 
@@ -72,7 +73,7 @@ export const getCurrentUser = () => adminApi.get('/auth/get-current-user');
 
 export const logoutUser = () => adminApi.post('/auth/logout');
 
-export const getAllUsers = ({skip}) => adminApi.get(`/customers/get-users?${skip}`);
+export const getAllUsers = ({ skip }) => adminApi.get(`/customers/get-users?${skip}`);
 
 let isRefreshing = false;
 let failedQueue = [];
