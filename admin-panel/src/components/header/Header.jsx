@@ -66,7 +66,11 @@ function Header({ setSideMenu }) {
         <div className={`relative group`} onClick={handleDropDown} >
           <div className={`flex flex-row gap-2 justify-center items-center cursor-pointer py-2 ${isActive && "shadow-[inset_0_-2px_0_0_#ff1774]"} group-hover:shadow-[inset_0_-2px_0_0_#ff1774]`}>
             <div>
-              <img src={normalizeGooglePhoto(user?.avatar) || (isDark ? "/user.png" : "/userLight.png")} alt="pfp" className='h-10 rounded-full' />
+              <img
+                src={normalizeGooglePhoto(user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                alt="pfp"
+                className='h-10 rounded-full'
+              />
             </div>
             <div className='flex flex-col'>
               <h1 className={`font-semibold text-sm ${isDark ? "text-gray-300" : "text-gray-800"}`}>Hi, {user?.name?.trim().split(" ")[0]}</h1>

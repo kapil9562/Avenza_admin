@@ -247,7 +247,10 @@ const deleteProduct = async (req, res) => {
     }
 
     try {
-        await Product.deleteOne({ _id: productId });
+        await Product.findOneAndUpdate(
+            { _id: productId },
+            { isDeleted: true }
+        );
         setTimeout(() => {
             res.status(200).json({
                 msg: "Product deleted successfully."

@@ -22,7 +22,7 @@ import { useCustomers } from "../../context/CustomerContext";
 import { useTheme } from '../../context/ThemeContext';
 import { formatDate, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
 import { FaEye } from "react-icons/fa6";
-import EditRoleModal from "../../helpers/EditRoleModal";
+import {EditRoleModal} from "../../helpers/EditRoleModal";
 
 export default function Customers() {
   const { isDark } = useTheme();
@@ -36,21 +36,28 @@ export default function Customers() {
   const [showActions, setShowActions] = useState();
   const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [currUser, setCurrUser] = useState({});
 
-  const actionRef = useRef();
+  const actionRef = useRef({});
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
-        actionRef.current?.contains(e.target)
-      ) return;
+        showActions &&
+        actionRef.current[showActions]?.contains(e.target)
+      ) {
+        return;
+      }
 
-      setShowActions(false);
+      setShowActions(null);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showActions]);
 
   const actionBtnClass = `flex gap-2 items-center px-3 py-1 text-sm font-medium w-full cursor-pointer ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`
 
@@ -381,18 +388,25 @@ export default function Customers() {
                         </td>
 
                         <td className="px-4 py-1">
-                          <div className="flex gap-2">
+                          <div className="flex gap-2" ref={(el) => (actionRef.current[user?._id] = el)}>
                             <div
                               className={`bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800 text-gray-400" : "bg-slate-100 text-gray-800"} relative`}
-                              onClick={() => handleShowActions(user?._id)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleShowActions(user?._id);
+                              }}
                             >
                               <PiDotsThreeVerticalBold />
                               {(showActions === user._id) && (
-                                <div ref={actionRef} className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
+                                <div className={`absolute top-full right-0 z-10 whitespace-nowrap flex flex-col items-start text-start rounded-md ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"} overflow-hidden border-2 shadow-[0_0px_6px_rgba(0,0,0,0.15)]`}>
                                   <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Customer Actions</h1>
                                   <button
                                     className={`${actionBtnClass} text-blue-600`}
-                                    onClick={() => setEditModal(true)}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setCurrUser(user);
+                                      setEditModal(true);
+                                    }}
                                   >
                                     <span><BiPencil size={16} /></span>
                                     <span>Edit Role</span>
@@ -488,7 +502,7 @@ export default function Customers() {
         </div>
       </div>
 
-      {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} />}
+      {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} />}
     </div>
   );
 }

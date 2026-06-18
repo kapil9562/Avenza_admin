@@ -10,7 +10,7 @@ export const adminApi = axios.create({
   withCredentials: true,
 })
 
-export const getProducts = ({ skip = 0, category, limit, title, productId, productIds, inStock }) => {
+export const getProducts = ({ skip = 0, category, limit, title, productId, productIds, inStock, deletedItems }) => {
   const params = new URLSearchParams();
 
   params.append('skip', skip);
@@ -20,6 +20,7 @@ export const getProducts = ({ skip = 0, category, limit, title, productId, produ
   if (productId) params.append('productId', productId);
   if (productIds) params.append('productIds', productIds);
   if (inStock) params.append('inStock', inStock);
+  if (deletedItems) params.append('deletedItems', deletedItems);
 
   return webApi.get(`/products?${params.toString()}`);
 

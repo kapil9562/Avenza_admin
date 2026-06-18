@@ -11,10 +11,12 @@ import adminLoader from '../../assets/adminLoader.json'
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeleteProduct from '../../helpers/DeleteProduct';
+import { MdOutlineRestore } from 'react-icons/md';
 
 function Products() {
     const { isDark } = useTheme();
     const [inStock, setStock] = useState("true");
+    const [deletedItems, setDeletedItems] = useState("false");
     const [inputValue, setInputValue] = useState("1");
     const [category, setCategory] = useState("All");
     const [page, setPage] = useState(1);
@@ -32,6 +34,13 @@ function Products() {
 
     const handleStockToggle = () => {
         setStock(inStock === "true" ? "false" : "true");
+        setCache({});
+        setPage(1);
+        setInputValue(1);
+    }
+
+    const handleDeletedToggle = () => {
+        setDeletedItems(deletedItems === "true" ? "false" : "true");
         setCache({});
         setPage(1);
         setInputValue(1);
@@ -74,7 +83,7 @@ function Products() {
             try {
                 setLoading(true);
                 setError("");
-                const params = { skip, inStock };
+                const params = { skip, inStock, deletedItems };
                 if (category !== "All") params.category = category;
 
                 const res = await getProducts(params);
@@ -93,7 +102,7 @@ function Products() {
                     setPage(prev => prev - 1);
                     return;
                 }
-                
+
             } catch (err) {
                 const msg = err?.response?.data?.message || err?.message || "Something went wrong !"
                 setError(msg);
@@ -187,6 +196,24 @@ function Products() {
                         </button>
                     </div>
                 </div>
+
+                <div className={`flex flex-row gap-4 items-center font-semibold w-fit rounded-md px-2 py-1 ${isDark ? "border-2 border-slate-700 text-gray-300" : "border border-gray-200 text-gray-700 shadow"}`}>
+                    <h1>Deleted items</h1>
+                    <div className='flex justify-center items-center text-[12px]'>
+                        <button
+                            className={`relative w-13 h-6 rounded-full items-center transition-all bg-purple-300 duration-500 cursor-pointer border ${isDark ? "shadow-black border-gray-300 bg-purple-400" : "shadow-gray-400 border-transparent"} shadow-inner flex`}
+                            onClick={handleDeletedToggle}
+                            disabled={loading}
+                        >
+                            {/* Knob */}
+                            <span className={`absolute w-4 h-4 z-10 rounded-full flex items-center justify-center transition-transform duration-500 ${deletedItems === 'true' ? "translate-x-8" : "translate-x-1"} ${isDark ? "bg-[#1b2744] shadow-gray-600 shadow" : "bg-white shadow-md"}`}
+                            >
+                            </span>
+                            {deletedItems === "true" ? (<span className='absolute left-2 text-white font-semibold'>ON</span>) : (<span className='absolute right-2 text-white font-semibold'>OFF</span>)}
+                        </button>
+                    </div>
+                </div>
+
                 <button
                     className={`px-2 py-1 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
                     onClick={() => navigate('/addproduct')}>
@@ -285,18 +312,36 @@ function Products() {
 
                                         <td className="px-4 py-1">
                                             <div className="flex gap-2">
-                                                <button className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`} onClick={() => navigate(`/edit-product/${product._id}`)}>
+                                                <button
+                                                    title='Edit'
+                                                    className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                                                    onClick={() => navigate(`/edit-product/${product._id}`)}
+                                                >
                                                     <FaPencil />
                                                 </button>
-                                                <button
-                                                    onClick={() => {
-                                                        setShow(true);
-                                                        setIdx(idx);
-                                                    }}
-                                                    className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                                                >
-                                                    <ImBin />
-                                                </button>
+                                                {product?.isDeleted ? (
+                                                    <button
+                                                        title='Restore'
+                                                        onClick={() => {
+                                                            setShow(true);
+                                                            setIdx(idx);
+                                                        }}
+                                                        className={`text-green-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                                                    >
+                                                        <MdOutlineRestore size={20} />
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        title='Delete'
+                                                        onClick={() => {
+                                                            setShow(true);
+                                                            setIdx(idx);
+                                                        }}
+                                                        className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                                                    >
+                                                        <ImBin />
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
 
@@ -308,11 +353,11 @@ function Products() {
                 </div>
                 <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
                     <div>
-                        <span className='font-semibold text-gray-400'>Showing {total>0 ? (skip + 1) : "0"} to {(skip + 20) < total ? skip + 20 : total} of {total} entries</span>
+                        <span className='font-semibold text-gray-400'>Showing {total > 0 ? (skip + 1) : "0"} to {(skip + 20) < total ? skip + 20 : total} of {total} entries</span>
                     </div>
                     <div className='flex flex-row gap-4 items-center w-fit'>
 
-                        <span className='font-semibold text-gray-400'>Page {totalPages>0 ? page : "0"} of {totalPages}</span>
+                        <span className='font-semibold text-gray-400'>Page {totalPages > 0 ? page : "0"} of {totalPages}</span>
 
                         {showPagination && (
                             <div className="flex justify-center items-center">

@@ -75,31 +75,22 @@ const permissions = [
     },
 ];
 
-export default function EditRoleModal({ editModal, setEditModal }) {
+export const EditRoleModal = ({ editModal, setEditModal, currUser }) => {
+
     const { isDark } = useTheme();
 
     return (
         <div className="fixed inset-0 z-999 bg-black/40 flex items-center justify-center p-3 md:p-6">
-            <div
-                className={`w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"
-                    }`}
-            >
+            <div className={`w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"}`}>
+
                 {/* Header */}
-                <div
-                    className={`flex items-center justify-between px-6 py-4 border-b ${isDark ? "border-slate-800" : "border-gray-200"
-                        }`}
-                >
+                <div className={`flex items-center justify-between px-6 py-4 border-b ${isDark ? "border-slate-800" : "border-gray-200"}`}>
                     <div>
-                        <h2
-                            className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-800"
-                                }`}
-                        >
+                        <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
                             Edit Role
                         </h2>
-                        <p
-                            className={`text-sm mt-1 font-medium ${isDark ? "text-gray-400" : "text-gray-500"
-                                }`}
-                        >
+
+                        <p className={`text-sm mt-1 font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                             Update role details & permission settings.
                         </p>
                     </div>
@@ -120,42 +111,37 @@ export default function EditRoleModal({ editModal, setEditModal }) {
                     {/* Role Information */}
                     <div>
                         <div className="space-y-2">
-                            <label
-                                className={`text-sm font-semibold mb-2 block ${isDark ? "text-gray-200" : "text-gray-800"
-                                    }`}
-                            >
+                            <label className={`text-sm font-semibold mb-2 block ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                                 Role Name
                             </label>
 
                             <div className="relative">
                                 <div className="absolute left-0 pl-2 top-1/2 -translate-y-1/2">
-                                    <TbUserShield size={20} className={`text-purple-600`} />
+                                    <TbUserShield size={20} className="text-purple-600" />
                                 </div>
 
                                 <input
                                     type="text"
-                                    defaultValue="Manager"
-                                    className={`w-full pl-11 pr-4 py-2 rounded-lg border outline-none transition ${isDark ? "bg-slate-800 border-slate-700 text-white focus:border-purple-500" : "bg-white border-gray-300 focus:border-purple-500"}`}
+                                    defaultValue={currUser?.role}
+                                    className={`w-full pl-11 pr-4 py-2 rounded-lg border outline-none transition ${isDark
+                                        ? "bg-slate-800 border-slate-700 text-white focus:border-purple-500"
+                                        : "bg-white border-gray-300 focus:border-purple-500"
+                                        }`}
                                 />
                             </div>
                         </div>
 
                         {/* Description */}
                         <div className="mt-5 space-y-2 w-full">
-                            <label
-                                className={`text-sm font-semibold block ${isDark ? "text-gray-200" : "text-gray-800"
-                                    }`}
-                            >
+                            <label className={`text-sm font-semibold block ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                                 Role Description
                             </label>
 
-                            <div
-                                className={`min-w-full px-2 py-2 rounded-lg border flex flex-row gap-4 items-center ${isDark
-                                    ? "bg-slate-800 border-slate-700 text-white"
-                                    : "bg-white border-gray-300"
-                                    }`}
-                            >
-                                <TbFileTextSpark size={20} className={`text-purple-600`} />
+                            <div className={`min-w-full px-2 py-2 rounded-lg border flex flex-row gap-4 items-center ${isDark
+                                ? "bg-slate-800 border-slate-700 text-white"
+                                : "bg-white border-gray-300"
+                                }`}>
+                                <TbFileTextSpark size={20} className="text-purple-600" />
                                 <span>Can manage orders, customers and view reports.</span>
                             </div>
                         </div>
@@ -164,20 +150,16 @@ export default function EditRoleModal({ editModal, setEditModal }) {
                     {/* Permissions */}
                     <div>
                         <div className="flex items-center justify-between mb-5">
-                            <h3
-                                className={`font-semibold ${isDark ? "text-white" : "text-gray-900"
-                                    }`}
-                            >
+                            <h3 className={`font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>
                                 Permissions
                             </h3>
 
-                            <label
-                                className={`text-sm font-medium cursor-pointer flex items-center gap-2 ${isDark
-                                    ? "text-purple-400 hover:text-purple-300"
-                                    : "text-purple-600 hover:text-purple-700"
-                                    }`}
-                            >
+                            <label className={`text-sm font-medium cursor-pointer flex items-center gap-2 ${isDark
+                                ? "text-purple-400 hover:text-purple-300"
+                                : "text-purple-600 hover:text-purple-700"
+                                }`}>
                                 <span>Select All</span>
+
                                 <input
                                     type="checkbox"
                                     defaultChecked
@@ -199,19 +181,14 @@ export default function EditRoleModal({ editModal, setEditModal }) {
                                             }`}
                                     >
                                         <div className="flex items-center gap-3 mb-5">
-                                            <div
-                                                className={`p-2 rounded-xl ${isDark
-                                                    ? "bg-purple-500/10 text-purple-400"
-                                                    : "bg-purple-100 text-purple-600"
-                                                    }`}
-                                            >
+                                            <div className={`p-2 rounded-xl ${isDark
+                                                ? "bg-purple-500/10 text-purple-400"
+                                                : "bg-purple-100 text-purple-600"
+                                                }`}>
                                                 <Icon size={18} />
                                             </div>
 
-                                            <h4
-                                                className={`font-semibold ${isDark ? "text-white" : "text-gray-900"
-                                                    }`}
-                                            >
+                                            <h4 className={`font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>
                                                 {section.title}
                                             </h4>
                                         </div>
@@ -228,10 +205,7 @@ export default function EditRoleModal({ editModal, setEditModal }) {
                                                         className="w-4 h-4 accent-purple-600 cursor-pointer"
                                                     />
 
-                                                    <span
-                                                        className={`text-sm ${isDark ? "text-gray-300" : "text-gray-700"
-                                                            }`}
-                                                    >
+                                                    <span className={`text-sm ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                                                         {permission}
                                                     </span>
                                                 </label>
@@ -245,11 +219,13 @@ export default function EditRoleModal({ editModal, setEditModal }) {
                 </div>
 
                 {/* Footer */}
-                <div className={`border-t px-6 py-4 flex items-center justify-end gap-3 shrink-0 ${isDark ? "border-white/10" : "border-gray-200"}`}
-                >
+                <div className={`border-t px-6 py-4 flex items-center justify-end gap-3 shrink-0 ${isDark ? "border-white/10" : "border-gray-200"}`}>
                     <button
                         onClick={() => setEditModal(false)}
-                        className={`h-11 px-5 rounded-xl font-medium transition-all ${isDark ? "hover:bg-white/10 text-gray-300" : "hover:bg-gray-100 text-gray-700"}`}
+                        className={`h-11 px-5 rounded-xl font-medium transition-all ${isDark
+                            ? "hover:bg-white/10 text-gray-300"
+                            : "hover:bg-gray-100 text-gray-700"
+                            }`}
                     >
                         Cancel
                     </button>

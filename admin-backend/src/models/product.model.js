@@ -49,7 +49,11 @@ const productSchema = new mongoose.Schema({
     minimumOrderQuantity: Number,
     meta: metaSchema,
     images: [String],
-    thumbnail: String
+    thumbnail: String,
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 export default mongoose.model("Product", productSchema);
