@@ -7,7 +7,8 @@ import { ImBin } from "react-icons/im";
 import { useProducts } from '../../context/ProductsContext';
 import { getAllCategory, getProducts, restoreProduct } from '../../api/api';
 import Lottie from 'lottie-react';
-import adminLoader from '../../assets/adminLoader.json'
+import adminLoader from '../../assets/adminLoader.json';
+import restoreLoader from '../../assets/loaderIOS.json';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeleteProduct from '../../helpers/DeleteProduct';
@@ -152,7 +153,7 @@ function Products() {
         if (!productId) return;
         try {
             setError("")
-            setRestoreLoading(true);
+            setRestoreLoading(productId);
             const res = await restoreProduct({ productId });
             toast.success(res?.data?.message);
             setCache((prev) => {
@@ -466,10 +467,10 @@ const ProductData = ({ product, idx, setIdx, setShow, restoreLoading, handleRest
                 <div className="flex gap-2">
                     <button
                         title='Edit'
-                        className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                        className={`text-purple-600 p-2 rounded-lg cursor-pointer max-h-9 max-w-9 min-h-9 min-w-9 flex items-center justify-center ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
                         onClick={() => navigate(`/edit-product/${product?._id}`)}
                     >
-                        <FaPencil />
+                        <FaPencil size={16}/>
                     </button>
                     {product?.isDeleted ? (
                         <button
@@ -478,9 +479,18 @@ const ProductData = ({ product, idx, setIdx, setShow, restoreLoading, handleRest
                                 handleRestore(product?._id);
                             }}
                             disabled={restoreLoading}
-                            className={`text-green-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                            className={`text-green-500 bg-slate-100 p-2 rounded-lg cursor-pointer max-h-9 max-w-9 min-h-9 min-w-9 flex items-center justify-center ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
                         >
-                            <MdOutlineRestore size={20} />
+                            {restoreLoading === product?._id ? (
+                                <Lottie
+                                    animationData={restoreLoader}
+                                    loop={true}
+                                    size={20}
+                                    className='min-h-8 min-w-8'
+                                />
+                            ) : (
+                                <MdOutlineRestore size={20} />
+                            )}
                         </button>
                     ) : (
                         <button

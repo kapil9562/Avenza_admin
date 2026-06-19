@@ -57,6 +57,7 @@ export default function DeleteProduct({ setShow, product, setIsDeleted }) {
                         className={`outline-none border-2 rounded-lg w-full p-1 ${isDark ? "border-red-700" : "border-red-400"}`}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && deleteProduct()}
+                        disabled={loading}
                     />
                 </div>
 
@@ -64,7 +65,7 @@ export default function DeleteProduct({ setShow, product, setIsDeleted }) {
                 <div className={`flex flex-row gap-2 justify-end items-center w-full`}>
                     <button
                         disabled={!isMatch || loading}
-                        className={`min-h-9 px-2 py-1 border w-full rounded-lg font-semibold flex justify-center items-center  ${!isMatch ? "cursor-not-allowed opacity-50" : "cursor-pointer"} relative ${isDark ? "bg-red-900/20 border-red-700 text-red-400" : "bg-red-100/30 border-red-400 text-red-600"}`}
+                        className={`min-h-9 px-2 py-1 border w-full rounded-lg font-semibold flex justify-center items-center  ${!isMatch ? "cursor-not-allowed opacity-50" : "cursor-pointer"} relative ${isDark ? "bg-red-900/20 border-red-700 text-red-400" : "bg-red-100/30 border-red-400 text-red-600"} overflow-hidden`}
                         onClick={deleteProduct}
                     >
                         {loading ?
@@ -72,7 +73,7 @@ export default function DeleteProduct({ setShow, product, setIsDeleted }) {
                                 <Lottie
                                     animationData={loader}
                                     loop={true}
-                                    className="w-50 h-50 hue-rotate-70"
+                                    className="w-50 h-50 hue-rotate-140"
                                 />
                             </div> :
                             <span>Delete this product</span>

@@ -61,10 +61,10 @@ const getPaymentBadge = (method) => {
             return "bg-yellow-600/10 text-yellow-600 border border-yellow-400";
         case "Stripe":
             return "bg-teal-600/10 text-teal-600 border border-teal-400";
-        case "Razorpay":
+        case "card":
             return "bg-blue-600/10 text-blue-600 border border-blue-400";
-        case "PayPal":
-            return "bg-sky-600/10 text-sky-600 border border-sky-400";
+        case "upi":
+            return "bg-green-600/10 text-green-600 border border-green-400";
         default:
             return "bg-gray-600/10 text-gray-600 border border-gray-400";
     }
