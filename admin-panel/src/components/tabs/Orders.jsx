@@ -157,7 +157,7 @@ function Orders() {
   };
 
   const clearFilters = () => {
-    if(payment || search || status) {
+    if (payment || search || status) {
       setPayment("All");
       setStatus("All");
       setSearch("");
@@ -285,20 +285,25 @@ function Orders() {
                   {/* {Error Handler} */}
                   <td colSpan="8" className="py-10">
                     <div className="flex flex-col items-center justify-center text-center">
-                      <img
-                        src="/noResult.webp"
-                        alt="img"
-                        className="h-40 w-40 object-contain"
-                      />
-                      <p className="text-red-500 font-semibold text-lg">
+                      <div className={`${isDark ? "bg-purple-800/10" : "bg-purple-100/50"} rounded-full p-5 flex items-center justify-center`}>
+                        <img
+                          src="/noResult.webp"
+                          alt="img"
+                          className="h-35 w-35 object-contain"
+                        />
+                      </div>
+                      <h4 className={`${isDark ? "text-gray-300" : "text-gray-800"} font-bold text-2xl`}>
                         {error}
+                      </h4>
+                      <p className={`${isDark ? "text-gray-500" : "text-gray-400"} font-semibold text-sm mt-2`}>
+                        We couldn't find any products matching your current filters.
                       </p>
                       <button
-                        className={`px-2 py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 will-change-transform text-sm mt-2 text-white ${isDark ? " from-purple-500 to-purple-700" : " from-purple-300 to-purple-500"} hover:brightness-110`}
+                        className={`p-2 flex flex-row justify-center rounded-lg font-semibold items-center gap-1 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm mt-4 text-purple-600 border ${isDark ? "bg-purple-600/10  border-purple-600 hover:brightness-110" : "bg-purple-100 border-purple-200 hover:bg-purple-200/60"}`}
                         onClick={() => clearFilters()}
                       >
-                        <IoRefresh size={26} />
-                        <span>Refresh Orders</span>
+                        <IoRefresh size={24} />
+                        <span>Refresh Products</span>
                       </button>
                     </div>
                   </td>

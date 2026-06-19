@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import DeleteProduct from '../../helpers/DeleteProduct';
 import { MdOutlineRestore } from 'react-icons/md';
 import { toast } from '../../context/ToastContext';
+import { IoRefresh } from 'react-icons/io5';
 
 function Products() {
     const { isDark } = useTheme();
@@ -29,7 +30,7 @@ function Products() {
     const [isDeleted, setIsDeleted] = useState(false);
 
     const { cache, setProducts, setCache, categories, setCategories, total, setTotal } = useProducts();
-    const cacheKey = `${category}-${page}-${inStock}`;
+    const cacheKey = `${category}-${page}-${inStock}-${deletedItems}`;
     const products = cache[cacheKey];
     const [loading, setLoading] = useState(!(cache?.[cacheKey]));
     const [restoreLoading, setRestoreLoading] = useState(false);
@@ -37,7 +38,7 @@ function Products() {
     // {Stock Toggle}
     const handleStockToggle = () => {
         setStock(inStock === "true" ? "false" : "true");
-        setCache([]);
+        setCache({});
         setPage(1);
         setInputValue(1);
     }
@@ -45,7 +46,7 @@ function Products() {
     // {Deleted Items Toggle}
     const handleDeletedToggle = () => {
         setDeletedItems(deletedItems === "true" ? "false" : "true");
-        setCache([]);
+        setCache({});
         setPage(1);
         setInputValue(1);
     }
@@ -97,7 +98,7 @@ function Products() {
                 const res = await getProducts(params);
 
                 if (res?.data?.total === 0) {
-                    setError("No any product found !");
+                    setError("No products found");
                 }
 
                 setTotal(res?.data?.total);
@@ -140,7 +141,7 @@ function Products() {
     // { Category filter handler }
     const handleCategory = (filter) => {
         if (category === filter) return;
-        setCache([]);
+        setCache({});
         setCategory(filter);
         setPage(1);
         setInputValue(1);
@@ -150,6 +151,7 @@ function Products() {
     const handleRestore = async (productId) => {
         if (!productId) return;
         try {
+            setError("")
             setRestoreLoading(true);
             const res = await restoreProduct({ productId });
             toast.success(res?.data?.message);
@@ -159,7 +161,7 @@ function Products() {
                 );
 
                 if (updated.length === 0) {
-                    setError("No any product found!");
+                    setError("No product found");
                 }
 
                 return {
@@ -173,6 +175,12 @@ function Products() {
         } finally {
             setRestoreLoading(false);
         }
+    }
+
+    const clearFilters = () => {
+        setCache({});
+        setStock("true");
+        setDeletedItems("false");
     }
 
     return (
@@ -280,7 +288,7 @@ function Products() {
                         </thead>
 
                         {/* Body */}
-                        <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[65vh]"}`}>
+                        <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[60vh]"}`}>
                             {loading ? (
                                 <tr>
                                     <td colSpan="8" className="text-center py-20">
@@ -298,91 +306,44 @@ function Products() {
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <td colSpan="8" className="text-center text-red-500 py-10 font-semibold text-lg">
-                                        {error}
+                                    <td colSpan="8" className="py-10">
+                                        <div className="flex flex-col items-center justify-center text-center">
+                                            <div className={`${isDark ? "bg-purple-800/10" : "bg-purple-100/50"} rounded-full p-5 flex items-center justify-center`}>
+                                                <img
+                                                    src="/noResult.webp"
+                                                    alt="img"
+                                                    className="h-40 w-40 object-contain"
+                                                />
+                                            </div>
+                                            <h4 className={`${isDark ? "text-gray-300" : "text-gray-800"} font-bold text-2xl`}>
+                                                {error}
+                                            </h4>
+                                            <p className={`${isDark ? "text-gray-500" : "text-gray-400"} font-semibold text-sm mt-2`}>
+                                                We couldn't find any products matching your current filters.
+                                            </p>
+                                            <button
+                                                className={`p-2 flex flex-row justify-center rounded-lg font-semibold items-center gap-1 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm mt-4 text-purple-600 border ${isDark ? "bg-purple-600/10  border-purple-600 hover:brightness-110" : "bg-purple-100 border-purple-200 hover:bg-purple-200/60"}`}
+                                                onClick={() => clearFilters()}
+                                            >
+                                                <IoRefresh size={24} />
+                                                <span>Refresh Products</span>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : (
                                 products?.map((product, idx) => (
-                                    <tr key={idx} className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
-
-                                        {/* Id */}
-                                        <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                                            #{product.productId}
-                                        </td>
-
-                                        {/* Product */}
-                                        <td className="px-4 py-1">
-                                            <div className="flex items-center gap-4">
-                                                <img
-                                                    src={product.thumbnail}
-                                                    alt="thumbnail"
-                                                    className={`min-w-14 min-h-14 max-w-14 max-h-14 object-contain rounded-sm ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
-                                                />
-                                                <span className="line-clamp-2">
-                                                    {product.title}
-                                                </span>
-                                            </div>
-                                        </td>
-
-                                        <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                                            {product.category}
-                                        </td>
-
-                                        <td className="px-4 py-1">
-                                            <span className={`line-clamp-2 ${isDark ? "text-gray-400" : "text-gray-600"}`}>{product.brand || "-"}</span>
-                                        </td>
-
-                                        <td className="px-4 py-1">
-                                            {product.stock}
-                                        </td>
-
-                                        <td className="px-4 py-1">
-                                            ₹{product.price.toLocaleString("en-IN")}
-                                        </td>
-
-                                        <td className="px-4 py-1">
-                                            <button className={`px-4 py-1 rounded-full whitespace-nowrap ${statusColors[product.availabilityStatus.replace(/\s/g, "")]}`}>
-                                                {product.availabilityStatus}
-                                            </button>
-                                        </td>
-
-                                        <td className="px-4 py-1">
-                                            <div className="flex gap-2">
-                                                <button
-                                                    title='Edit'
-                                                    className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                                                    onClick={() => navigate(`/edit-product/${product?._id}`)}
-                                                >
-                                                    <FaPencil />
-                                                </button>
-                                                {product?.isDeleted ? (
-                                                    <button
-                                                        title='Restore'
-                                                        onClick={() => {
-                                                            handleRestore(product?._id);
-                                                        }}
-                                                        disabled={restoreLoading}
-                                                        className={`text-green-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                                                    >
-                                                        <MdOutlineRestore size={20} />
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        title='Delete'
-                                                        onClick={() => {
-                                                            setShow(true);
-                                                            setIdx(idx);
-                                                        }}
-                                                        className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                                                    >
-                                                        <ImBin />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-
-                                    </tr>
+                                    <ProductData key={idx}
+                                        product={product}
+                                        idx={idx}
+                                        isDark={isDark}
+                                        statusColors={statusColors}
+                                        navigate={navigate}
+                                        handleRestore={handleRestore}
+                                        restoreLoading={restoreLoading}
+                                        setShow={setShow}
+                                        setIdx={setIdx}
+                                    />
                                 ))
                             )}
                         </tbody>
@@ -452,6 +413,91 @@ function Products() {
                 </div>
             </div>
         </section>
+    )
+}
+
+const ProductData = ({ product, idx, setIdx, setShow, restoreLoading, handleRestore, navigate, statusColors, isDark }) => {
+    return (
+        <tr key={idx} className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
+
+            {/* Id */}
+            <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                #{product.productId}
+            </td>
+
+            {/* Product */}
+            <td className="px-4 py-1">
+                <div className="flex items-center gap-4">
+                    <img
+                        src={product.thumbnail}
+                        alt="thumbnail"
+                        loading='lazy'
+                        className={`min-w-14 min-h-14 max-w-14 max-h-14 object-contain rounded-sm ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
+                    />
+                    <span className="line-clamp-2">
+                        {product.title}
+                    </span>
+                </div>
+            </td>
+
+            <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                {product.category}
+            </td>
+
+            <td className="px-4 py-1">
+                <span className={`line-clamp-2 ${isDark ? "text-gray-400" : "text-gray-600"}`}>{product.brand || "-"}</span>
+            </td>
+
+            <td className="px-4 py-1">
+                {product.stock}
+            </td>
+
+            <td className="px-4 py-1">
+                ₹{product.price.toLocaleString("en-IN")}
+            </td>
+
+            <td className="px-4 py-1">
+                <button className={`px-4 py-1 rounded-full whitespace-nowrap ${statusColors[product.availabilityStatus.replace(/\s/g, "")]}`}>
+                    {product.availabilityStatus}
+                </button>
+            </td>
+
+            <td className="px-4 py-1">
+                <div className="flex gap-2">
+                    <button
+                        title='Edit'
+                        className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                        onClick={() => navigate(`/edit-product/${product?._id}`)}
+                    >
+                        <FaPencil />
+                    </button>
+                    {product?.isDeleted ? (
+                        <button
+                            title='Restore'
+                            onClick={() => {
+                                handleRestore(product?._id);
+                            }}
+                            disabled={restoreLoading}
+                            className={`text-green-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                        >
+                            <MdOutlineRestore size={20} />
+                        </button>
+                    ) : (
+                        <button
+                            title='Delete'
+                            onClick={() => {
+                                setShow(true);
+                                setIdx(idx);
+                            }}
+                            className={`text-red-500 bg-slate-100 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                        >
+                            <ImBin />
+                        </button>
+                    )}
+                </div>
+            </td>
+
+        </tr>
     )
 }
 
