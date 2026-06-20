@@ -246,11 +246,11 @@ function Orders() {
         <div className='relative w-xs flex flex-row justify-center items-center'>
           <input
             value={input}
-            maxLength={50}
+            maxLength={100}
             onChange={(e) => setInput(e.target.value)}
             type="text"
             placeholder='Search orders...'
-            className={`z-10 w-full px-2 py-1 pl-2 rounded-xl border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
+            className={`z-10 pr-8 flex w-full px-2 py-1 pl-2 rounded-xl border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
           />
           <IoIosSearch className='absolute right-2 text-2xl font-semibold text-[#8b90c7] z-20 pointer-events-none' />
         </div>
@@ -334,7 +334,7 @@ function Orders() {
                         onClick={clearFilters}
                       >
                         <IoRefresh size={24} />
-                        <span>Refresh Products</span>
+                        <span>Refresh Orders</span>
                       </button>
                     </div>
                   </td>

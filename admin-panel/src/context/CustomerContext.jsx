@@ -5,6 +5,7 @@ const CustomersContext = createContext(null);
 export const CustomersProvider = ({ children }) => {
   const [cache, setCache] = useState({});
   const [meta, setMeta] = useState({});
+  const [error, setError] = useState("");
 
   const setUsers = (key, users) => {
     setCache(prev => ({
@@ -19,6 +20,8 @@ export const CustomersProvider = ({ children }) => {
     setUsers,
     setMeta,
     meta,
+    error,
+    setError
   };
 
   return (

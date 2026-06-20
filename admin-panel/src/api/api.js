@@ -1,4 +1,5 @@
 import axios from "axios";
+import { RiOilLine } from "react-icons/ri";
 
 export const webApi = axios.create({
   baseURL: import.meta.env.VITE_WEB_BASE_URI,
@@ -73,7 +74,16 @@ export const getCurrentUser = () => adminApi.get('/auth/get-current-user');
 
 export const logoutUser = () => adminApi.post('/auth/logout');
 
-export const getAllUsers = ({ skip }) => adminApi.get(`/customers/get-users?${skip}`);
+export const getAllUsers = ({ skip, role, status, search }) => {
+  const params = new URLSearchParams();
+
+  params.append('skip', skip);
+  if (role) params.append('role', role);
+  if (status) params.append('status', status);
+  if (search) params.append('search', search);
+
+  return adminApi.get(`/customers/get-users?${params.toString()}`);
+}
 
 let isRefreshing = false;
 let failedQueue = [];

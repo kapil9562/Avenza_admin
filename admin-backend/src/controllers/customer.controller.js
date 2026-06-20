@@ -1,8 +1,54 @@
 import Order from "../models/order.modal.js";
 import User from "../models/user.model.js";
+import Fuse from "fuse.js";
 
 const getUsers = async (req, res) => {
-    const { skip = 0 } = req.query;
+    const { skip = 0, role, status, search, sort = "-createdAt" } = req.query;
+
+    let filter = {};
+
+    if (role && role != "All") {
+        filter.role = role;
+    }
+
+    if (status && status != "All") {
+        filter.isActive = status === "active"? true : false;
+    }
+
+    if (search?.trim()) {
+        const searchTerm = search.trim();
+
+        // get users
+        const users = await User.find({}, "_id name email").lean().limit(200);
+
+        // Fuzzy search
+        const fuse = new Fuse(users, {
+            keys: ["name", "email"],
+            threshold: 0.4,
+        });
+
+        const fuzzyResults = fuse.search(searchTerm);
+        const fuzzyUserIds = fuzzyResults.map(r => r.item._id);
+
+        // Regex fallback
+        const regexUsers = await User.find({
+            $or: [
+                { name: { $regex: searchTerm, $options: "i" } },
+                { email: { $regex: searchTerm, $options: "i" } },
+            ],
+        }).select("_id");
+
+        const regexUserIds = regexUsers.map(u => u._id);
+
+        // merge both
+        const userIds = [...new Set([...fuzzyUserIds, ...regexUserIds])];
+
+        // final query
+        filter.$or = [
+            { uid: { $regex: searchTerm, $options: "i" } },
+            { _id: { $in: userIds } },
+        ];
+    }
 
     try {
         const now = new Date();
@@ -22,7 +68,7 @@ const getUsers = async (req, res) => {
         const previousMonthEnd = currentMonthStart;
 
         // TOTAL USERS
-        const totalUsers = await User.countDocuments();
+        const totalUsers = await User.countDocuments(filter);
 
         // NEW USERS
         const currentNewUsers = await User.countDocuments({
@@ -183,6 +229,9 @@ const getUsers = async (req, res) => {
 
         // USERS TABLE DATA
         const users = await User.aggregate([
+            {
+                $match: filter
+            },
             {
                 $lookup: {
                     from: "orders",
