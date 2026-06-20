@@ -19,12 +19,12 @@ productRouter.post(
     addNewProduct
 );
 
-productRouter.post('/delete-product',verifyJWT, deleteProduct);
-productRouter.post('/restore-product',verifyJWT, restoreProduct);
+productRouter.post('/delete-product',verifyJWT("admin"), deleteProduct);
+productRouter.post('/restore-product',verifyJWT("admin"), restoreProduct);
 
 productRouter.patch(
   "/update-product/:productId",
-  verifyJWT,
+  verifyJWT("admin"),
   upload.fields([
     { name: "thumbnail", maxCount: 1 },
     { name: "images", maxCount: 4 },

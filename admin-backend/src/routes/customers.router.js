@@ -4,6 +4,6 @@ import { getUsers } from "../controllers/customer.controller.js";
 
 const customerRouter = express.Router();
 
-customerRouter.get("/customers/get-users", verifyJWT, getUsers)
+customerRouter.get("/customers/get-users", verifyJWT("admin", "demo"), getUsers)
 
 export {customerRouter};

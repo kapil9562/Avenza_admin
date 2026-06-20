@@ -55,7 +55,7 @@ export const emailLogin = async (req, res) => {
 
             if (!isValid) {
                 return res.status(401).json({ message: INVALID_MSG });
-            } else if (user.role !== "admin") {
+            } else if (user.role !== "admin" && user.role !== "demo") {
                 return res.status(403).json({
                     message: "Access denied",
                 });
