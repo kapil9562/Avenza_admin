@@ -41,7 +41,7 @@ createRoot(document.getElementById('root')).render(
                       <Route path="edit-product/:id" element={<AddProduct />} />
                     </Route>
 
-                    <Route path='/*' element={<div className='font-bold text-lg'>404 Not Found</div>}/>
+                    <Route path='/*' element={<div className='font-bold text-lg text-black bg-white min-h-dvh'>404 Not Found</div>}/>
 
                   </Route>
 

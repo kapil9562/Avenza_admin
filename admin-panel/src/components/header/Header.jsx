@@ -63,7 +63,11 @@ function Header({ setSideMenu }) {
         <div className='flex justify-center items-center'>
           <FaRegBell className={`text-xl ${isDark ? "text-gray-300" : "text-gray-800"}`} />
         </div>
-        <div className={`relative group`} onClick={handleDropDown} >
+        <div
+          className={`relative group`}
+          onClick={handleDropDown}
+          onMouseLeave={() => setIsActive(false)}
+        >
           <div className={`flex flex-row gap-2 justify-center items-center cursor-pointer py-2 ${isActive && "shadow-[inset_0_-2px_0_0_#ff1774]"} group-hover:shadow-[inset_0_-2px_0_0_#ff1774]`}>
             <div>
               <img
@@ -77,7 +81,7 @@ function Header({ setSideMenu }) {
               <span className={`text-[12px] font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`} >{formatRole(user?.role)}</span>
             </div>
             <div>
-              <IoIosArrowDown className={`${isDark ? "text-gray-300" : "text-gray-800"}`} />
+              <IoIosArrowDown className={`${isDark ? "text-gray-300" : "text-gray-800"} group-hover:rotate-180 transition-transform duration-300 group-hover:text-[#ff1774] ${isActive && "rotate-180 text-[#ff1774]"}`} />
             </div>
           </div>
 
