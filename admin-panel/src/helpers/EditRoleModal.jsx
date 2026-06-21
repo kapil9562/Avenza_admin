@@ -11,6 +11,14 @@ import {
 import { useTheme } from "../context/ThemeContext";
 import { LuPencilLine } from "react-icons/lu";
 import { TbFileTextSpark, TbUserShield } from "react-icons/tb";
+import { formatRole, getRoleDescription } from "../utils/format";
+import { IoIosArrowDown } from "react-icons/io";
+import { useState } from "react";
+import { updateUserRole } from "../api/api";
+import { toast } from "../context/ToastContext";
+import { useCustomers } from "../context/CustomerContext";
+import Lottie from 'lottie-react';
+import loader from "../assets/loader2.json"
 
 const permissions = [
     {
@@ -75,9 +83,53 @@ const permissions = [
     },
 ];
 
-export const EditRoleModal = ({ editModal, setEditModal, currUser }) => {
+const roles = ["super_admin", "admin", "user", "demo"];
+
+export const EditRoleModal = ({ editModal, setEditModal, currUser, pageNo }) => {
 
     const { isDark } = useTheme();
+    const [openRoleDropDown, setOpenRoleDropDown] = useState(false);
+    const [selectedRole, setSelectedRole] = useState(currUser?.role || "");
+    const [loading, setLoading] = useState(false);
+    const { setCache } = useCustomers();
+
+    const roleHandler = (role) => {
+        setSelectedRole(role);
+        setOpenRoleDropDown(false);
+    }
+
+    const updateRole = async () => {
+        if (!selectedRole || !currUser || selectedRole === currUser?.role) return;
+
+        try {
+            setLoading(true);
+            const res = await updateUserRole({ role: selectedRole, userId: currUser?._id });
+            const newUserData = res?.data?.user;
+
+            setCache(prev => {
+                const updated = { ...prev };
+
+                const userIndex = updated[pageNo].findIndex(user => user._id === newUserData?._id);
+
+                updated[pageNo] = [...updated[pageNo]];
+                updated[pageNo][userIndex] = {
+                    ...updated[pageNo][userIndex],
+                    ...newUserData
+                };
+
+                return updated;
+            });
+
+            toast.success(res?.data?.message);
+            setEditModal(false);
+        } catch (error) {
+            console.log(error)
+            const msg = error?.response?.data?.message || error?.data?.message || "Failed to update role!";
+            toast.error(msg);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <div className="fixed inset-0 z-999 bg-black/40 flex items-center justify-center p-3 md:p-6">
@@ -115,19 +167,36 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser }) => {
                                 Role Name
                             </label>
 
-                            <div className="relative">
-                                <div className="absolute left-0 pl-2 top-1/2 -translate-y-1/2">
+                            <div className={`w-full relative flex flex-row gap-4 px-2 py-2 rounded-lg border items-center cursor-pointer ${isDark
+                                ? "bg-slate-800 border-slate-700 text-white focus:border-purple-500"
+                                : "bg-white border-gray-300 focus:border-purple-500"
+                                }`}
+                                onClick={() => setOpenRoleDropDown((prev) => !prev)}
+                            >
+                                <div>
                                     <TbUserShield size={20} className="text-purple-600" />
                                 </div>
+                                <span>{formatRole(selectedRole)}</span>
 
-                                <input
-                                    type="text"
-                                    defaultValue={currUser?.role}
-                                    className={`w-full pl-11 pr-4 py-2 rounded-lg border outline-none transition ${isDark
-                                        ? "bg-slate-800 border-slate-700 text-white focus:border-purple-500"
-                                        : "bg-white border-gray-300 focus:border-purple-500"
-                                        }`}
-                                />
+                                <div className={`absolute right-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
+                                    <IoIosArrowDown />
+                                </div>
+
+                                {openRoleDropDown &&
+                                    <div className={`${isDark ? "bg-slate-800 border-gray-700 shadow" : "bg-[#FFFFFF] border-gray-200 shadow"} border w-full rounded-md overflow-hidden absolute top-full mt-0.5 left-0 flex flex-col`}>
+                                        {roles?.map((role, idx) => (
+                                            <span
+                                                className={`py-1 px-4 ${isDark ? "hover:bg-slate-700" : "hover:bg-slate-100"}`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    roleHandler(role);
+                                                }}
+                                            >
+                                                {formatRole(role)}
+                                            </span>
+                                        ))}
+                                    </div>
+                                }
                             </div>
                         </div>
 
@@ -142,7 +211,7 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser }) => {
                                 : "bg-white border-gray-300"
                                 }`}>
                                 <TbFileTextSpark size={20} className="text-purple-600" />
-                                <span>Can manage orders, customers and view reports.</span>
+                                <span>{getRoleDescription(selectedRole)}</span>
                             </div>
                         </div>
                     </div>
@@ -221,8 +290,9 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser }) => {
                 {/* Footer */}
                 <div className={`border-t px-6 py-4 flex items-center justify-end gap-3 shrink-0 ${isDark ? "border-white/10" : "border-gray-200"}`}>
                     <button
+                        disabled={loading}
                         onClick={() => setEditModal(false)}
-                        className={`h-11 px-5 rounded-xl font-medium transition-all ${isDark
+                        className={`py-2 px-4 rounded-lg font-medium transition-all ${isDark
                             ? "hover:bg-white/10 text-gray-300"
                             : "hover:bg-gray-100 text-gray-700"
                             }`}
@@ -230,9 +300,22 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser }) => {
                         Cancel
                     </button>
 
-                    <button className="h-11 px-5 rounded-xl bg-gradient-to-b from-purple-400 to-purple-600 text-white font-semibold flex items-center gap-2 active:scale-95 transition-all shadow-lg shadow-purple-500/20">
-                        <LuPencilLine className="text-lg" />
-                        Save Changes
+                    <button
+                        disabled={loading}
+                        className={"relative py-2 px-4 h-10 w-28 flex justify-center items-center overflow-hidden rounded-lg bg-linear-to-b from-purple-400 to-purple-600 text-white font-semibold gap-2 will-change-transform active:scale-95 transition-all hover:brightness-90"}
+                        onClick={updateRole}
+                    >
+                        {loading ? (
+                            <Lottie 
+                            animationData={loader}
+                            className="w-40 h-40 absolute invert brightness-0"
+                            />
+                        ) : (
+                            <>
+                                <LuPencilLine className="text-lg" />
+                                <span>Update</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </div>

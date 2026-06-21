@@ -196,3 +196,7 @@ input:-webkit-autofill {
 button {
   cursor: pointer;
 }
+
+button:disabled {
+  cursor: not-allowed;
+}

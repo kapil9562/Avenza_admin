@@ -16,7 +16,7 @@ import { getAllUsers } from '../../api/api';
 import adminLoader from '../../assets/adminLoader.json';
 import { useCustomers } from "../../context/CustomerContext";
 import { useTheme } from '../../context/ThemeContext';
-import { formatDate, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
+import { formatDate, formatRole, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
 import { FaEye } from "react-icons/fa6";
 import { EditRoleModal } from "../../helpers/EditRoleModal";
 
@@ -82,7 +82,7 @@ export default function Customers() {
   ];
 
   const filters = {
-    role: ["All", "admin", "superAdmin", "user"],
+    role: ["All", "admin", "superAdmin", "user", "demo"],
     status: ["All", "active", "blocked"],
   };
 
@@ -239,7 +239,7 @@ export default function Customers() {
 
                         <td className="px-4 py-1">
                           <span className={`px-3 text-sm py-1 rounded-full whitespace-nowrap ${getRoleBadge(user?.role)}`}>
-                            {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+                            {formatRole(user?.role)}
                           </span>
                         </td>
 
@@ -337,7 +337,7 @@ export default function Customers() {
         </div>
       </div>
 
-      {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} />}
+      {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
     </div>
   );
 }

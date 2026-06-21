@@ -120,8 +120,6 @@ export const updateOrder = async (req, res) => {
     const orderId = req.params.orderId;
     const { status } = req.body;
 
-    console.log(orderId)
-
     if (!orderId || !status) {
         return res.status(400).json({
             success: false,

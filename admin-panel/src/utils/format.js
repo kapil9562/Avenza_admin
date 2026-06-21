@@ -80,19 +80,44 @@ const getActiveBadge = (method) => {
 };
 
 const getRoleBadge = (role) => {
-  switch (role?.toLowerCase()) {
-    case "admin":
-      return "bg-red-600/10 text-red-600 border border-red-400";
+    switch (role?.toLowerCase()) {
+        case "super_admin":
+            return "bg-red-600/10 text-red-600 border border-red-500";
 
-    case "moderator":
-      return "bg-purple-600/10 text-purple-600 border border-purple-400";
+        case "admin":
+            return "bg-amber-600/10 text-amber-600 border border-amber-500";
 
-    case "vendor":
-      return "bg-blue-600/10 text-blue-600 border border-blue-400";
+        case "user":
+            return "bg-green-600/10 text-green-600 border border-green-500";
 
-    default:
-      return "bg-emerald-600/10 text-emerald-600 border border-emerald-400";
-  }
+        default:
+            return "bg-purple-600/10 text-purple-600 border border-purple-500";
+    }
 };
 
-export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge, getRoleBadge };
+const getRoleDescription = (role) => {
+    switch (role?.replaceAll("_", "").toLowerCase()) {
+        case "superadmin":
+            return "Full access to all features.";
+
+        case "admin":
+            return "Manage store operations.";
+
+        case "user":
+            return "Shop and manage own account.";
+
+        case "demo":
+            return "Limited access for exploring the platform.";
+
+        default:
+            return "No role assigned.";
+    }
+};
+
+const formatRole = (role) =>
+    role
+        ?.split("_")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge, getRoleBadge, getRoleDescription, formatRole };

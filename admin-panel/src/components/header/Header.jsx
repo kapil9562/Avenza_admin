@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { FiLogOut } from "react-icons/fi";
 import { HiMiniBars3BottomLeft } from 'react-icons/hi2';
-import { normalizeGooglePhoto } from '../../utils/format';
+import { formatRole, normalizeGooglePhoto } from '../../utils/format';
 
 function Header({ setSideMenu }) {
 
@@ -74,7 +74,7 @@ function Header({ setSideMenu }) {
             </div>
             <div className='flex flex-col'>
               <h1 className={`font-semibold text-sm ${isDark ? "text-gray-300" : "text-gray-800"}`}>Hi, {user?.name?.trim().split(" ")[0]}</h1>
-              <span className={`text-[12px] ${isDark ? "text-gray-400" : "text-gray-500"}`} >{user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}</span>
+              <span className={`text-[12px] font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`} >{formatRole(user?.role)}</span>
             </div>
             <div>
               <IoIosArrowDown className={`${isDark ? "text-gray-300" : "text-gray-800"}`} />

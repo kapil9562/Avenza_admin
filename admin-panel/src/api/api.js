@@ -85,6 +85,8 @@ export const getAllUsers = ({ skip, role, status, search }) => {
   return adminApi.get(`/customers/get-users?${params.toString()}`);
 }
 
+export const updateUserRole = ({role, userId}) => adminApi.post("/customers/update-role", {role, userId});
+
 let isRefreshing = false;
 let failedQueue = [];
 

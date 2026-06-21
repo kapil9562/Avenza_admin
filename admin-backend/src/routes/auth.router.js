@@ -24,8 +24,8 @@ const speedLimiter = slowDown({
 });
 
 authRouter.post("/auth/email-login", speedLimiter, limiter, emailLogin);
-authRouter.post('/auth/logout', verifyJWT("admin", "demo"), logout);
+authRouter.post('/auth/logout', verifyJWT("admin", "demo", "super_admin"), logout);
 authRouter.post('/auth/refresh', refreshAccessToken);
-authRouter.get('/auth/get-current-user', verifyJWT("admin", "demo"), getCurrentUser);
+authRouter.get('/auth/get-current-user', verifyJWT("admin", "demo", "super_admin"), getCurrentUser);
 
 export { authRouter };

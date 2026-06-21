@@ -10,7 +10,7 @@ const upload = multer({ storage });
 
 productRouter.post(
     "/add-new-product",
-    verifyJWT,
+    verifyJWT("super_admin", "admin"),
     upload.fields([
         { name: "thumbnail", maxCount: 1 },
         { name: "images", maxCount: 4 },
@@ -19,12 +19,12 @@ productRouter.post(
     addNewProduct
 );
 
-productRouter.post('/delete-product',verifyJWT("admin"), deleteProduct);
-productRouter.post('/restore-product',verifyJWT("admin"), restoreProduct);
+productRouter.post('/delete-product',verifyJWT("super_admin"), deleteProduct);
+productRouter.post('/restore-product',verifyJWT("super_admin"), restoreProduct);
 
 productRouter.patch(
   "/update-product/:productId",
-  verifyJWT("admin"),
+  verifyJWT("admin", "super_admin"),
   upload.fields([
     { name: "thumbnail", maxCount: 1 },
     { name: "images", maxCount: 4 },

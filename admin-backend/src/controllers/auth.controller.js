@@ -23,6 +23,8 @@ const options = {
     maxAge: 7 * 24 * 60 * 60 * 1000
 }
 
+const allowedRoles = ["super_admin", "admin", "demo"];
+
 export const emailLogin = async (req, res) => {
     const { email, password } = req.body;
 
@@ -55,7 +57,7 @@ export const emailLogin = async (req, res) => {
 
             if (!isValid) {
                 return res.status(401).json({ message: INVALID_MSG });
-            } else if (user.role !== "admin" && user.role !== "demo") {
+            } else if (!allowedRoles.includes(user?.role)) {
                 return res.status(403).json({
                     message: "Access denied",
                 });

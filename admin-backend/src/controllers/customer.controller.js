@@ -12,7 +12,7 @@ const getUsers = async (req, res) => {
     }
 
     if (status && status != "All") {
-        filter.isActive = status === "active"? true : false;
+        filter.isActive = status === "active" ? true : false;
     }
 
     if (search?.trim()) {
@@ -288,4 +288,45 @@ const getUsers = async (req, res) => {
     }
 };
 
-export { getUsers };
+const updateRole = async (req, res) => {
+    const { role, userId } = req.body;
+
+    const availableRoles = ["super_admin", "admin", "user", "demo"];
+
+    if (!role || !userId || !availableRoles.includes(role)) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid userId or role!"
+        });
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { role },
+            { returnDocument: 'after' }
+        ).select("-passwordHash -googleLogin -refreshToken");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Role updated successfully.",
+            user
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error!"
+        });
+    }
+};
+
+export { getUsers, updateRole };
