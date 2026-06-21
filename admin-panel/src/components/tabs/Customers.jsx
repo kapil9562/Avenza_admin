@@ -82,7 +82,7 @@ export default function Customers() {
   ];
 
   const filters = {
-    role: ["All", "admin", "superAdmin", "user", "demo"],
+    role: ["All", "admin", "super_admin", "user", "demo"],
     status: ["All", "active", "blocked"],
   };
 
@@ -511,7 +511,7 @@ function FilterDropdown({ isDark, selectedRole, selectedStatus, filterHandler, f
                             }
                           `}
                         >
-                          {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                          {formatRole(opt)}
                         </button>
                       );
                     })}

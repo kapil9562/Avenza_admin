@@ -8,7 +8,7 @@ export const webApi = axios.create({
 
 export const adminApi = axios.create({
   baseURL: import.meta.env.VITE_ADMIN_BASE_URI,
-  withCredentials: true,
+  withCredentials: true
 })
 
 export const getProducts = ({ skip = 0, category, limit, title, productId, productIds, inStock, deletedItems }) => {
