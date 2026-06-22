@@ -2,7 +2,9 @@ import Order from "../models/order.modal.js";
 import User from "../models/user.model.js";
 import Fuse from "fuse.js";
 
-export const getOrders = async (req, res) => {
+
+// { Get Orders }
+const getOrders = async (req, res) => {
     try {
         const {
             skip,
@@ -116,7 +118,31 @@ export const getOrders = async (req, res) => {
     }
 };
 
-export const updateOrder = async (req, res) => {
+// { Get Recent Orders }
+const getRecentOrders = async (req, res) => {
+    try {
+        const orders = await Order.find().populate("user", "name email avatar").sort("-createdAt").limit(5);
+        if (!orders) {
+            return res.status(404).json({
+                success: false,
+                message: "No orders found!"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            orders
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error!"
+        })
+    }
+};
+
+// { Update Orders }
+const updateOrder = async (req, res) => {
     const orderId = req.params.orderId;
     const { status } = req.body;
 
@@ -153,9 +179,10 @@ export const updateOrder = async (req, res) => {
             message: "Failed to change update status!"
         })
     }
-}
+};
 
-export const deleteOrder = async (req, res) => {
+// { Delete Orders }
+const deleteOrder = async (req, res) => {
     const orderId = req.params.orderId;
 
     if (!orderId) {
@@ -179,4 +206,6 @@ export const deleteOrder = async (req, res) => {
             message: "Failed to delete order!"
         })
     }
-}
+};
+
+export { getOrders, getRecentOrders, updateOrder, deleteOrder };

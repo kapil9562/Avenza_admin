@@ -11,6 +11,8 @@ export const adminApi = axios.create({
   withCredentials: true
 })
 
+
+// { Product APIs }
 export const getProducts = ({ skip = 0, category, limit, title, productId, productIds, inStock, deletedItems }) => {
   const params = new URLSearchParams();
 
@@ -48,7 +50,8 @@ export const updateProduct = (productId, data) =>
     }
   });
 
-// {order apis}
+
+// {Order APIs}
 export const getOrders = ({ skip = 0, status, paymentMethod, search }) => {
   const params = new URLSearchParams();
 
@@ -60,12 +63,14 @@ export const getOrders = ({ skip = 0, status, paymentMethod, search }) => {
   return adminApi.get(`/get-orders?${params.toString()}`);
 }
 
+export const getRecentOrders = () => adminApi.get("/get-recent-order");
+
 export const updateStatus = ({ status, orderId }) => adminApi.patch(`update-order/status/${orderId}`, { status });
 
 export const deleteOrder = ({ orderId }) => adminApi.delete(`/delete-order/${orderId}`);
 
-// {auth apis} 
 
+// {Auth APIs} 
 export const emailLogin = ({ email, password }) => adminApi.post('/auth/email-login', { email, password });
 
 export const refreshAccessToken = () => adminApi.post('/auth/refresh');
@@ -74,6 +79,8 @@ export const getCurrentUser = () => adminApi.get('/auth/get-current-user');
 
 export const logoutUser = () => adminApi.post('/auth/logout');
 
+
+// { Customer APIs }
 export const getAllUsers = ({ skip, role, status, search }) => {
   const params = new URLSearchParams();
 
@@ -87,6 +94,8 @@ export const getAllUsers = ({ skip, role, status, search }) => {
 
 export const updateUserRole = ({role, userId}) => adminApi.post("/customers/update-role", {role, userId});
 
+
+// { Refresh Auth }
 let isRefreshing = false;
 let failedQueue = [];
 

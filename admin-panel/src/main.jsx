@@ -12,44 +12,47 @@ import ProtectedRoute from './helpers/ProtectedRoute.jsx'
 import { ToastProvider } from './context/ToastContext.jsx';
 import { OrdersProvider } from './context/OrderContext.jsx';
 import { CustomersProvider } from './context/CustomerContext.jsx';
+import { DashboardProvider } from './context/DashboardContext.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ThemeProvider>
       <AuthProvider>
-        <ProductsProvider>
-          <CustomersProvider>
-            <OrdersProvider>
-              <ToastProvider>
-                <Routes>
+        <DashboardProvider>
+          <ProductsProvider>
+            <CustomersProvider>
+              <OrdersProvider>
+                <ToastProvider>
+                  <Routes>
 
-                  {/* Public Route */}
-                  <Route path="/login" element={<Login />} />
+                    {/* Public Route */}
+                    <Route path="/login" element={<Login />} />
 
-                  {/* Protected Routes */}
-                  <Route element={<ProtectedRoute />}>
+                    {/* Protected Routes */}
+                    <Route element={<ProtectedRoute />}>
 
-                    {/* Layout Route */}
-                    <Route element={<App />}>
-                      <Route index element={<Dashboard />} />
-                      <Route path="products" element={<Products />} />
-                      <Route path="orders" element={<Orders />} />
-                      <Route path="settings" element={<Settings />} />
-                      <Route path="analytics" element={<Analytics />} />
-                      <Route path="customers" element={<Customers />} />
-                      <Route path="addproduct" element={<AddProduct />} />
-                      <Route path="edit-product/:id" element={<AddProduct />} />
+                      {/* Layout Route */}
+                      <Route element={<App />}>
+                        <Route index element={<Dashboard />} />
+                        <Route path="products" element={<Products />} />
+                        <Route path="orders" element={<Orders />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="analytics" element={<Analytics />} />
+                        <Route path="customers" element={<Customers />} />
+                        <Route path="addproduct" element={<AddProduct />} />
+                        <Route path="edit-product/:id" element={<AddProduct />} />
+                      </Route>
+
+                      <Route path='/*' element={<div className='font-bold text-lg text-black bg-white min-h-dvh'>404 Not Found</div>} />
+
                     </Route>
 
-                    <Route path='/*' element={<div className='font-bold text-lg text-black bg-white min-h-dvh'>404 Not Found</div>}/>
-
-                  </Route>
-
-                </Routes>
-              </ToastProvider>
-            </OrdersProvider>
-          </CustomersProvider>
-        </ProductsProvider>
+                  </Routes>
+                </ToastProvider>
+              </OrdersProvider>
+            </CustomersProvider>
+          </ProductsProvider>
+        </DashboardProvider>
       </AuthProvider>
     </ThemeProvider>
   </BrowserRouter>

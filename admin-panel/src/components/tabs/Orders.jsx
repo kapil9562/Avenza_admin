@@ -5,7 +5,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { getOrders } from '../../api/api';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useOrders } from '../../context/OrderContext';
 import { GoDotFill, GoEye, GoTriangleUp } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
@@ -85,8 +85,8 @@ function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order A
         visibility: pos ? "visible" : "hidden", // hidden until position is ready
       }}
       className={`fixed z-[9999] whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
-          ? "bg-gray-900 border-slate-700 text-gray-300"
-          : "bg-white border-gray-200 text-gray-600"
+        ? "bg-gray-900 border-slate-700 text-gray-300"
+        : "bg-white border-gray-200 text-gray-600"
         }`}
     >
       <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>
@@ -130,6 +130,8 @@ function Orders() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const location = useLocation();
+  const id = location?.state?.id;
 
   // Per-row trigger refs
   const triggerRefs = useRef({});
@@ -294,7 +296,7 @@ function Orders() {
           <table className="w-full border-collapse">
 
             {/* Header */}
-            <thead className={`sticky top-0 z-50 ${isDark ? "bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
+            <thead className={`sticky top-0 z-50 border-b ${isDark ? "bg-slate-800 text-gray-100 border-b-slate-700" : "bg-slate-100 border-b-slate-200"}`}>
               <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
                 <th className="px-4 py-4 w-[5%] font-semibold whitespace-nowrap">Order ID</th>
                 <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Customer</th>
@@ -342,10 +344,13 @@ function Orders() {
               ) : (
                 orders?.map((order, idx) => (
                   <React.Fragment key={order?._id || idx}>
-                    <tr className={`divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
+                    <tr
+                      className={`divide-x cursor-pointer ${isDark ? "divide-slate-700 hover:bg-slate-800/60" : "divide-slate-200 hover:bg-slate-100"}`}
+                      onClick={() => handleToggle(order?._id)}
+                    >
 
                       {/* Order ID */}
-                      <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                      <td className={`px-4 py-1 ${id === order?.orderId ? "text-purple-500" : (isDark ? "text-gray-400" : "text-gray-500")}`}>
                         #{order.orderId}
                       </td>
 
@@ -423,8 +428,11 @@ function Orders() {
 
                           {/* Eye / detail toggle */}
                           <button
-                            className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
-                            onClick={() => handleToggle(order?._id)}
+                            className={`text-purple-600 p-2 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-200/60"}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggle(order?._id);
+                            }}
                           >
                             <GoEye />
                           </button>
@@ -432,10 +440,11 @@ function Orders() {
                           {/* Three-dot trigger */}
                           <div
                             ref={(el) => (triggerRefs.current[order?._id] = el)}
-                            className={`p-2 rounded-lg cursor-pointer ${showActions === order?._id && "shadow-[inset_0_0_0_1px]"} ${isDark ? "bg-slate-800 text-gray-400 shadow-purple-600" : "bg-slate-100 text-gray-800 shadow-purple-400"}`}
-                            onClick={() =>
+                            className={`p-2 rounded-lg cursor-pointer ${showActions === order?._id && "shadow-[inset_0_0_0_1px]"} ${isDark ? "bg-slate-800 text-gray-400 shadow-purple-600" : "bg-slate-200/60 text-gray-800 shadow-purple-400"}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setShowActions((prev) => (prev === order?._id ? null : order?._id))
-                            }
+                            }}
                           >
                             <PiDotsThreeVerticalBold />
                           </div>

@@ -74,9 +74,15 @@ function SideMenu({ sideMenu, setSideMenu }) {
     tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
   };
 
+  useEffect(() => {
+    const newTab = !tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1);
+    if (newTab === activetab) return;
+    setActiveTab(newTab);
+  }, [tab]);
+
   return (
     <div>
-      <div className={`${isDark? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full z-100 ${sideMenu? "block" : "hidden"}`}></div>
+      <div className={`${isDark ? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full z-100 ${sideMenu ? "block" : "hidden"}`}></div>
       <div
         className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
       min-h-dvh border-r-2 transition-[width,transform] duration-300 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 ${sideMenu ? "translate-x-0" : "-translate-x-full"}
