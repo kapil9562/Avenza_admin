@@ -268,7 +268,7 @@ function Products() {
                 </button>
             </div>
             {/* Table Container */}
-            <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-300 shadow-xl"}`}>
+            <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
 
                 {/* TABLE */}
                 <div className="h-[70dvh] overflow-y-auto tableBody scroll-smooth">

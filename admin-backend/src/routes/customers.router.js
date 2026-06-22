@@ -1,6 +1,6 @@
 import express from "express"
 import { verifyJWT } from "../middleware/auth.middleware.js";
-import { getUsers, updateRole } from "../controllers/customer.controller.js";
+import { getUsers, updateRole, updateStatus } from "../controllers/customer.controller.js";
 import rateLimit from "express-rate-limit";
 import slowDown from "express-slow-down";
 
@@ -25,5 +25,6 @@ const speedLimiter = slowDown({
 
 customerRouter.get("/customers/get-users", verifyJWT("admin", "demo", "super_admin"), getUsers);
 customerRouter.post("/customers/update-role", speedLimiter, limiter, verifyJWT("super_admin"), updateRole);
+customerRouter.patch("/customers/update-status/:userId", speedLimiter, limiter, verifyJWT("super_admin", "admin"), updateStatus);
 
 export {customerRouter};

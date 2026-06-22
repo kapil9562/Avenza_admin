@@ -123,7 +123,6 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser, pageNo }) => 
             toast.success(res?.data?.message);
             setEditModal(false);
         } catch (error) {
-            console.log(error)
             const msg = error?.response?.data?.message || error?.data?.message || "Failed to update role!";
             toast.error(msg);
         } finally {

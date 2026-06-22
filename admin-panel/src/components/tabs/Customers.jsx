@@ -19,6 +19,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { formatDate, formatRole, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
 import { FaEye } from "react-icons/fa6";
 import { EditRoleModal } from "../../helpers/EditRoleModal";
+import UpdateCustomerStatusModal from "../../helpers/UpdateCustomerStatusModal";
 
 export default function Customers() {
   const { isDark } = useTheme();
@@ -29,6 +30,7 @@ export default function Customers() {
   const [search, setSearch] = useState("");
   const [showActions, setShowActions] = useState(null);
   const [editModal, setEditModal] = useState(false);
+  const [statusModal, setStatusModal] = useState(false);
   const [currUser, setCurrUser] = useState({});
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -103,12 +105,12 @@ export default function Customers() {
   }
 
   return (
-    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-4 font-sans text-slate-700 overflow-y-auto pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-4 font-sans text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
         {statCard.map((item) => (<StatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
 
-      <div className={`${isDark ? "border-gray-800" : "bg-white border-gray-100"} border-2 rounded-2xl overflow-hidden`}>
+      <div className={`${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "bg-white border-gray-100 shadow-md"} border-2 rounded-xl overflow-hidden`}>
         <div className="p-4 flex flex-row justify-between items-start">
           <div className="flex flex-row gap-1 text-lg">
             <h2 className={`${isDark ? "text-gray-100" : "text-gray-800"} font-semibold`}>All Customers</h2>
@@ -151,14 +153,14 @@ export default function Customers() {
           </div>
         </div>
 
-        <div className={`border-t-2 overflow-x-auto ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-100 shadow-xl"}`}>
+        <div className={`border-t-2 overflow-x-auto ${isDark ? "border-gray-800" : "border-gray-100"}`}>
           <div className="h-[55dvh] overflow-y-auto tableBody scroll-smooth">
             <table className="w-full border-collapse">
               <thead className={`sticky top-0 z-50 ${isDark ? "bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
                 <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
-                  <th className="px-4 py-2 w-[25%] font-semibold whitespace-nowrap text-sm">Customer</th>
+                  <th className="px-4 py-2 w-[35%] font-semibold whitespace-nowrap text-sm">Customer</th>
                   <th className="px-4 py-2 min-w-50 w-[20%] font-semibold text-sm">Email</th>
-                  <th className="px-4 py-2 w-[15%] text-sm font-semibold">Orders</th>
+                  <th className="px-4 py-2 w-[5%] text-sm font-semibold">Orders</th>
                   <th className="px-4 py-2 w-[12%] text-sm font-semibold">Total Spent</th>
                   <th className="px-4 py-2 w-[8%] text-sm font-semibold whitespace-nowrap">Joined On</th>
                   <th className="px-4 py-2 w-[10%] text-sm font-semibold">Role</th>
@@ -213,12 +215,12 @@ export default function Customers() {
                             <img
                               src={normalizeGooglePhoto(user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                               referrerPolicy="no-referrer"
-                              alt="thumbnail"
+                              alt="profile photo"
                               className={`min-w-10 min-h-10 max-w-10 max-h-10 object-contain rounded-full ${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"}`}
                             />
                             <div className="flex flex-col">
                               <span>{user?.name}</span>
-                              <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm`}>ID: #{user.uid}</span>
+                              <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm break-all`}>ID: #{user._id}</span>
                             </div>
                           </div>
                         </td>
@@ -246,7 +248,7 @@ export default function Customers() {
 
                         <td className="px-4 py-1">
                           <span className={`px-3 text-sm py-1 rounded-full whitespace-nowrap ${getActiveBadge(user?.isActive ? "true" : "false")}`}>
-                            {user?.isActive ? "Active" : "Inactive"}
+                            {user?.isActive ? "Active" : "Blocked"}
                           </span>
                         </td>
 
@@ -267,7 +269,7 @@ export default function Customers() {
                               onClose={() => setShowActions(null)}
                               actions={[
                                 { label: "Edit Role", icon: BiPencil, colorClass: "text-blue-600", onClick: () => { setCurrUser(user); setEditModal(true); } },
-                                { label: "Update Status", icon: FiRefreshCw, colorClass: "text-violet-600", onClick: () => { } },
+                                { label: "Update Status", icon: FiRefreshCw, colorClass: "text-violet-600", onClick: () => { setCurrUser(user); setStatusModal(true); } },
                                 { label: "View Customer", icon: FaEye, colorClass: "text-emerald-600", onClick: () => navigate(`/customers/${user._id}`) },
                                 { label: "Delete Customer", icon: RiDeleteBin6Line, colorClass: "text-red-600", onClick: () => { } },
                               ]}
@@ -339,6 +341,7 @@ export default function Customers() {
       </div>
 
       {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
+      {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page}/>}
     </div>
   );
 }

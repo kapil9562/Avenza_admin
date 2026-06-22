@@ -23,6 +23,7 @@ import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useNavigate } from 'react-router-dom';
 import { IoRefresh } from 'react-icons/io5';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 
 // Mock Data for Charts
 const salesData = [
@@ -109,9 +110,9 @@ const Dashboard = () => {
   }, [recentOrders, setRecentOrders]);
 
   return (
-    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-8 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-4 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* 1. Stats Overview Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
 
         <StatCard isDark={isDark} icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color={`${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`} className={`${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} />
 
@@ -123,12 +124,21 @@ const Dashboard = () => {
 
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-8">
           {/* 2. Recent Orders Table */}
           <div className={`rounded-xl overflow-hidden shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
-            <h3 className={`text-xl font-bold border-b py-4 px-6 ${isDark ? "text-gray-100 border-slate-600" : "text-gray-800 border-slate-50"} nunitoFont`}>Recent Orders</h3>
+            <div className={`border-b py-3 px-4 flex flex-row justify-between items-center ${isDark ? "text-gray-100 border-slate-600" : "text-gray-800 border-slate-50"}`}>
+              <h3 className='text-xl font-bold nunitoFont'>Recent Orders</h3>
+              <button
+                className={`flex flex-row justify-center items-center border-2 px-2 py-1 rounded-md text-sm font-medium ${isDark ? "bg-pink-600/10 border-pink-600 text-pink-400 hover:border-pink-700" : "bg-rose-50/60 border-rose-100 text-rose-400 hover:border-rose-200"}`}
+                onClick={() => navigate("/orders")}
+              >
+                <span>View All Orders</span>
+                <MdKeyboardArrowRight size={20} />
+              </button>
+            </div>
             {/* Table Container */}
             <div className="overflow-y-auto scroll-smooth">
               <table className="w-full border-collapse">
@@ -145,7 +155,7 @@ const Dashboard = () => {
                 </thead>
 
                 {/* Body */}
-                <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${recentOrders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[37dvh]"}`}>
+                <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${recentOrders?.length === 0 && "h-[36dvh]"}`}>
                   {loading ? (
                     <tr>
                       <td colSpan="8" className="text-center py-8">
@@ -180,7 +190,7 @@ const Dashboard = () => {
                     recentOrders?.map((order, idx) => (
                       <React.Fragment key={order?._id || idx}>
                         <tr
-                          className={`divide-x cursor-pointer ${isDark ? "divide-slate-700 hover:bg-slate-800" : "divide-slate-200 hover:bg-slate-100"}`}
+                          className={`divide-x cursor-pointer  ${isDark ? "divide-slate-700 hover:bg-slate-800" : "divide-slate-200 hover:bg-slate-100"}`}
                           onClick={() => navigate("/orders", { state: { id: order?.orderId } })}
                         >
 
@@ -259,9 +269,9 @@ const Dashboard = () => {
         {/* Right Column (1/3 width) */}
         <div className="space-y-8">
           {/* 3. Sales Analytics */}
-          <div className={`rounded-3xl p-6 shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+          <div className={`rounded-xl p-4 shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
             <h3 className={`text-lg font-bold nunitoFont ${isDark ? "text-gray-200" : "text-gray-800"}`}>Sales Analytics</h3>
-            <p className="text-slate-400 text-sm mb-4">Monthly Sales</p>
+            <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Monthly Sales Overview</p>
             <div className="h-64">
               <ResponsiveContainer>
                 <ComposedChart data={salesData} accessibilityLayer={false}>
@@ -271,7 +281,18 @@ const Dashboard = () => {
                       <stop offset="100%" stopColor="#FF3E9B" stopOpacity={1} />
                     </linearGradient>
                   </defs>
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fontSize: 12,
+                      fill: isDark ? "#94A3B8" : "#64748B",
+                      fontWeight: 500,
+                    }}
+                  />
 
+                  <YAxis hide />
                   <Tooltip cursor={false} />
 
                   <Bar
@@ -341,7 +362,7 @@ const Dashboard = () => {
 
 // Sub-components for cleaner code
 const StatCard = ({ icon, label, value, color, className, isDark }) => (
-  <div className={` p-5 rounded-3xl shadow-xl flex items-center gap-4 ${className}`}>
+  <div className={` p-5 rounded-3xl shadow-md flex items-center gap-4 ${className}`}>
     <div className={`p-3 rounded-2xl ${color} text-xl`}>{icon}</div>
     <div>
       <p className={`text-sm ${isDark ? "text-slate-100" : "text-slate-400"} font-medium`}>{label}</p>

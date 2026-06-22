@@ -98,6 +98,7 @@ function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order A
           className={`flex gap-2 items-center px-3 py-1.5 text-sm font-medium w-full cursor-pointer ${colorClass} ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"
             }`}
           onClick={(e) => {
+            e.stopPropagation();
             e.preventDefault();
             onClick();
             onClose();
@@ -252,7 +253,7 @@ function Orders() {
             onChange={(e) => setInput(e.target.value)}
             type="text"
             placeholder='Search orders...'
-            className={`z-10 pr-8 flex w-full px-2 py-1 pl-2 rounded-xl border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
+            className={`z-10 pr-8 flex w-full px-2 py-1 pl-2 rounded-lg border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
           />
           <IoIosSearch className='absolute right-2 text-2xl font-semibold text-[#8b90c7] z-20 pointer-events-none' />
         </div>
@@ -291,7 +292,7 @@ function Orders() {
       </div>
 
       {/* Table Container */}
-      <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-xl shadow-[#0d1423]" : "border-gray-300 shadow-xl"}`}>
+      <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
         <div className="h-[60dvh] overflow-y-auto tableBody scroll-smooth">
           <table className="w-full border-collapse">
 

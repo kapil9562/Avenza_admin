@@ -1,6 +1,6 @@
+import mongoose from "mongoose";
 import Order from "../models/order.modal.js";
 import User from "../models/user.model.js";
-import Fuse from "fuse.js";
 
 const getUsers = async (req, res) => {
     const { skip = 0, role, status, search, sort = "-createdAt" } = req.query;
@@ -15,40 +15,22 @@ const getUsers = async (req, res) => {
         filter.isActive = status === "active" ? true : false;
     }
 
-    if (search?.trim()) {
-        const searchTerm = search.trim();
+   if (search?.trim()) {
+    const searchTerm = search.trim();
+    const orConditions = [
+        { uid: { $regex: searchTerm, $options: "i" } },
+        { name: { $regex: searchTerm, $options: "i" } },
+        { email: { $regex: searchTerm, $options: "i" } }
+    ];
 
-        // get users
-        const users = await User.find({}, "_id name email").lean().limit(200);
-
-        // Fuzzy search
-        const fuse = new Fuse(users, {
-            keys: ["name", "email"],
-            threshold: 0.4,
+    if (mongoose.Types.ObjectId.isValid(searchTerm)) {
+        orConditions.push({
+            _id: new mongoose.Types.ObjectId(searchTerm)
         });
-
-        const fuzzyResults = fuse.search(searchTerm);
-        const fuzzyUserIds = fuzzyResults.map(r => r.item._id);
-
-        // Regex fallback
-        const regexUsers = await User.find({
-            $or: [
-                { name: { $regex: searchTerm, $options: "i" } },
-                { email: { $regex: searchTerm, $options: "i" } },
-            ],
-        }).select("_id");
-
-        const regexUserIds = regexUsers.map(u => u._id);
-
-        // merge both
-        const userIds = [...new Set([...fuzzyUserIds, ...regexUserIds])];
-
-        // final query
-        filter.$or = [
-            { uid: { $regex: searchTerm, $options: "i" } },
-            { _id: { $in: userIds } },
-        ];
     }
+
+    filter.$or = orConditions;
+}
 
     try {
         const now = new Date();
@@ -329,4 +311,44 @@ const updateRole = async (req, res) => {
     }
 };
 
-export { getUsers, updateRole };
+const updateStatus = async (req, res) => {
+    const { userId } = req.params;
+    const { status } = req.body;
+
+    if (!userId || typeof status !== "boolean") {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid userId or status!"
+        });
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { isActive: status },
+            { returnDocument: 'after' }
+        ).select("-passwordHash -googleLogin -refreshToken");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Status updated successfully.",
+            user
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error!"
+        });
+    }
+}
+
+export { getUsers, updateRole, updateStatus };

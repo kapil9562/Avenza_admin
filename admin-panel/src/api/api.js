@@ -94,6 +94,8 @@ export const getAllUsers = ({ skip, role, status, search }) => {
 
 export const updateUserRole = ({role, userId}) => adminApi.post("/customers/update-role", {role, userId});
 
+export const updateCustomerStatus = ({userId, status}) => adminApi.patch(`/customers/update-status/${userId}`, {status});
+
 
 // { Refresh Auth }
 let isRefreshing = false;
