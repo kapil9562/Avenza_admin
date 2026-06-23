@@ -32,8 +32,7 @@ function CustomerDetailModal({ detailModal, setDetailModal, currUser, pageNo }) 
                     [cacheKey]: res?.data
                 }));
             } catch (err) {
-                const msg = err?.response?.data?.message || err?.message || "Something went wrong!";
-                toast.error(msg);
+                console.log(err);
             }
         }
 
@@ -46,8 +45,7 @@ function CustomerDetailModal({ detailModal, setDetailModal, currUser, pageNo }) 
                     [cacheKey]: res?.data?.address
                 }));
             } catch (err) {
-                const msg = err?.response?.data?.message || err?.message || "Something went wrong!";
-                toast.error(msg);
+                console.log(err);
             }
         }
 
@@ -56,7 +54,7 @@ function CustomerDetailModal({ detailModal, setDetailModal, currUser, pageNo }) 
     }, [currUser]);
 
     return (
-        <div className="fixed inset-0 z-999 bg-black/40 flex items-center justify-center p-3 md:p-6 nunitoFont">
+        <div className="fixed inset-0 z-999 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-3 md:p-6 nunitoFont">
             <div className={`w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"}`}>
                 {/* Header */}
                 <div className={`flex items-center justify-between px-4 py-1 border-b ${isDark ? "border-slate-800" : "border-gray-200"}`}>
@@ -84,9 +82,9 @@ function CustomerDetailModal({ detailModal, setDetailModal, currUser, pageNo }) 
                                 src={normalizeGooglePhoto(currUser?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                                 referrerPolicy="no-referrer"
                                 alt="profile photo"
-                                className='min-h-15 min-w-15 rounded-full'
+                                className='min-h-15 min-w-15 max-h-15 max-w-15 rounded-full'
                             />
-                            <GoDotFill size={25} className={`absolute -right-1 -bottom-1 ${currUser?.isActive ? "text-green-500" : "text-red-500"}`} />
+                            <div className={`absolute right-0 bottom-0 border-2 p-1.5 rounded-full ${isDark ? "border-slate-900" : "border-white"} ${currUser?.isActive ? "bg-green-500" : "bg-red-500"}`} ></div>
                         </div>
                         <div className={`flex flex-col justify-center font-semibold text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                             <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>{currUser?.name}</h2>
@@ -171,10 +169,10 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
         <div className='grid grid-cols-2 grid-rows-2 gap-2'>
 
             {/* Contact information */}
-            <div className='shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-2'>
+            <div className={`shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-2 ${isDark? "border-2 border-slate-800" : "shadow"}`}>
                 <div className='flex gap-2 items-center'>
                     <TiContacts size={28} className='p-1 bg-purple-600/10 text-purple-500 rounded-md' />
-                    <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold`}>Contact information</h2>
+                    <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Contact information</h2>
                 </div>
                 <div className='space-y-2'>
                     <div className='flex flex-row justify-between items-center text-sm font-bold'>
@@ -187,7 +185,7 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
                     <div className='flex flex-row justify-between items-center text-sm font-bold'>
                         <div className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
                             <h2>Phone</h2>
-                            <span>+123456789</span>
+                            <span>{address?.phone ? `+91 ${address?.phone}` : "-"}</span>
                         </div>
                         <div><MdOutlinePhone size={24} className='p-1 bg-purple-600/10 text-purple-500 rounded-md' /></div>
                     </div>
@@ -202,12 +200,12 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
             </div>
 
             {/* Customer Statistics */}
-            <div className='shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-4'>
+            <div className={`shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-4 ${isDark? "border-2 border-slate-800" : "shadow"}`}>
                 <div className='flex gap-2 items-center'>
                     <IoStatsChartOutline size={28} className='p-1 bg-green-600/10 text-green-500 rounded-md' />
-                    <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold`}>Contact information</h2>
+                    <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Customer Statistics</h2>
                 </div>
-                <div className='space-y-3'>
+                <div className={`space-y-3 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
                     <div className='flex flex-row justify-between items-center text-sm font-bold'>
                         <span>Total Orders</span>
                         <span>{currUser?.ordersCount}</span>
@@ -228,43 +226,39 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
             </div>
 
             {/* Address Information */}
-            <div className='shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1'>
+            <div className={`rounded-lg p-3 flex flex-col col-span-1 row-span-1 ${isDark? "border-2 border-slate-800" : "shadow"}`}>
                 <div className='flex gap-2 items-center'>
                     <MdOutlineLocationOn size={28} className='p-1 bg-rose-600/10 text-rose-500 rounded-md' />
-                    <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold`}>Address Information</h2>
+                    <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Address Information</h2>
                 </div>
                 <div className='flex flex-row justify-between items-center mt-4 text-sm font-bold'>
                     <span className='px-2 py-1 bg-rose-600/10 text-rose-500 rounded-2xl text-xs'>Default Address</span>
                 </div>
-                <div className='flex flex-row max-w-3/4 items-center mt-4 text-sm font-bold'>
-                    {formatAddress(address)}
+                <div className={`flex flex-row max-w-3/4 items-center mt-4 text-sm font-bold ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+                    {address ? formatAddress(address) : "Not found."}
                 </div>
             </div>
-            <div className='shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1'>
+
+            {/* Additional Information */}
+            <div className={`rounded-lg p-3 flex flex-col col-span-1 row-span-1 ${isDark ? "text-gray-300 border-2 border-slate-800" : "text-gray-600 shadow"}`}>
                 <div className='flex gap-2 items-center'>
                     <IoMdInformationCircleOutline size={28} className='p-1 bg-orange-600/10 text-orange-500 rounded-md' />
-                    <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold`}>Contact information</h2>
+                    <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Additional information</h2>
                 </div>
                 <div className='flex flex-row justify-between items-center mt-4 text-sm font-bold'>
-                    <h2 className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                        Role
-                    </h2>
+                    <h2>Role</h2>
                     <span className={`px-2 py-0.5 rounded-full whitespace-nowrap text-xs ${getRoleBadge(currUser?.role)}`}>
                         {formatRole(currUser?.role)}
                     </span>
                 </div>
                 <div className='flex flex-row justify-between items-center mt-4 text-sm font-bold'>
-                    <h2 className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                        Account Status
-                    </h2>
+                    <h2>Account Status</h2>
                     <span className={`px-2 text-xs py-0.5 rounded-full whitespace-nowrap ${getActiveBadge(currUser?.isActive ? "true" : "false")}`}>
                         {currUser?.isActive ? "Active" : "Blocked"}
                     </span>
                 </div>
                 <div className='flex flex-row justify-between items-center mt-4 text-sm font-bold'>
-                    <h2 className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                        Last Login
-                    </h2>
+                    <h2>Last Login</h2>
                     <span>{formatDate(currUser?.updatedAt)} {formatTime(currUser?.updatedAt)}</span>
                 </div>
             </div>

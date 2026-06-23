@@ -73,7 +73,7 @@ function UpdateCustomerStatusModal({ currUser, statusModal, setStatusModal, page
     }
 
     return (
-        <div className="fixed inset-0 z-999 bg-black/40 flex items-center justify-center p-3 md:p-6 nunitoFont">
+        <div className="fixed inset-0 z-999 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-3 md:p-6 nunitoFont">
             <div className={`w-full max-w-xl rounded-xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"}`}>
                 {/* Header */}
                 <div className={`flex items-center justify-between px-4 py-3 border-b ${isDark ? "border-slate-800" : "border-gray-200"}`}>

@@ -131,7 +131,7 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser, pageNo }) => 
     }
 
     return (
-        <div className="fixed inset-0 z-999 bg-black/40 flex items-center justify-center p-3 md:p-6">
+        <div className="fixed inset-0 z-999 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-3 md:p-6">
             <div className={`w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"}`}>
 
                 {/* Header */}
