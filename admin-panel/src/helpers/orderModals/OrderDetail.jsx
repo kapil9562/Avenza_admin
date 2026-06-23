@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useTheme } from '../context/ThemeContext'
+import { useTheme } from '../../context/ThemeContext'
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosArrowUp } from 'react-icons/io';
 import { RxCross2 } from "react-icons/rx";
 import { GoDotFill } from "react-icons/go";
-import { formatAddress, formatDate, formatStatus, formatTime, getPaymentBadge, statusColors } from '../utils/format';
+import { formatAddress, formatDate, formatStatus, formatTime, getPaymentBadge, statusColors } from '../../utils/format';
 
 function OrderDetail({ order, formatPfpUrl, setShowDetail }) {
   const { isDark } = useTheme();

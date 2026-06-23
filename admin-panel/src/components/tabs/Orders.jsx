@@ -10,18 +10,18 @@ import { useOrders } from '../../context/OrderContext';
 import { GoDotFill, GoEye, GoTriangleUp } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaClipboardList } from "react-icons/fa6";
-import OrderDetail from '../../helpers/OrderDetail';
 import { BiPencil } from "react-icons/bi";
 import { FiCheckCircle, FiPrinter, FiRefreshCw } from "react-icons/fi";
 import { LuDownload } from "react-icons/lu";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import UpdateStatusModal from '../../helpers/UpdateStatusModal';
 import { MdCancel, MdOutlineLocalShipping } from 'react-icons/md';
 import { FaShippingFast } from 'react-icons/fa';
-import DeleteOrderModal from '../../helpers/DeleteOrderModal';
 import { IoRefresh } from 'react-icons/io5';
 import { formatDate, formatStatus, formatTime, getPaymentBadge, normalizeGooglePhoto, statusColors } from '../../utils/format';
-import EditOrderModal from '../../helpers/EditOrderModal';
+import DeleteOrderModal from '../../helpers/orderModals/DeleteOrderModal';
+import EditOrderModal from '../../helpers/orderModals/EditOrderModal';
+import OrderDetail from '../../helpers/orderModals/OrderDetail';
+import UpdateStatusModal from '../../helpers/orderModals/UpdateStatusModal';
 
 // Portal Dropdown
 function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order Actions" }) {

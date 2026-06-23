@@ -65,9 +65,12 @@ export const getOrders = ({ skip = 0, status, paymentMethod, search }) => {
 
 export const getRecentOrders = () => adminApi.get("/get-recent-order");
 
-export const updateStatus = ({ status, orderId }) => adminApi.patch(`update-order/status/${orderId}`, { status });
+export const updateStatus = ({ status, orderId }) => adminApi.patch(`/update-order/status/${orderId}`, { status });
 
 export const deleteOrder = ({ orderId }) => adminApi.delete(`/delete-order/${orderId}`);
+
+export const getOrdersById = ({userId}) => webApi.get(`/get-orders?userId=${userId}`);
+export const getAddress = ({userId}) => webApi.get(`/get-address?userId=${userId} `);
 
 
 // {Auth APIs} 

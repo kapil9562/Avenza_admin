@@ -6,6 +6,8 @@ export const CustomersProvider = ({ children }) => {
   const [cache, setCache] = useState({});
   const [meta, setMeta] = useState({});
   const [error, setError] = useState("");
+  const [ordersCache, setOrdersCache] = useState({});
+  const [addressCache, setAddressCache] = useState({});
 
   const setUsers = (key, users) => {
     setCache(prev => ({
@@ -21,7 +23,11 @@ export const CustomersProvider = ({ children }) => {
     setMeta,
     meta,
     error,
-    setError
+    setError,
+    ordersCache,
+    setOrdersCache,
+    addressCache,
+    setAddressCache
   };
 
   return (

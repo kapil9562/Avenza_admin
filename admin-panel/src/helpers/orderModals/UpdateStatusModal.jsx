@@ -10,14 +10,14 @@ import {
     MdCancel,
 } from "react-icons/md";
 import { HiOutlineBellAlert } from "react-icons/hi2";
-import { useTheme } from "../context/ThemeContext";
-import { updateStatus } from "../api/api";
-import { toast } from "../context/ToastContext";
+import { useTheme } from "../../context/ThemeContext";
+import { updateStatus } from "../../api/api";
+import { toast } from "../../context/ToastContext";
 import { GoDotFill } from "react-icons/go";
 import { FaShippingFast } from "react-icons/fa";
 import Lottie from "lottie-react";
-import loader from "../assets/loader2.json";
-import { formatStatus, statusColors } from "../utils/format";
+import loader from "../../assets/loader2.json";
+import { formatStatus, statusColors } from "../../utils/format";
 
 const statuses = [
     {

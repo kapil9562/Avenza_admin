@@ -8,17 +8,17 @@ import {
     FiBarChart2,
     FiSettings,
 } from "react-icons/fi";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { LuPencilLine } from "react-icons/lu";
 import { TbFileTextSpark, TbUserShield } from "react-icons/tb";
-import { formatRole, getRoleDescription } from "../utils/format";
+import { formatRole, getRoleDescription } from "../../utils/format";
 import { IoIosArrowDown } from "react-icons/io";
 import { useState } from "react";
-import { updateUserRole } from "../api/api";
-import { toast } from "../context/ToastContext";
-import { useCustomers } from "../context/CustomerContext";
+import { updateUserRole } from "../../api/api";
+import { toast } from "../../context/ToastContext";
+import { useCustomers } from "../../context/CustomerContext";
 import Lottie from 'lottie-react';
-import loader from "../assets/loader2.json"
+import loader from "../../assets/loader2.json"
 
 const permissions = [
     {

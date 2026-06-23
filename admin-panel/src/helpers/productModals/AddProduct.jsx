@@ -4,15 +4,15 @@ import { useDropzone } from "react-dropzone";
 import { FaCircleCheck, FaCirclePlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { HiPlus } from "react-icons/hi2";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import { addProduct } from "../api/api";
+import { addProduct } from "../../api/api";
 import Lottie from 'lottie-react';
-import loader2 from '../assets/loader.json'
+import loader2 from '../../assets/loader.json'
 import { GoAlertFill } from "react-icons/go";
 import { useParams } from "react-router-dom";
-import { getSingleProduct, updateProduct } from "../api/api";
-import { useProducts } from "../context/ProductsContext";
+import { getSingleProduct, updateProduct } from "../../api/api";
+import { useProducts } from "../../context/ProductsContext";
 
 function AddProduct() {
 

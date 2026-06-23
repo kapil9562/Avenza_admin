@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
-import { deleteProductById } from "../api/api";
+import { deleteProductById } from "../../api/api";
 import { GoAlertFill } from "react-icons/go";
 import { FaCircleCheck } from "react-icons/fa6";
 import Lottie from 'lottie-react';
-import loader from '../assets/loader2.json'
+import loader from '../../assets/loader2.json'
 import { useEffect } from "react";
-import { useProducts } from "../context/ProductsContext";
-import { useTheme } from "../context/ThemeContext";
-import { toast } from "../context/ToastContext";
+import { useProducts } from "../../context/ProductsContext";
+import { useTheme } from "../../context/ThemeContext";
+import { toast } from "../../context/ToastContext";
 
 export default function DeleteProduct({ setShow, product, setIsDeleted }) {
     const [input, setInput] = useState('');

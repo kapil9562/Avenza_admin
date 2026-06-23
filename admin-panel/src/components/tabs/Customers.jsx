@@ -18,8 +18,9 @@ import { useCustomers } from "../../context/CustomerContext";
 import { useTheme } from '../../context/ThemeContext';
 import { formatDate, formatRole, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
 import { FaEye } from "react-icons/fa6";
-import { EditRoleModal } from "../../helpers/EditRoleModal";
-import UpdateCustomerStatusModal from "../../helpers/UpdateCustomerStatusModal";
+import { EditRoleModal } from "../../helpers/customerModals/EditRoleModal";
+import UpdateCustomerStatusModal from "../../helpers/customerModals/UpdateCustomerStatusModal";
+import CustomerDetailModal from "../../helpers/customerModals/CustomerDetailModal";
 
 export default function Customers() {
   const { isDark } = useTheme();
@@ -31,6 +32,7 @@ export default function Customers() {
   const [showActions, setShowActions] = useState(null);
   const [editModal, setEditModal] = useState(false);
   const [statusModal, setStatusModal] = useState(false);
+  const [detailModal, setDetailModal] = useState(false);
   const [currUser, setCurrUser] = useState({});
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -270,7 +272,7 @@ export default function Customers() {
                               actions={[
                                 { label: "Edit Role", icon: BiPencil, colorClass: "text-blue-600", onClick: () => { setCurrUser(user); setEditModal(true); } },
                                 { label: "Update Status", icon: FiRefreshCw, colorClass: "text-violet-600", onClick: () => { setCurrUser(user); setStatusModal(true); } },
-                                { label: "View Customer", icon: FaEye, colorClass: "text-emerald-600", onClick: () => navigate(`/customers/${user._id}`) },
+                                { label: "View Customer", icon: FaEye, colorClass: "text-emerald-600", onClick: () => { setCurrUser(user); setDetailModal(true); } },
                                 { label: "Delete Customer", icon: RiDeleteBin6Line, colorClass: "text-red-600", onClick: () => { } },
                               ]}
                             />
@@ -341,7 +343,8 @@ export default function Customers() {
       </div>
 
       {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
-      {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page}/>}
+      {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page} />}
+      {detailModal && <CustomerDetailModal detailModal={detailModal} setDetailModal={setDetailModal} currUser={currUser} pageNo={page} />}
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import { ProductsProvider } from './context/ProductsContext.jsx';
 import { Dashboard, Products, Orders, Settings, Analytics, Customers } from './components/index.js';
-import AddProduct from './helpers/AddProduct.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import ProtectedRoute from './helpers/ProtectedRoute.jsx'
@@ -13,6 +12,7 @@ import { ToastProvider } from './context/ToastContext.jsx';
 import { OrdersProvider } from './context/OrderContext.jsx';
 import { CustomersProvider } from './context/CustomerContext.jsx';
 import { DashboardProvider } from './context/DashboardContext.jsx';
+import AddProduct from './helpers/productModals/AddProduct.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

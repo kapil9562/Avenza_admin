@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 
 import { LuPencilLine } from "react-icons/lu";
 import { IoChevronDown, IoClose } from "react-icons/io5";
 
 import { State, City } from "country-state-city";
 
-import { normalizeGooglePhoto } from "../utils/format";
+import { normalizeGooglePhoto } from "../../utils/format";
 
 export default function EditOrderModal({ order, setEditModal }) {
 

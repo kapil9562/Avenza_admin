@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { useTheme } from '../context/ThemeContext'
+import { useTheme } from '../../context/ThemeContext'
 import { FiX } from 'react-icons/fi';
-import { getActiveBadge, normalizeGooglePhoto } from '../utils/format';
+import { getActiveBadge, normalizeGooglePhoto } from '../../utils/format';
 import { GoDotFill } from 'react-icons/go';
 import Lottie from 'lottie-react';
-import loader from "../assets/loader2.json"
+import loader from "../../assets/loader2.json"
 import { LuPencilLine } from 'react-icons/lu';
-import { updateCustomerStatus } from '../api/api';
-import { toast } from '../context/ToastContext';
-import { useCustomers } from '../context/CustomerContext';
+import { updateCustomerStatus } from '../../api/api';
+import { toast } from '../../context/ToastContext';
+import { useCustomers } from '../../context/CustomerContext';
 
 function UpdateCustomerStatusModal({ currUser, statusModal, setStatusModal, pageNo }) {
     const { isDark } = useTheme();

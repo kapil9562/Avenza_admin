@@ -11,10 +11,10 @@ import adminLoader from '../../assets/adminLoader.json';
 import restoreLoader from '../../assets/loaderIOS.json';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DeleteProduct from '../../helpers/DeleteProduct';
 import { MdOutlineRestore } from 'react-icons/md';
 import { toast } from '../../context/ToastContext';
 import { IoRefresh } from 'react-icons/io5';
+import DeleteProduct from '../../helpers/productModals/DeleteProduct';
 
 function Products() {
     const { isDark } = useTheme();
