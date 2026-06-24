@@ -44,7 +44,7 @@ export default function Customers() {
   const users = cache[cacheKey];
   const [loading, setLoading] = useState(!(cache?.[cacheKey]));
 
-  const totalPages = useMemo(() => Math.ceil(meta?.total / 10), [meta?.total]);
+  const totalPages = useMemo(() => Math.ceil((meta?.total || 0) / 10), [meta?.total]);
   const skip = (page - 1) * 10;
   const showPagination = meta?.total > 10;
 
@@ -227,13 +227,13 @@ export default function Customers() {
                           </div>
                         </td>
 
-                        <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{user.email}</td>
+                        <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{user?.email}</td>
 
                         <td className="px-4 py-1">
-                          <span className="py-1 px-3 rounded-md bg-pink-600/10 text-pink-600">{user.ordersCount}</span>
+                          <span className="py-1 px-3 rounded-md bg-pink-600/10 text-pink-600">{user?.ordersCount}</span>
                         </td>
 
-                        <td className="px-4 py-1">₹{user.totalSpent.toLocaleString("en-IN")}</td>
+                        <td className="px-4 py-1">₹{user?.totalSpent?.toLocaleString("en-IN")}</td>
 
                         <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                           <div className="flex flex-col">
@@ -256,9 +256,9 @@ export default function Customers() {
 
                         <td className="px-4 py-1">
                           <div
-                            ref={(el) => (triggerRefs.current[user._id] = el)}
+                            ref={(el) => (triggerRefs.current[user?._id] = el)}
                             className={`inline-flex p-2 rounded-lg cursor-pointer ${showActions === user?._id && "shadow-[inset_0_0_0_1px]"} ${isDark ? "bg-slate-800 text-gray-400 shadow-purple-600" : "bg-slate-100 text-gray-800 shadow-purple-400"}`}
-                            onClick={(e) => { e.preventDefault(); setShowActions((prev) => (prev === user._id ? null : user._id)); }}
+                            onClick={(e) => { e.preventDefault(); setShowActions((prev) => (prev === user?._id ? null : user?._id)); }}
                           >
                             <PiDotsThreeVerticalBold />
                           </div>
@@ -345,7 +345,7 @@ export default function Customers() {
       {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
       {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page} />}
       <div className={`${detailModal ? "block" : "hidden"}`}>
-        <CustomerDetailModal detailModal={detailModal} setDetailModal={setDetailModal} currUser={currUser} pageNo={page} />
+        <CustomerDetailModal setDetailModal={setDetailModal} currUser={currUser} />
       </div>
     </div>
   );
@@ -360,11 +360,11 @@ const StatCard = ({ item, isDark }) => {
       <div>
         <p className={`text-sm ${isDark ? "text-slate-100" : "text-gray-600"} font-medium`}>{item.label}</p>
         <p className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>{item.value}</p>
-        {item.percentageChange !== undefined && (
+        {item?.percentageChange !== undefined && (
           <div className="flex flex-row gap-1 font-medium text-sm mt-1">
-            <div className={`${item.percentageChange >= 0 ? "text-green-500" : "text-red-500"} flex row gap-1 items-center`}>
-              <IoMdArrowUp className={`${item.percentageChange < 0 && "rotate-180"}`} />
-              <span>{item.percentageChange}%</span>
+            <div className={`${item?.percentageChange >= 0 ? "text-green-500" : "text-red-500"} flex row gap-1 items-center`}>
+              <IoMdArrowUp className={`${item?.percentageChange < 0 && "rotate-180"}`} />
+              <span>{item?.percentageChange}%</span>
             </div>
             <p className={`${isDark ? "text-slate-300" : "text-slate-400"}`}>this month</p>
           </div>
@@ -409,7 +409,7 @@ function ActionDropdown({ userId, triggerRef, isDark, onClose, actions }) {
     <div
       ref={dropdownRef}
       style={{ top: pos?.top ?? 0, left: pos?.left ?? 0, width: 180, visibility: pos ? "visible" : "hidden" }}
-      className={`fixed z-[9999] whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"}`}
+      className={`fixed z-100 whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark ? "bg-gray-900 border-slate-700 text-gray-300" : "bg-white border-gray-200 text-gray-600"}`}
     >
       <h1 className={`${isDark ? "text-gray-400" : "text-gray-500"} text-xs px-2 py-1`}>Customer Actions</h1>
       {actions.map(({ label, icon: Icon, colorClass, onClick }) => (
