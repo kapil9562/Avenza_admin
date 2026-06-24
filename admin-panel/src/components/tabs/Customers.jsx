@@ -344,7 +344,9 @@ export default function Customers() {
 
       {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
       {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page} />}
-      {detailModal && <CustomerDetailModal detailModal={detailModal} setDetailModal={setDetailModal} currUser={currUser} pageNo={page} />}
+      <div className={`${detailModal ? "block" : "hidden"}`}>
+        <CustomerDetailModal detailModal={detailModal} setDetailModal={setDetailModal} currUser={currUser} pageNo={page} />
+      </div>
     </div>
   );
 }

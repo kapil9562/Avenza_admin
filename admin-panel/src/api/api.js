@@ -69,7 +69,7 @@ export const updateStatus = ({ status, orderId }) => adminApi.patch(`/update-ord
 
 export const deleteOrder = ({ orderId }) => adminApi.delete(`/delete-order/${orderId}`);
 
-export const getOrdersById = ({userId}) => webApi.get(`/get-orders?userId=${userId}`);
+export const getOrdersById = ({userId, limit, skip}) => webApi.get(`/get-orders?userId=${userId}&limit=${limit}&skip=${skip}`);
 export const getAddress = ({userId}) => webApi.get(`/get-address?userId=${userId} `);
 
 
