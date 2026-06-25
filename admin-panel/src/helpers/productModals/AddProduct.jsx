@@ -13,6 +13,8 @@ import { GoAlertFill } from "react-icons/go";
 import { useParams } from "react-router-dom";
 import { getSingleProduct, updateProduct } from "../../api/api";
 import { useProducts } from "../../context/ProductsContext";
+import { toast } from "../../context/ToastContext";
+import { nanoid } from "@reduxjs/toolkit";
 
 function AddProduct() {
 
@@ -83,7 +85,7 @@ function AddProduct() {
                 const res = await getSingleProduct({ productId: id });
                 const data = res?.data?.products[0];
                 const formattedImages = data.images?.map(url => ({
-                    id: crypto.randomUUID(),
+                    id: nanoid(),
                     file: null,
                     preview: url,
                     isExisting: true
@@ -106,23 +108,6 @@ function AddProduct() {
     }, [id]);
 
     const [loading, setLoading] = useState(false);
-    const [alert, setAlert] = useState({
-        code: 0,
-        msg: ""
-    });
-
-    useEffect(() => {
-        if (alert.msg) {
-            const timer = setTimeout(() => {
-                setAlert({
-                    code: 0,
-                    msg: ""
-                });
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [alert.msg]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -185,17 +170,14 @@ function AddProduct() {
         const remainingSlots = MAX_IMAGES - existingImages.length;
 
         if (remainingSlots <= 0) {
-            setAlert({
-                code: 1,
-                msg: "You can upload maximum 4 images"
-            });
+            toast.error("You can upload maximum 4 images");
             return;
         }
 
         const filesToAdd = acceptedFiles.slice(0, remainingSlots);
 
         const newImages = filesToAdd.map(file => ({
-            id: crypto.randomUUID(),
+            id:nanoid(),
             file,
             preview: URL.createObjectURL(file),
             isExisting: false
@@ -347,10 +329,7 @@ function AddProduct() {
             !product.returnPolicy ||
             !product.minimumOrderQuantity)
         ) {
-            setAlert({
-                code: 1,
-                msg: "Please fill required fields"
-            });
+            toast.error("Please fill required fields");
             return;
         }
 
@@ -415,23 +394,20 @@ function AddProduct() {
             if (isEdit) {
 
                 if (!isChanged()) {
-                    setAlert({
-                        code: 1,
-                        msg: "No changes detected"
-                    });
+                    toast.error("No changes detected");
                     setLoading(false);
                     return;
                 }
 
                 res = await updateProduct(id, formData);
-                setAlert({ code: 2, msg: "Product updated successfully." });
+                toast.success("Product updated successfully.");
                 setCache({});
                 setTimeout(() => {
                     navigate('/products');
                 }, 2000);
             } else {
                 res = await addProduct(formData);
-                setAlert({ code: 2, msg: "Product added successfully." });
+                toast.success("Product added successfully.");
                 setCache({});
                 setTimeout(() => {
                     navigate('/products');
@@ -469,67 +445,46 @@ function AddProduct() {
             setQrPreview(null);
 
         } catch (error) {
-            console.log("Add product error ::", error);
             setLoading(false);
-            setAlert({
-                code: 1,
-                msg: error?.response?.data?.message || error?.message || "something went wrong !"
-            });
+            const msg = error?.response?.data?.message || error?.message || "something went wrong !"
+            toast.error(msg);
         }
     };
 
     return (
-        <div className={`p-6 overflow-y-scroll scroll-smooth max-h-[calc(100dvh-60px)] w-fit lg:w-full pb-20 relative ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
-            {alert?.code === 1 &&
-                <div className='fixed top-20 left-1/2 flex justify-center z-50'>
-                    <div className={`bg-red-100 text-red-600 flex justify-center items-center p-1 border-l-3 border-red-400 rounded-md gap-5 px-2 z-999 transition-all ease-out animate-fadeDown duration-300 will-change-transform shadow-lg w-fit`}>
-                        <div className='w-fit flex justify-center items-center flex-row gap-2'>
-                            <GoAlertFill />
-                            <p className='tracking-tight text-lg font-semibold nunitoFont'>{alert?.msg}</p>
-                        </div>
-                    </div>
-                </div>
-            }
-            {alert?.code === 2 &&
-                <div className='fixed top-20 left-1/2 flex justify-center z-50'>
-                    <div className={`bg-green-100 text-green-600 flex justify-center items-center p-1 border-l-3 border-green-400 rounded-md gap-5 px-2 z-999 transition-all ease-out animate-fadeDown duration-300 will-change-transform shadow-lg w-fit`}>
-                        <div className='w-fit flex justify-center items-center flex-row gap-2'>
-                            <FaCircleCheck />
-                            <p className='tracking-tight text-lg font-semibold nunitoFont'>{alert?.msg}</p>
-                        </div>
-                    </div>
-                </div>
-            }
+        <div className={`p-3 sm:p-4 lg:p-6 w-full pb-20 relative ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+
             <div className="rounded-xl space-y-4">
-                <div className="flex flex-row justify-between px-2">
-                    <h2 className={`text-2xl font-semibold ${isDark ? "text-gray-200" : "text-gray-800"}`}>
+                <div className="flex flex-row items-center justify-between px-2">
+                    <h2 className={`sm:text-2xl text-xl font-semibold ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                         {isEdit ? "Edit Product" : "Add New Product"}
                     </h2>
-                    <div className="flex flex-row gap-4 justify-center items-center">
-                        <button className={`rounded-xl px-2 py-2 cursor-pointer ${isDark ? "text-gray-200 hover:text-purple-500" : "text-gray-800 hover:text-purple-600"}`} onClick={() => navigate('/products')}>Cancel</button>
+                    <div className="flex flex-row sm:gap-4 gap-1 sm:flex-row sm:justify-between">
+                        <button className={`rounded-xl px-2 py-2 cursor-pointer text-sm font-medium sm:text-base ${isDark ? "text-gray-200 hover:text-purple-500" : "text-gray-800 hover:text-purple-600"}`} onClick={() => navigate('/products')}>Cancel</button>
                         <button
-                            className={`px-2 h-fit py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 min-h-10 min-w-35 text-white shadow-[0px_3px_8px_rgba(0,0,0,0.24)] relative`}
+                            className={`px-2 h-fit py-2 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 min-h-10 sm:min-w-35 min-w-29 text-white shadow-[0px_3px_8px_rgba(0,0,0,0.24)] relative`}
                             onClick={() => handleSubmit()}
-                            disabled={loading}>
+                            disabled={loading}
+                        >
                             {loading ?
                                 <div className='flex absolute flex-row justify-center items-center'>
                                     <Lottie
                                         animationData={loader2}
                                         loop={true}
-                                        className="w-15 h-15"
+                                        className="sm:w-15 sm:h-15 h-10 w-10"
                                     />
                                 </div>
                                 :
-                                <div className="flex flex-row gap-2 justify-center items-center">
-                                    {isEdit ? <FaPencilAlt size={18} /> : <HiPlus size={24} />}
+                                <div className="flex flex-row gap-2 justify-center items-center text-sm sm:text-base">
+                                    {isEdit ? <FaPencilAlt /> : <HiPlus />}
                                     <span>{isEdit ? "Edit Product" : "Add Product"}</span>
                                 </div>}
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 text-gray-800 font-semibold">
-                    <div className={`space-y-4 col-span-2 row-span-2`}>
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 text-gray-800 font-semibold">
+                    <div className={`space-y-4 xl:col-span-2 row-span-2`}>
                         <div className="space-y-4 col-span-1">
                             <div className={`${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200 shadow-black/60" : "bg-white border-gray-200 text-gray-800"} shadow-md border p-4 rounded-2xl space-y-4 col-span-2`}>
                                 <h1 className={`text-xl font-semibold`}>General Information</h1>
@@ -577,7 +532,7 @@ function AddProduct() {
                             </div>
                             <div className={`shadow-md border p-4 rounded-2xl space-y-4 col-span-2 ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200 shadow-black/60" : "bg-white border-gray-200 text-gray-800"}`}>
                                 <h1 className={`text-xl font-semibold`}>Pricing And Stock</h1>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <h1 className="font-medium">Price</h1>
                                         <div className={`border-2 w-full rounded-xl gap-2 flex flex-row justify-center items-center pl-4 ${isDark ? "border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-700"}`}>
@@ -650,7 +605,7 @@ function AddProduct() {
                         </div>
                         <div className={`shadow-md border p-4 rounded-2xl space-y-4 col-span-2 ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200 shadow-black/60" : "bg-white border-gray-200 text-gray-800"}`}>
                             <h1 className={`text-xl font-semibold`}>Additional Information</h1>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <h1 className="font-medium">Brand</h1>
                                     <input name="brand"
@@ -688,7 +643,7 @@ function AddProduct() {
                                 </div>
                                 <div className="space-y-1">
                                     <h1 className="font-medium ">Dimensions</h1>
-                                    <div className="flex flex-row gap-4">
+                                    <div className="flex flex-col sm:flex-row gap-4">
                                         <input
                                             name="width"
                                             value={product.dimensions.width}
@@ -734,7 +689,7 @@ function AddProduct() {
                                 </div>
                                 <div className="space-y-1 font-medium ">
                                     <h1 className="font-medium ">Meta</h1>
-                                    <div className="flex flex-row gap-4 ">
+                                    <div className="flex flex-col sm:flex-row gap-4">
                                         <div className="space-y-1">
                                             <input
                                                 name="barcode"
@@ -784,12 +739,12 @@ function AddProduct() {
                         </div>
                     </div>
 
-                    <div className={`space-y-4 col-span-1`}>
+                    <div className={`space-y-4 xl:col-span-1`}>
                         <div className={`shadow-md border p-4 rounded-2xl space-y-4 col-span-1 ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200 shadow-black/60" : "bg-white border-gray-200 text-gray-800"}`}>
                             <h1 className={`text-xl font-semibold`}>Upload Img</h1>
-                            <div className={`border-2 min-h-80 overflow-hidden rounded-xl justify-center items-center flex relative ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200" : "bg-white border-gray-200 text-gray-800"} ${preview ? "" : "border-dashed border-2"}`} {...getRootProps()}>
+                            <div className={`border-2 min-h-62.5 sm:min-h-80 overflow-hidden rounded-xl justify-center items-center flex relative ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200" : "bg-white border-gray-200 text-gray-800"} ${preview ? "" : "border-dashed border-2"}`} {...getRootProps()}>
                                 {preview ? (
-                                    <img src={preview} alt="thumbnail" className="h-80 object-contain" />
+                                    <img src={preview} alt="thumbnail" className="h-62.5 sm:h-80 w-full object-contain" />
                                 ) : (
                                     <div>
                                         <label className="w-full flex flex-col justify-center items-center">
@@ -818,7 +773,7 @@ function AddProduct() {
                                     />
                                 </label>
                             </div>
-                            <div className="w-full flex flex-row gap-2">
+                            <div className="w-full flex flex-wrap gap-2">
                                 {product?.images?.map((img) => (
                                     <div className={`relative flex justify-center items-center border-2 rounded-xl ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`} key={img?.id}>
                                         <img src={img?.preview} alt="img" className="h-20 w-20 object-contain rounded-xl" />
@@ -928,7 +883,7 @@ function AddProduct() {
 
                         </div>
                         <div className={`shadow-md border border-gray-200 p-4 rounded-2xl space-y-4 col-span-2 ${isDark ? "bg-[#0F172A] border-gray-700 border-2 text-gray-200 shadow-black/60" : "bg-white border-gray-200 text-gray-800"}`}>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <h1 className="font-medium">Warranty Information</h1>
                                     <input name="warrantyInformation"

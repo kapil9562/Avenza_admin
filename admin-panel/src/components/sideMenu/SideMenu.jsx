@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { MdHome } from "react-icons/md";
 import { LiaEnvelopeOpen } from "react-icons/lia";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -13,6 +13,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { isDark } = useTheme();
+  const sideMenuRef = useRef();
 
   const tab = location.pathname.replace('/', "");
   const [activetab, setActiveTab] = useState(!tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1));
@@ -80,12 +81,26 @@ function SideMenu({ sideMenu, setSideMenu }) {
     setActiveTab(newTab);
   }, [tab]);
 
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (
+        sideMenuRef.current &&
+        !sideMenuRef.current.contains(e.target)
+      ) {
+        setSideMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [sideMenuRef]);
+
   return (
     <div>
-      <div className={`${isDark ? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full z-100 ${sideMenu ? "block" : "hidden"}`}></div>
+      <div className={`${isDark ? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full cursor-pointer z-100 ${sideMenu ? "block" : "hidden"}`}></div>
       <div
+        ref={sideMenuRef}
         className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
-      min-h-dvh border-r-2 transition-[width,transform] duration-300 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 ${sideMenu ? "translate-x-0" : "-translate-x-full"}
+      min-h-dvh border-r-2 transition-[width,transform,translate] duration-500 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 transform-gpu will-change-transform ${sideMenu ? "translate-x-0" : "-translate-x-full"}
       ${open.status ? "w-60" : "w-16"} overflow-hidden`}
       >
 
@@ -96,7 +111,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
           <img
             src="/logo.png"
             alt="logo"
-            className={`h-10 transition-opacity duration-300 ${open.status ? "opacity-100" : "opacity-0 w-0"}`}
+            className={`h-10 transition-opacity transform-gpu duration-300 will-change-transform ${open.status ? "opacity-100" : "opacity-0 w-0"}`}
           />
 
           <button
@@ -153,7 +168,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
                 <span className='text-xl'>{item.icon}</span>
 
                 <span
-                  className={`whitespace-nowrap transition-[opacity, width] duration-200 text-lg
+                  className={`whitespace-nowrap transition-[opacity, width] duration-300 text-lg will-change-transform transform-gpu
                 ${open.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
                 >
                   {item.tab}

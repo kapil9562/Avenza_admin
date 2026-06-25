@@ -36,7 +36,7 @@ export default function DeleteProduct({ setShow, product, setIsDeleted }) {
     }
 
     return (
-        <div className={`border-2 rounded-xl min-w-120 max-w-120 zoom-modal ${isDark ? "bg-[#0F172A] border-gray-800 shadow-black/50 shadow-xl" : "bg-white border-gray-200 shadow-lg"}`}>
+        <div className={`border-2 rounded-xl w-[90%] sm:min-w-120 sm:max-w-120 zoom-modal ${isDark ? "bg-[#0F172A] border-gray-800 shadow-black/50 shadow-xl" : "bg-white border-gray-200 shadow-lg"}`}>
             <div className={`w-full flex justify-between items-center border-b-2 px-1 ${isDark ? "border-gray-800" : "border-gray-200"}`}>
                 <h1 className={`font-semibold p-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}>Delete Product</h1>
                 <button onClick={() => setShow(false)} className={`cursor-pointer p-2 rounded-lg ${isDark ? "text-gray-400 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-200"}`}>

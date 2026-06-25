@@ -359,6 +359,7 @@ function Orders() {
                       <td className="px-4 py-1">
                         <div className="flex items-center gap-4">
                           <img
+                            loading='lazy'
                             src={normalizeGooglePhoto(order?.user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                             referrerPolicy="no-referrer"
                             alt="thumbnail"
@@ -384,6 +385,7 @@ function Orders() {
                         <div className='flex flex-row gap-1 items-center'>
                           <img
                             src={order?.orderItems[0]?.image}
+                            loading='lazy'
                             alt="img"
                             className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} h-8 w-8 object-contain rounded`}
                           />
@@ -396,7 +398,7 @@ function Orders() {
                                 </div>
                                 {order?.orderItems?.slice(1).map((item, i) => (
                                   <div key={i}>
-                                    <img src={item?.image} alt="img" className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`} />
+                                    <img loading='lazy' src={item?.image} alt="img" className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`} />
                                   </div>
                                 ))}
                               </div>

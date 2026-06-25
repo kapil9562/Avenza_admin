@@ -10,7 +10,7 @@ function App() {
   return (
     <div className='flex flex-row w-full h-dvh overflow-x-hidden'>
       <SideMenu sideMenu={sideMenu} setSideMenu={setSideMenu}/>
-      <main className='w-full'>
+      <main className='w-full overflow-x-auto'>
         <Header setSideMenu={setSideMenu}/>
         <Outlet />
       </main>

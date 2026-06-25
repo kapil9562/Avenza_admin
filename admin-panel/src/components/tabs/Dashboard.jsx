@@ -110,7 +110,7 @@ const Dashboard = () => {
   }, [recentOrders, setRecentOrders]);
 
   return (
-    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-4 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`h-[calc(100dvh-60px)] w-full p-4 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* 1. Stats Overview Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
 
@@ -232,7 +232,7 @@ const Dashboard = () => {
                                     </div>
                                     {order?.orderItems?.slice(1).map((item, i) => (
                                       <div key={i}>
-                                        <img src={item?.image} alt="img" className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`} />
+                                        <img src={item?.image} loading='lazy' alt="img" className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`} />
                                       </div>
                                     ))}
                                   </div>

@@ -215,6 +215,7 @@ export default function Customers() {
                         <td className="px-4 py-1">
                           <div className="flex items-center gap-4">
                             <img
+                              loading="lazy"
                               src={normalizeGooglePhoto(user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                               referrerPolicy="no-referrer"
                               alt="profile photo"
