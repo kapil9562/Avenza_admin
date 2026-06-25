@@ -28,7 +28,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
 
     useEffect(() => {
         const fetchOrders = async () => {
-            if (!currUser?._id) return;
+            if (!currUser?._id || (ordersCache[cacheKey]?.orders?.length && skip === 0)) return;
             try {
                 setLoading(true);
                 const res = await getOrdersById({ userId: currUser?._id, limit, skip });
@@ -56,6 +56,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
     }, [currUser?._id, cacheKey, skip, setOrdersCache]);
 
     useEffect(() => {
+        if (addressCache[cacheKey]) return;
         const fetchAddress = async () => {
             if (!currUser?._id) return;
             try {
@@ -71,7 +72,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
         }
 
         fetchAddress();
-    }, [currUser?._id, cacheKey, setAddressCache]);
+    }, [currUser?._id, cacheKey, setAddressCache, addressCache]);
 
     useEffect(() => {
         setSkip(0);

@@ -184,6 +184,7 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser, pageNo }) => 
                                     <div className={`${isDark ? "bg-slate-800 border-gray-700 shadow" : "bg-[#FFFFFF] border-gray-200 shadow"} border w-full rounded-md overflow-hidden absolute top-full mt-0.5 left-0 flex flex-col`}>
                                         {roles?.map((role, idx) => (
                                             <span
+                                                key={idx}
                                                 className={`py-1 px-4 ${isDark ? "hover:bg-slate-700" : "hover:bg-slate-100"}`}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -304,9 +305,9 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser, pageNo }) => 
                         onClick={updateRole}
                     >
                         {loading ? (
-                            <Lottie 
-                            animationData={loader}
-                            className="w-40 h-40 absolute invert brightness-0"
+                            <Lottie
+                                animationData={loader}
+                                className="w-40 h-40 absolute invert brightness-0"
                             />
                         ) : (
                             <>

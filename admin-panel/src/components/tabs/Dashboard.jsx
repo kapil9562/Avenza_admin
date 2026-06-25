@@ -126,7 +126,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left Column (2/3 width) */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-8 min-w-0">
           {/* 2. Recent Orders Table */}
           <div className={`rounded-xl overflow-hidden shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
             <div className={`border-b py-3 px-4 flex flex-row justify-between items-center ${isDark ? "text-gray-100 border-slate-600" : "text-gray-800 border-slate-50"}`}>
@@ -267,13 +267,13 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column (1/3 width) */}
-        <div className="space-y-8">
+        <div className="space-y-8 min-w-0">
           {/* 3. Sales Analytics */}
           <div className={`rounded-xl p-4 shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
             <h3 className={`text-lg font-bold nunitoFont ${isDark ? "text-gray-200" : "text-gray-800"}`}>Sales Analytics</h3>
             <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Monthly Sales Overview</p>
-            <div className="h-64">
-              <ResponsiveContainer>
+            <div className="h-64 w-full min-w-0">
+              <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={salesData} accessibilityLayer={false}>
                   <defs>
                     <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
@@ -317,7 +317,7 @@ const Dashboard = () => {
           <div className={`rounded-3xl p-6 shadow-sm border ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
             <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>Product Categories</h3>
             <div className="flex items-center">
-              <div className="w-1/2 h-40">
+              <div className="w-1/2 h-40 min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart stroke="none" >
                     <Pie stroke="none" data={pieData} innerRadius={0} outerRadius={70} paddingAngle={0} dataKey="value" shape={renderSlice} labelLine={false} label={renderPercentLabel} isAnimationActive={true} />

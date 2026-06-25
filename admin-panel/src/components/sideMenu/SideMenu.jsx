@@ -17,7 +17,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
   const sideMenuRef = useRef();
 
   const tab = location.pathname.replace('/', "");
-  
+
   const activeTab = useMemo(() => {
     return !tab
       ? "Dashboard"
@@ -78,6 +78,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
   ];
 
   const handleTab = (tab) => {
+    if(tab === activeTab) return;
     tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
   };
 
@@ -93,6 +94,9 @@ function SideMenu({ sideMenu, setSideMenu }) {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [sideMenuRef, setSideMenu]);
+
+  const activeIndex = tabs.findIndex(item => item.tab === activeTab);
+  const activeVariant = colorVariants[activeTab];
 
   return (
     <div>
@@ -133,7 +137,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
         </div>
 
         {/* MENU */}
-        <div className="flex flex-col mt-4 gap-1 h-full"
+        <div className="flex relative flex-col mt-4 gap-1 h-full"
           onMouseEnter={() => {
             if (!open.status) {
               setOpen({ type: "hover", status: true });
@@ -144,11 +148,22 @@ function SideMenu({ sideMenu, setSideMenu }) {
             if (open.type === "hover") {
               setOpen({ type: "", status: false });
             }
-          }}>
+          }}
+        >
 
-          {tabs.map((item, idx) => {
+          {/* Active Slider */}
+          <div
+            className={`absolute left-0 rounded-r-full transition-transform duration-300 ease-out ${isDark ? activeVariant.activeDark : activeVariant.activeLight}`}
+            style={{
+              transform: `translateY(${activeIndex * 48}px)`,
+              width: "100%",
+              height: "46px",
+            }}
+          />
 
-            const variant = colorVariants[item.tab];
+          {tabs?.map((item, idx) => {
+
+            const variant = colorVariants[item?.tab];
 
             return (
               <div
@@ -157,15 +172,9 @@ function SideMenu({ sideMenu, setSideMenu }) {
                   handleTab(item.tab);
                   setSideMenu(false);
                 }}
-                className={`
-                flex items-center gap-2 px-4 py-2 cursor-pointer
-                rounded-r-full font-semibold
-                ${isDark ? variant.dark : variant.light}
-                ${activeTab === item.tab ?
-                    (isDark ? variant.activeDark : variant.activeLight) : "border border-transparent"}
-              `}
+                className={`flex items-center gap-2 px-4 py-2 cursor-pointer rounded-r-full font-semibold ${isDark ? variant.dark : variant.light}`}
               >
-                <span className='text-xl'>{item.icon}</span>
+                <span className='text-xl relative z-10'>{item?.icon}</span>
 
                 <span
                   className={`whitespace-nowrap transition-[opacity, width] duration-300 text-lg will-change-transform transform-gpu

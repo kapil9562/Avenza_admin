@@ -280,7 +280,8 @@ export default function Customers() {
                         </td>
                       </tr>
                     </React.Fragment>
-                  ))
+                  )
+                  )
                 )}
               </tbody>
             </table>
@@ -344,9 +345,7 @@ export default function Customers() {
 
       {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
       {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page} />}
-      <div className={`${detailModal ? "block" : "hidden"}`}>
-        <CustomerDetailModal setDetailModal={setDetailModal} currUser={currUser} />
-      </div>
+      {detailModal && <CustomerDetailModal setDetailModal={setDetailModal} currUser={currUser} />}
     </div>
   );
 }
