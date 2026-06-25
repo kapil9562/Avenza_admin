@@ -5,14 +5,12 @@ import { emailLogin } from "../api/api";
 import { IoIosLock } from "react-icons/io";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
 import Lottie from "lottie-react";
 import loader from "../assets/loader2.json";
-import { useAuth } from "../context/AuthContext";
-import { toast } from "../context/ToastContext";
 import { IoWarning } from "react-icons/io5";
 import { BsMoonStarsFill } from "react-icons/bs";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+import { useAuth, useTheme, useToast } from "../context/Context";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
@@ -30,6 +28,8 @@ export default function Login() {
     const passRef = useRef(null);
 
     const { login, isAuthenticated, loading: authloading } = useAuth();
+    const toast = useToast();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (authloading) return;
@@ -38,9 +38,7 @@ export default function Login() {
             navigate('/');
         }
 
-    }, [isAuthenticated])
-
-    const navigate = useNavigate();
+    }, [isAuthenticated, authloading, navigate]);
 
     {/* Email login */ }
     const handleEmailLogin = async () => {
@@ -105,7 +103,7 @@ export default function Login() {
             email: email ? "" : prev.email,
             password: password ? "" : prev.password,
         }));
-    }, [email, password]);
+    }, [email, password, errors.email, errors.password]);
 
     const handleDemo = async () => {
         setEmail("avenzademo@avenza.com");

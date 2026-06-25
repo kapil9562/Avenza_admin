@@ -1,12 +1,10 @@
 import React, { useEffect, useLayoutEffect, useRef, useState, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { IoIosArrowDown, IoIosSearch } from 'react-icons/io'
-import { useTheme } from '../../context/ThemeContext'
 import { getOrders } from '../../api/api';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useOrders } from '../../context/OrderContext';
 import { GoDotFill, GoEye, GoTriangleUp } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaClipboardList } from "react-icons/fa6";
@@ -22,6 +20,7 @@ import DeleteOrderModal from '../../helpers/orderModals/DeleteOrderModal';
 import EditOrderModal from '../../helpers/orderModals/EditOrderModal';
 import OrderDetail from '../../helpers/orderModals/OrderDetail';
 import UpdateStatusModal from '../../helpers/orderModals/UpdateStatusModal';
+import { useOrders, useTheme } from '../../context/Context';
 
 // Portal Dropdown
 function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order Actions" }) {
@@ -84,7 +83,7 @@ function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order A
         width: 190,
         visibility: pos ? "visible" : "hidden", // hidden until position is ready
       }}
-      className={`fixed z-[9999] whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
+      className={`fixed z-9999 whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
         ? "bg-gray-900 border-slate-700 text-gray-300"
         : "bg-white border-gray-200 text-gray-600"
         }`}

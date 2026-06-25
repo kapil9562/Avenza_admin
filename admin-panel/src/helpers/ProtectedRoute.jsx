@@ -1,8 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Lottie from "lottie-react";
 import loader from "../assets/entryloader.json";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { useAuth, useTheme } from "../context/Context";
 
 const ProtectedRoute = () => {
     const { isAuthenticated, loading} = useAuth();

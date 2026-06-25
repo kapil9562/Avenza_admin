@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
-const ProductsContext = createContext(null);
+import { ProductsContext } from "./Context";
 
 export const ProductsProvider = ({ children }) => {
   const [cache, setCache] = useState({});
@@ -29,12 +28,4 @@ export const ProductsProvider = ({ children }) => {
       {children}
     </ProductsContext.Provider>
   );
-};
-
-export const useProducts = () => {
-  const ctx = useContext(ProductsContext);
-  if (!ctx) {
-    throw new Error("useProducts must be used inside ProductsProvider");
-  }
-  return ctx;
 };

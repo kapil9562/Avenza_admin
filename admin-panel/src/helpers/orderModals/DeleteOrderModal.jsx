@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
-import { useTheme } from "../../context/ThemeContext";
+import { useOrders, useTheme, useToast } from "../../context/Context";
 import { GoDotFill } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoWarningOutline } from "react-icons/io5";
 import { deleteOrder } from "../../api/api";
-import { toast } from "../../context/ToastContext";
-import { useOrders } from "../../context/OrderContext";
 import { formatDate, formatStatus, formatTime, normalizeGooglePhoto, statusColors } from "../../utils/format";
 
 function DeleteOrderModal({ order, setDeleteModal }) {
@@ -15,6 +13,7 @@ function DeleteOrderModal({ order, setDeleteModal }) {
     const { isDark } = useTheme();
     const [loading, setLoading] = useState(false);
     const { setCache } = useOrders();
+    const toast = useToast();
 
     const deleteThisOrder = async () => {
         try {

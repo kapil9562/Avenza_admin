@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTheme } from '../../context/ThemeContext'
+import { useTheme } from '../../context/Context';
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosArrowUp } from 'react-icons/io';
 import { RxCross2 } from "react-icons/rx";

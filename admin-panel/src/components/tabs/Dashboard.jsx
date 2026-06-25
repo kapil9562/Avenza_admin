@@ -13,17 +13,16 @@ import {
   ComposedChart,
   Sector
 } from 'recharts';
-import { useTheme } from '../../context/ThemeContext';
+import { useDashboard, useTheme } from '../../context/Context';
 import { formatDate, formatStatus, formatTime, getPaymentBadge, normalizeGooglePhoto, statusColors } from '../../utils/format';
-import { useDashboard } from '../../context/DashboardContext';
 import { getRecentOrders } from '../../api/api';
-import { toast } from '../../context/ToastContext';
 import { GoDotFill, GoEye } from 'react-icons/go';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useNavigate } from 'react-router-dom';
 import { IoRefresh } from 'react-icons/io5';
 import { MdKeyboardArrowRight } from 'react-icons/md';
+import { useToast } from '../../context/Context';
 
 // Mock Data for Charts
 const salesData = [
@@ -83,6 +82,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [showDetail, setShowDetail] = useState([]);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     if (recentOrders.length > 0) return;
@@ -107,7 +107,7 @@ const Dashboard = () => {
     }
 
     fetchRecentOrders();
-  }, [recentOrders, setRecentOrders]);
+  }, [recentOrders, setRecentOrders, setError, toast]);
 
   return (
     <div className={`h-[calc(100dvh-60px)] w-full p-4 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
@@ -226,8 +226,8 @@ const Dashboard = () => {
                               {order?.orderItems?.length > 1 && (
                                 <div className={`ml-1 text-sm font-medium px-2 py-0.5 group rounded-full relative cursor-pointer ${isDark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"}`}>
                                   +{order.orderItems.length - 1}
-                                  <div className={`absolute p-1 z-50 left-0 ${idx !== orders?.length - 1 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex animate-fadeIn ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
-                                    <div className={`absolute ${idx !== orders?.length - 1 ? "-top-4" : "-bottom-4 rotate-180"} left-1 ${isDark ? "text-gray-800" : "text-gray-200"}`}>
+                                  <div className={`absolute p-1 z-50 left-0 ${idx !== order?.orderItems?.length - 1 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex animate-fadeIn ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
+                                    <div className={`absolute ${idx !== order?.orderItems?.length - 1 ? "-top-4" : "-bottom-4 rotate-180"} left-1 ${isDark ? "text-gray-800" : "text-gray-200"}`}>
                                       <GoTriangleUp size={26} />
                                     </div>
                                     {order?.orderItems?.slice(1).map((item, i) => (

@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io'
-import { useTheme } from '../../context/ThemeContext'
 import { HiPlus } from "react-icons/hi";
 import { FaPencil, FaPlus } from "react-icons/fa6";
 import { ImBin } from "react-icons/im";
-import { useProducts } from '../../context/ProductsContext';
 import { getAllCategory, getProducts, restoreProduct } from '../../api/api';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json';
@@ -12,11 +10,11 @@ import restoreLoader from '../../assets/loaderIOS.json';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineRestore } from 'react-icons/md';
-import { toast } from '../../context/ToastContext';
 import { IoRefresh } from 'react-icons/io5';
 import DeleteProduct from '../../helpers/productModals/DeleteProduct';
 import { BiFilterAlt } from 'react-icons/bi';
 import { Sheet } from "react-modal-sheet";
+import { useProducts, useTheme, useToast } from '../../context/Context';
 
 function Products() {
     const { isDark } = useTheme();
@@ -35,6 +33,7 @@ function Products() {
     const filterRef = useRef();
     const [openCategory, setOpenCategory] = useState(false);
     const [openSubIndex, setOpenSubIndex] = useState(null);
+    const toast = useToast();
 
     const { cache, setProducts, setCache, categories, setCategories, total, setTotal } = useProducts();
     const cacheKey = `${category}-${page}-${inStock}-${deletedItems}`;
@@ -129,7 +128,7 @@ function Products() {
         };
 
         fetchProducts();
-    }, [cacheKey, category, page, inStock, isDeleted, cache, products, setProducts, setTotal, skip]);
+    }, [cacheKey, category, page, inStock, isDeleted, cache, products, setProducts, setTotal, skip, deletedItems]);
 
     const statusColors = {
         InStock: isDark
@@ -265,7 +264,7 @@ function Products() {
 
                 <div
                     onClick={(e) => e.stopPropagation()}
-                    className={`absolute left-0 top-full z-[999] min-w-[220px] flex-col border-2 rounded-md ${openCategory
+                    className={`absolute left-0 top-full z-999 min-w-55 flex-col border-2 rounded-md ${openCategory
                         ? "flex"
                         : "hidden group-hover:flex"
                         } ${isDark
@@ -317,7 +316,7 @@ function Products() {
                             </div>
 
                             <div
-                                className={`absolute left-full top-0 ml-0.5 z-[999] min-w-[180px] flex-col border-2 rounded-md ${openSubIndex === idx
+                                className={`absolute left-full top-0 ml-0.5 z-999 min-w-45 flex-col border-2 rounded-md ${openSubIndex === idx
                                     ? "flex"
                                     : "hidden group-hover/sub:flex"
                                     } ${isDark

@@ -10,9 +10,8 @@ import {
     MdCancel,
 } from "react-icons/md";
 import { HiOutlineBellAlert } from "react-icons/hi2";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme, useToast } from "../../context/Context";
 import { updateStatus } from "../../api/api";
-import { toast } from "../../context/ToastContext";
 import { GoDotFill } from "react-icons/go";
 import { FaShippingFast } from "react-icons/fa";
 import Lottie from "lottie-react";
@@ -94,6 +93,7 @@ export default function UpdateStatusModal({ setShowUpdateStatusModal, orderId, s
     const [selected, setSelected] = useState(currentStatus);
     const { isDark } = useTheme();
     const [loading, setLoading] = useState(false);
+    const toast = useToast();
 
     useEffect(() => {
         setSelected(currentStatus);

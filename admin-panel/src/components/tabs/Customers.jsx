@@ -14,8 +14,7 @@ import { BsCheck, BsChevronDown, BsX } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
 import { getAllUsers } from '../../api/api';
 import adminLoader from '../../assets/adminLoader.json';
-import { useCustomers } from "../../context/CustomerContext";
-import { useTheme } from '../../context/ThemeContext';
+import { useCustomers, useTheme } from '../../context/Context';
 import { formatDate, formatRole, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto } from '../../utils/format';
 import { FaEye } from "react-icons/fa6";
 import { EditRoleModal } from "../../helpers/customerModals/EditRoleModal";
@@ -70,7 +69,7 @@ export default function Customers() {
       }
     };
     fetchOrders();
-  }, [cacheKey, page, search, cache, setMeta, setUsers, skip, users]);
+  }, [cacheKey, page, search, cache, setMeta, setUsers, skip, users, selectedRole, selectedStatus, setError]);
 
   useEffect(() => {
     if (!input) return;

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '../../context/ThemeContext'
 import { FiX } from 'react-icons/fi';
 import { formatAddress, formatDate, formatRole, formatStatus, formatTime, getActiveBadge, getRoleBadge, normalizeGooglePhoto, statusColors } from '../../utils/format';
 import { IoCalendarOutline, IoCartOutline, IoRefresh, IoStatsChartOutline } from 'react-icons/io5';
@@ -9,9 +8,9 @@ import { MdClearAll, MdCurrencyRupee, MdKeyboardDoubleArrowRight, MdOutlineEmail
 import { TiContacts } from "react-icons/ti";
 import { IoIosArrowDown, IoMdInformationCircleOutline } from 'react-icons/io';
 import { getAddress, getOrdersById } from '../../api/api';
-import { useCustomers } from '../../context/CustomerContext';
 import { BiFilterAlt } from 'react-icons/bi';
 import OrderSkeleton from '../skeletonLoadings/OrderSkeleton';
+import { useCustomers, useTheme } from '../../context/Context';
 
 const limit = 5;
 
@@ -54,7 +53,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
         }
 
         fetchOrders();
-    }, [currUser?._id, cacheKey, skip]);
+    }, [currUser?._id, cacheKey, skip, setOrdersCache]);
 
     useEffect(() => {
         const fetchAddress = async () => {
@@ -72,7 +71,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
         }
 
         fetchAddress();
-    }, [currUser?._id]);
+    }, [currUser?._id, cacheKey, setAddressCache]);
 
     useEffect(() => {
         setSkip(0);

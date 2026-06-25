@@ -1,16 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentUser, logoutUser } from "../api/api.js";
-import { toast } from "./ToastContext.jsx";
 import { useNavigate } from "react-router-dom";
-
-const AuthContext = createContext(null);
-
-export const useAuth = () => useContext(AuthContext);
+import { AuthContext, useToast } from "./Context.js";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     const initAuth = async () => {

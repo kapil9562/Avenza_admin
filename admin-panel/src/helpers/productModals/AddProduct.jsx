@@ -4,7 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { FaCircleCheck, FaCirclePlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { HiPlus } from "react-icons/hi2";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme, useToast } from "../../context/Context";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../../api/api";
 import Lottie from 'lottie-react';
@@ -12,8 +12,7 @@ import loader2 from '../../assets/loader.json'
 import { GoAlertFill } from "react-icons/go";
 import { useParams } from "react-router-dom";
 import { getSingleProduct, updateProduct } from "../../api/api";
-import { useProducts } from "../../context/ProductsContext";
-import { toast } from "../../context/ToastContext";
+import { useProducts } from '../../context/Context';
 import { nanoid } from "@reduxjs/toolkit";
 
 function AddProduct() {
@@ -30,6 +29,7 @@ function AddProduct() {
     const [openParent, setOpenParent] = useState(false);
     const [openSub, setOpenSub] = useState(false);
     const navigate = useNavigate();
+    const toast = useToast();
 
     const categories = {
         "Beauty": ["skin-care", "fragrances", "beauty", "hair-care", "face-care", "organic-beauty"],
@@ -105,7 +105,7 @@ function AddProduct() {
 
             fetchProduct();
         }
-    }, [id]);
+    }, [id, isEdit]);
 
     const [loading, setLoading] = useState(false);
 
@@ -256,7 +256,7 @@ function AddProduct() {
                 URL.revokeObjectURL(qrPreview);
             }
         };
-    }, []);
+    }, [preview, product?.images, qrPreview]);
 
     const isChanged = () => {
         if (!originalProduct) return false;

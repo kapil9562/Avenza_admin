@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from "react";
-
-const CustomersContext = createContext(null);
+import { useState } from "react";
+import { CustomersContext } from "./Context";
 
 export const CustomersProvider = ({ children }) => {
   const [cache, setCache] = useState({});
@@ -35,12 +34,4 @@ export const CustomersProvider = ({ children }) => {
       {children}
     </CustomersContext.Provider>
   );
-};
-
-export const useCustomers = () => {
-  const ctx = useContext(CustomersContext);
-  if (!ctx) {
-    throw new Error("useCustomers must be used inside CustomersProvider");
-  }
-  return ctx;
 };

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { IoIosSearch } from 'react-icons/io';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../context/Context';
 import { IoIosArrowDown } from "react-icons/io";
 import { FaRegBell } from "react-icons/fa";
 import { BsMoonStarsFill } from "react-icons/bs";
-import { useAuth } from '../../context/AuthContext';
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { FiLogOut } from "react-icons/fi";
 import { HiMiniBars3BottomLeft } from 'react-icons/hi2';
 import { formatRole, normalizeGooglePhoto } from '../../utils/format';
+import { useAuth } from '../../context/Context';
 
 function Header({ setSideMenu }) {
 

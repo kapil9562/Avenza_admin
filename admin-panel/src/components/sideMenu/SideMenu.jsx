@@ -6,7 +6,8 @@ import { HiUser, HiMiniBars3BottomLeft } from "react-icons/hi2";
 import { GoGraph } from "react-icons/go";
 import { IoMdSettings } from "react-icons/io";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '../../context/ThemeContext';
+import { useMemo } from 'react';
+import { useTheme } from '../../context/Context';
 
 function SideMenu({ sideMenu, setSideMenu }) {
 
@@ -16,7 +17,13 @@ function SideMenu({ sideMenu, setSideMenu }) {
   const sideMenuRef = useRef();
 
   const tab = location.pathname.replace('/', "");
-  const [activetab, setActiveTab] = useState(!tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1));
+  
+  const activeTab = useMemo(() => {
+    return !tab
+      ? "Dashboard"
+      : tab.charAt(0).toUpperCase() + tab.slice(1);
+  }, [tab]);
+
   const [open, setOpen] = useState({
     type: "",
     status: true
@@ -71,15 +78,8 @@ function SideMenu({ sideMenu, setSideMenu }) {
   ];
 
   const handleTab = (tab) => {
-    setActiveTab(tab);
     tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
   };
-
-  useEffect(() => {
-    const newTab = !tab ? "Dashboard" : tab.charAt(0).toUpperCase() + tab.slice(1);
-    if (newTab === activetab) return;
-    setActiveTab(newTab);
-  }, [tab]);
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -92,7 +92,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [sideMenuRef]);
+  }, [sideMenuRef, setSideMenu]);
 
   return (
     <div>
@@ -161,7 +161,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
                 flex items-center gap-2 px-4 py-2 cursor-pointer
                 rounded-r-full font-semibold
                 ${isDark ? variant.dark : variant.light}
-                ${activetab === item.tab ?
+                ${activeTab === item.tab ?
                     (isDark ? variant.activeDark : variant.activeLight) : "border border-transparent"}
               `}
               >

@@ -6,15 +6,14 @@ import { FaCircleCheck } from "react-icons/fa6";
 import Lottie from 'lottie-react';
 import loader from '../../assets/loader2.json'
 import { useEffect } from "react";
-import { useProducts } from "../../context/ProductsContext";
-import { useTheme } from "../../context/ThemeContext";
-import { toast } from "../../context/ToastContext";
+import { useProducts, useTheme, useToast } from '../../context/Context';
 
 export default function DeleteProduct({ setShow, product, setIsDeleted }) {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const { setCache } = useProducts();
     const { isDark } = useTheme();
+    const toast = useToast();
 
     const isMatch = input === "DELETE"
 

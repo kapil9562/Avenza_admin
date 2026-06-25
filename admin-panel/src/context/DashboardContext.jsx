@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from "react";
-
-const DashboardContext = createContext(null);
+import { useState } from "react";
+import { DashboardContext } from "./Context";
 
 export const DashboardProvider = ({ children }) => {
   const [recentOrders, setRecentOrders] = useState([]);
@@ -18,12 +17,4 @@ export const DashboardProvider = ({ children }) => {
       {children}
     </DashboardContext.Provider>
   );
-};
-
-export const useDashboard = () => {
-  const ctx = useContext(DashboardContext);
-  if (!ctx) {
-    throw new Error("useOrders must be used inside DashboardContext");
-  }
-  return ctx;
 };

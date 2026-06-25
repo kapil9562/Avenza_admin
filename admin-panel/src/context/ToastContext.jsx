@@ -3,10 +3,7 @@ import { IoCheckmarkCircleSharp, IoClose } from "react-icons/io5";
 import { GoAlertFill } from "react-icons/go";
 import { MdError } from "react-icons/md";
 import { FaInfoCircle } from "react-icons/fa";
-
-const ToastContext = createContext();
-
-let externalToast = null;
+import { ToastContext } from "./Context";
 
 export const ToastProvider = ({ children }) => {
     const [currentToast, setCurrentToast] = useState(null);
@@ -53,22 +50,10 @@ export const ToastProvider = ({ children }) => {
         info: (message, duration) => showToast("info", message, duration),
     };
 
-    externalToast = toast;
-
     const handleClose = () => {
         if (timerRef.current) clearTimeout(timerRef.current);
         removeCurrentToast();
     };
-
-    useEffect(() => {
-        if (!currentToast) return;
-
-        const timer = setTimeout(() => {
-            removeCurrentToast();
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [currentToast]);
 
     return (
         <ToastContext.Provider value={toast}>
@@ -116,13 +101,4 @@ export const ToastProvider = ({ children }) => {
             </div>
         </ToastContext.Provider>
     );
-};
-
-export const useToast = () => useContext(ToastContext);
-
-export const toast = {
-    success: (message, duration) => externalToast?.success(message, duration),
-    error: (message, duration) => externalToast?.error(message, duration),
-    warn: (message, duration) => externalToast?.warn(message, duration),
-    info: (message, duration) => externalToast?.info(message, duration),
 };

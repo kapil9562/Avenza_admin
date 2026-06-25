@@ -8,15 +8,13 @@ import {
     FiBarChart2,
     FiSettings,
 } from "react-icons/fi";
-import { useTheme } from "../../context/ThemeContext";
+import { useCustomers, useTheme, useToast } from "../../context/Context";
 import { LuPencilLine } from "react-icons/lu";
 import { TbFileTextSpark, TbUserShield } from "react-icons/tb";
 import { formatRole, getRoleDescription } from "../../utils/format";
 import { IoIosArrowDown } from "react-icons/io";
 import { useState } from "react";
 import { updateUserRole } from "../../api/api";
-import { toast } from "../../context/ToastContext";
-import { useCustomers } from "../../context/CustomerContext";
 import Lottie from 'lottie-react';
 import loader from "../../assets/loader2.json"
 
@@ -92,6 +90,7 @@ export const EditRoleModal = ({ editModal, setEditModal, currUser, pageNo }) => 
     const [selectedRole, setSelectedRole] = useState(currUser?.role || "");
     const [loading, setLoading] = useState(false);
     const { setCache } = useCustomers();
+    const toast = useToast();
 
     const roleHandler = (role) => {
         setSelectedRole(role);

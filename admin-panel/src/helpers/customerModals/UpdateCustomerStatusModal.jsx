@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTheme } from '../../context/ThemeContext'
+import { useCustomers, useTheme } from '../../context/Context';
 import { FiX } from 'react-icons/fi';
 import { getActiveBadge, normalizeGooglePhoto } from '../../utils/format';
 import { GoDotFill } from 'react-icons/go';
@@ -7,14 +7,14 @@ import Lottie from 'lottie-react';
 import loader from "../../assets/loader2.json"
 import { LuPencilLine } from 'react-icons/lu';
 import { updateCustomerStatus } from '../../api/api';
-import { toast } from '../../context/ToastContext';
-import { useCustomers } from '../../context/CustomerContext';
+import { useToast } from '../../context/Context';
 
 function UpdateCustomerStatusModal({ currUser, statusModal, setStatusModal, pageNo }) {
     const { isDark } = useTheme();
     const [selectedStatus, setSelectedStatus] = useState(currUser?.isActive);
     const [loading, setLoading] = useState(false);
     const { setCache } = useCustomers();
+    const toast = useToast();
 
     const statusOptions = [
         {
