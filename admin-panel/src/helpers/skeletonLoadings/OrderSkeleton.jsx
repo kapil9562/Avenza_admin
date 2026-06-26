@@ -1,77 +1,101 @@
-import React from 'react'
+import React from 'react';
 import { useTheme } from '../../context/Context';
 
 const OrderSkeleton = () => {
-
     const { isDark } = useTheme();
 
     return (
-        <div
-            className={`flex items-center justify-between border-2 rounded-lg px-2 py-1 animate-pulse ${isDark ? "border-slate-800" : "border-slate-200"
-                }`}
+        <tr
+            className={`animate-pulse border-b ${
+                isDark ? "border-slate-800" : "border-slate-200"
+            }`}
         >
-            {/* Left */}
-            <div className="flex w-[40%] space-x-2 items-center">
-                <div
-                    className={`min-h-15 min-w-15 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+            {/* Order */}
+            <td className="px-4 py-4">
+                <div className="flex items-center gap-3 min-w-[260px]">
+                    <div
+                        className={`h-12 w-12 md:h-14 md:w-14 rounded-lg shimmer ${
+                            isDark ? "bg-slate-700" : "bg-slate-200"
                         }`}
-                />
+                    />
 
-                <div className="space-y-2 w-full">
-                    <div
-                        className={`h-3 w-20 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+                    <div className="flex flex-col gap-2">
+                        <div
+                            className={`h-3 w-16 rounded shimmer ${
+                                isDark ? "bg-slate-700" : "bg-slate-200"
                             }`}
-                    />
-                    <div
-                        className={`h-5 w-32 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+                        />
+                        <div
+                            className={`h-4 w-32 rounded shimmer ${
+                                isDark ? "bg-slate-700" : "bg-slate-200"
                             }`}
-                    />
-                    <div
-                        className={`h-3 w-40 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+                        />
+                        <div
+                            className={`h-3 w-24 rounded shimmer ${
+                                isDark ? "bg-slate-700" : "bg-slate-200"
                             }`}
-                    />
+                        />
+                    </div>
                 </div>
-            </div>
+            </td>
 
             {/* Items */}
-            <div className="flex flex-col w-[25%] gap-2">
-                <div
-                    className={`h-3 w-16 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+            <td className="px-4 py-4">
+                <div className="flex flex-col gap-2 min-w-[160px]">
+                    <div
+                        className={`h-3 w-16 rounded shimmer ${
+                            isDark ? "bg-slate-700" : "bg-slate-200"
                         }`}
-                />
+                    />
 
-                <div className="flex gap-1">
-                    {[1, 2, 3].map((i) => (
-                        <div
-                            key={i}
-                            className={`h-8 w-8 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+                    <div className="flex gap-1">
+                        {[1, 2].map((i) => (
+                            <div
+                                key={i}
+                                className={`h-8 w-8 rounded shimmer ${
+                                    isDark ? "bg-slate-700" : "bg-slate-200"
                                 }`}
+                            />
+                        ))}
+
+                        <div
+                            className={`h-8 w-10 rounded-full shimmer ${
+                                isDark ? "bg-slate-700" : "bg-slate-200"
+                            }`}
                         />
-                    ))}
+                    </div>
                 </div>
-            </div>
+            </td>
 
             {/* Amount */}
-            <div className="flex flex-col w-[15%] gap-2">
-                <div
-                    className={`h-5 w-20 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+            <td className="px-4 py-4 text-right">
+                <div className="flex flex-col items-end gap-2">
+                    <div
+                        className={`h-4 w-20 rounded shimmer ${
+                            isDark ? "bg-slate-700" : "bg-slate-200"
                         }`}
-                />
-                <div
-                    className={`h-3 w-16 rounded shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+                    />
+
+                    <div
+                        className={`h-3 w-14 rounded shimmer ${
+                            isDark ? "bg-slate-700" : "bg-slate-200"
                         }`}
-                />
-            </div>
+                    />
+                </div>
+            </td>
 
             {/* Status */}
-            <div className="flex items-center justify-center w-[20%]">
-                <div
-                    className={`h-8 w-28 rounded-full shimmer ${isDark ? "bg-slate-700" : "bg-slate-200"
+            <td className="px-4 py-4 text-center">
+                <div className="flex justify-center">
+                    <div
+                        className={`h-8 w-28 rounded-full shimmer ${
+                            isDark ? "bg-slate-700" : "bg-slate-200"
                         }`}
-                />
-            </div>
-        </div>
-    )
+                    />
+                </div>
+            </td>
+        </tr>
+    );
 };
 
 export default OrderSkeleton;

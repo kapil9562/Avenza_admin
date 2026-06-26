@@ -53,7 +53,8 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
         }
 
         fetchOrders();
-    }, [currUser?._id, cacheKey, skip, setOrdersCache]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currUser?._id, skip]);
 
     useEffect(() => {
         if (addressCache[cacheKey]) return;
@@ -80,7 +81,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
 
     return (
         <div className="fixed inset-0 z-999 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-3 md:p-6 nunitoFont">
-            <div className={`w-full min-h-[86dvh] max-w-3xl rounded-2xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"}`}>
+            <div className={`w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden zoom-modal ${isDark ? "bg-slate-900" : "bg-white"}`}>
                 {/* Header */}
                 <div className={`flex items-center justify-between px-4 py-1 border-b ${isDark ? "border-slate-800" : "border-gray-200"}`}>
 
@@ -101,46 +102,50 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
 
                 {/* Body */}
                 <div className='px-4 py-3 space-y-2'>
-                    <div className={`flex flex-row gap-4 items-center border-b pb-4 ${isDark ? "border-slate-800" : "border-gray-200"}`}>
-                        <div className='relative h-fit w-fit'>
-                            <img
-                                src={normalizeGooglePhoto(currUser?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
-                                referrerPolicy="no-referrer"
-                                alt="profile photo"
-                                className='min-h-15 min-w-15 max-h-15 max-w-15 rounded-full'
-                            />
-                            <div className={`absolute right-0 bottom-0 border-2 p-1.5 rounded-full ${isDark ? "border-slate-900" : "border-white"} ${currUser?.isActive ? "bg-green-500" : "bg-red-500"}`} ></div>
-                        </div>
-                        <div className={`flex flex-col justify-center font-semibold text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                            <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>{currUser?.name}</h2>
-                            <span>ID: #{currUser?._id}</span>
-                            <div className="flex gap-1 items-center">
-                                <IoCalendarOutline />
-                                <span>Member since {formatDate(currUser?.createdAt)}</span>
+                    <div className={`flex flex-wrap gap-4 border-b pb-4 ${isDark ? "border-slate-800" : "border-gray-200"}`}>
+                        <div className='flex items-center gap-4'>
+                            <div className='relative h-fit w-fit'>
+                                <img
+                                    src={normalizeGooglePhoto(currUser?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
+                                    referrerPolicy="no-referrer"
+                                    alt="profile photo"
+                                    className='min-h-15 min-w-15 max-h-15 max-w-15 rounded-full'
+                                />
+                                <div className={`absolute right-0 bottom-0 border-2 p-1.5 rounded-full ${isDark ? "border-slate-900" : "border-white"} ${currUser?.isActive ? "bg-green-500" : "bg-red-500"}`} ></div>
+                            </div>
+                            <div className={`flex flex-col justify-center font-semibold text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                                <h2 className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>{currUser?.name}</h2>
+                                <span>ID: #{currUser?._id}</span>
+                                <div className="flex gap-1 items-center">
+                                    <IoCalendarOutline />
+                                    <span>Member since {formatDate(currUser?.createdAt)}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className={`border-l-2 ${isDark ? "border-l-slate-700" : "border-l-slate-100"} px-4`}>
-                            <RiShoppingBagLine size={30} className='bg-purple-600/10 text-purple-500 p-2 rounded-lg' />
-                            <div className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold mt-2`}>{currUser?.ordersCount}</div>
-                            <div className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>Orders</div>
-                        </div>
+                        <div className='flex items-center gap-4'>
+                            <div className={`border-l-2 ${isDark ? "border-l-slate-700" : "border-l-slate-100"} px-4`}>
+                                <RiShoppingBagLine size={30} className='bg-purple-600/10 text-purple-500 p-2 rounded-lg' />
+                                <div className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold mt-2`}>{currUser?.ordersCount}</div>
+                                <div className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>Orders</div>
+                            </div>
 
-                        <div className={`border-l-2 ${isDark ? "border-l-slate-700" : "border-l-slate-100"} px-4`}>
-                            <MdCurrencyRupee size={30} className='bg-orange-600/10 text-orange-500 p-2 rounded-lg' />
-                            <div className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold mt-2`}>₹{currUser?.totalSpent?.toLocaleString("en-IN")}</div>
-                            <div className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>Total Spent</div>
-                        </div>
+                            <div className={`border-l-2 ${isDark ? "border-l-slate-700" : "border-l-slate-100"} px-4`}>
+                                <MdCurrencyRupee size={30} className='bg-orange-600/10 text-orange-500 p-2 rounded-lg' />
+                                <div className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold mt-2`}>₹{currUser?.totalSpent?.toLocaleString("en-IN")}</div>
+                                <div className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm whitespace-nowrap`}>Total Spent</div>
+                            </div>
 
-                        <div className={`border-l-2 ${isDark ? "border-l-slate-700" : "border-l-slate-100"} px-4`}>
-                            <IoCalendarOutline size={30} className='bg-blue-600/10 text-blue-500 p-1 rounded-lg' />
-                            <div className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold mt-2`}>{currUser?.createdAt
-                                ? Math.floor(
-                                    (Date.now() - new Date(currUser.createdAt).getTime()) /
-                                    (1000 * 60 * 60 * 24)
-                                )
-                                : 0}</div>
-                            <div className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm whitespace-nowrap`}>Days as Customer</div>
+                            <div className={`border-l-2 ${isDark ? "border-l-slate-700" : "border-l-slate-100"} px-4`}>
+                                <IoCalendarOutline size={30} className='bg-blue-600/10 text-blue-500 p-1 rounded-lg' />
+                                <div className={`${isDark ? "text-gray-200" : "text-gray-800"} font-bold mt-2`}>{currUser?.createdAt
+                                    ? Math.floor(
+                                        (Date.now() - new Date(currUser.createdAt).getTime()) /
+                                        (1000 * 60 * 60 * 24)
+                                    )
+                                    : 0}</div>
+                                <div className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm whitespace-nowrap`}>Days as Customer</div>
+                            </div>
                         </div>
                     </div>
 
@@ -157,7 +162,7 @@ function CustomerDetailModal({ setDetailModal, currUser }) {
                         ))}
                     </div>
 
-                    <div>
+                    <div className='md:min-h-[56vh] md:max-h-[56vh] min-h-[45vh] max-h-[45vh] overflow-y-auto'>
                         {activeTab === "overview" && <Overview isDark={isDark} currUser={currUser} ordersData={ordersData} address={address} />}
                         <div className={activeTab === "orders" ? "block" : "hidden"}>
                             <Orders isDark={isDark} ordersData={ordersData} setSkip={setSkip} loading={loading} orderError={orderError} />
@@ -183,11 +188,12 @@ const tabs = [
 ];
 
 const Overview = ({ isDark, currUser, ordersData, address }) => {
+
     return (
-        <div className='grid grid-cols-2 grid-rows-2 gap-2'>
+        <div className='grid md:grid-cols-2 grid-cols-1 grid-rows-2 gap-2'>
 
             {/* Contact information */}
-            <div className={`shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-2 ${isDark ? "border-2 border-slate-800" : "shadow"}`}>
+            <div className={`shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-2 border-2 ${isDark ? "border-slate-800" : "border-slate-100"}`}>
                 <div className='flex gap-2 items-center'>
                     <TiContacts size={28} className='p-1 bg-purple-600/10 text-purple-500 rounded-md' />
                     <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Contact information</h2>
@@ -218,7 +224,7 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
             </div>
 
             {/* Customer Statistics */}
-            <div className={`shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-4 ${isDark ? "border-2 border-slate-800" : "shadow"}`}>
+            <div className={`shadow rounded-lg p-3 flex flex-col col-span-1 row-span-1 gap-4 border-2 ${isDark ? "border-slate-800" : "border-slate-100"}`}>
                 <div className='flex gap-2 items-center'>
                     <IoStatsChartOutline size={28} className='p-1 bg-green-600/10 text-green-500 rounded-md' />
                     <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Customer Statistics</h2>
@@ -244,7 +250,7 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
             </div>
 
             {/* Address Information */}
-            <div className={`rounded-lg p-3 flex flex-col col-span-1 row-span-1 ${isDark ? "border-2 border-slate-800" : "shadow"}`}>
+            <div className={`rounded-lg p-3 flex flex-col col-span-1 row-span-1 border-2 ${isDark ? "border-slate-800" : "border-slate-100"}`}>
                 <div className='flex gap-2 items-center'>
                     <MdOutlineLocationOn size={28} className='p-1 bg-rose-600/10 text-rose-500 rounded-md' />
                     <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Address Information</h2>
@@ -258,7 +264,7 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
             </div>
 
             {/* Additional Information */}
-            <div className={`rounded-lg p-3 flex flex-col col-span-1 row-span-1 ${isDark ? "text-gray-300 border-2 border-slate-800" : "text-gray-600 shadow"}`}>
+            <div className={`rounded-lg p-3 flex flex-col col-span-1 row-span-1 border-2 ${isDark ? "text-gray-300 border-slate-800" : "text-gray-600 border-slate-100"}`}>
                 <div className='flex gap-2 items-center'>
                     <IoMdInformationCircleOutline size={28} className='p-1 bg-orange-600/10 text-orange-500 rounded-md' />
                     <h2 className={`${isDark ? "text-[#FFFFFF]" : "text-gray-800"} font-bold`}>Additional information</h2>
@@ -285,7 +291,11 @@ const Overview = ({ isDark, currUser, ordersData, address }) => {
 }
 
 
-const Orders = ({ isDark, ordersData, setSkip, loading, orderError }) => {
+const Orders = ({ isDark, ordersData, setSkip, orderError, loading }) => {
+
+    const hasMore =
+        (ordersData?.orders?.length || 0) <
+        (ordersData?.total || 0);
 
     return (
         <div className='nunitoFont space-y-2'>
@@ -315,7 +325,7 @@ const Orders = ({ isDark, ordersData, setSkip, loading, orderError }) => {
             }
 
             {/* Body */}
-            <div className='min-h-[55dvh] max-h-[55dvh] overflow-y-auto scroll-smooth space-y-2'>
+            <div className='h-[40vh] space-y-2'>
                 {!ordersData?.orders?.length && loading ? (
                     [...Array(5)].map((_, i) => (
                         <OrderSkeleton key={i} isDark={isDark} />
@@ -344,74 +354,207 @@ const Orders = ({ isDark, ordersData, setSkip, loading, orderError }) => {
                         </button>
                     </div>
                 ) : (
-                    ordersData?.orders?.map((order, idx) => (
-                        <div key={idx} className={`flex items-center justify-between border-2 rounded-lg px-2 py-1 ${isDark ? "border-slate-800" : "border-slate-200"}`}>
+                    <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-slate-800 shadow-[#0d1423]" : "border-slate-200"}`}>
 
-                            <div className='flex w-[40%] space-x-2 items-center'>
-                                <img src={order?.orderItems[0]?.image} alt={order?.orderItems[0]?.name} loading='lazy' className='h-15 w-15' />
-                                <div>
-                                    <label className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>Order ID</label>
-                                    <h3 className={`${isDark ? "text-gray-100" : "text-gray-800"} font-bold`}>#{order?.orderId}</h3>
-                                    <span className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>{formatDate(order?.createdAt)} at {formatTime(order?.createdAt)}</span>
-                                </div>
-                            </div>
+                        {/* TABLE */}
+                        <div className="md:h-[45dvh] h-[38dvh] overflow-y-auto tableBody scroll-smooth">
+                            <table className="w-full border-collapse">
+                                {/* Header */}
+                                <thead
+                                    className={`sticky top-0 z-30 border-b ${isDark
+                                        ? "bg-slate-900 border-slate-800"
+                                        : "bg-slate-100 border-slate-200"
+                                        }`}
+                                >
+                                    <tr
+                                        className={`text-left ${isDark
+                                            ? "text-gray-200"
+                                            : "text-gray-700"
+                                            }`}
+                                    >
+                                        <th className="px-4 py-3 font-semibold w-[40%]">
+                                            Order
+                                        </th>
 
-                            <div className='flex flex-col w-[25%]'>
-                                <span className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>{order?.orderItems?.length} {order?.orderItems?.length > 1 ? "items" : "item"}</span>
-                                <div className='flex space-x-1'>
-                                    {order?.orderItems?.slice(0, 2)?.map((item, i) => (
-                                        <img
-                                            key={i}
-                                            src={item?.image}
-                                            alt="img"
-                                            loading='lazy'
-                                            className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} h-8 w-8 object-contain rounded`}
-                                        />
-                                    ))}
-                                    {order?.orderItems?.length > 2 && (
-                                        <div className={`h-8 w-8 flex justify-center items-center text-sm font-medium px-2 py-0.5 group rounded relative cursor-pointer ${isDark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"}`}>
-                                            <span>
-                                                +{order.orderItems.length - 2}
-                                            </span>
-                                            <div className={`absolute p-1 z-50 left-0 ${idx !== ordersData?.orders?.length - 2 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex animate-fadeIn ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
-                                                <div className={`absolute ${idx !== ordersData?.orders?.length - 2 ? "-top-4" : "-bottom-4 rotate-180"} left-1 ${isDark ? "text-gray-800" : "text-gray-200"}`}>
-                                                    <GoTriangleUp size={26} />
-                                                </div>
-                                                {order?.orderItems?.slice(2).map((item, i) => (
-                                                    <div key={i}>
-                                                        <img src={item?.image} alt="img" className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`} />
+                                        <th className="px-4 py-3 font-semibold w-[20%]">
+                                            Items
+                                        </th>
+
+                                        <th className="px-4 py-3 font-semibold w-[20%]">
+                                            Amount
+                                        </th>
+
+                                        <th className="px-4 py-3 font-semibold text-center w-[20%]">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                {/* Body */}
+                                <tbody
+                                    className={`divide-y ${isDark
+                                        ? "divide-slate-800"
+                                        : "divide-slate-200"
+                                        }`}
+                                >
+                                    {ordersData?.orders?.map((order, idx) => (
+                                        <>
+                                            <tr
+                                                key={idx}
+                                                className={`transition-all duration-200 ${isDark
+                                                    ? "hover:bg-slate-900"
+                                                    : "hover:bg-slate-50"
+                                                    }`}
+                                            >
+                                                {/* Order */}
+                                                <td className="px-4 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <img
+                                                            src={order?.orderItems?.[0]?.image}
+                                                            alt=""
+                                                            loading="lazy"
+                                                            className={`h-12 w-12 md:h-14 md:w-14 rounded-lg object-contain shrink-0 ${isDark
+                                                                ? "bg-linear-to-br from-blue-900/40 to-purple-900/40"
+                                                                : "bg-linear-to-br from-blue-100 to-purple-100"
+                                                                }`}
+                                                        />
+
+                                                        <div className="flex flex-col">
+                                                            <span
+                                                                className={`text-xs font-medium ${isDark
+                                                                    ? "text-gray-400"
+                                                                    : "text-gray-500"
+                                                                    }`}
+                                                            >
+                                                                Order ID
+                                                            </span>
+
+                                                            <h3
+                                                                className={`font-bold text-sm md:text-base transition-colors ${isDark ? "text-gray-100" : "text-gray-800"
+                                                                    }`}
+                                                            >
+                                                                #{order?.orderId}
+                                                            </h3>
+
+                                                            <span
+                                                                className={`text-sm whitespace-nowrap ${isDark
+                                                                    ? "text-gray-400"
+                                                                    : "text-gray-500"
+                                                                    }`}
+                                                            >
+                                                                {formatDate(order?.createdAt)} at {formatTime(order?.createdAt)}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        </div>
+                                                </td>
+
+                                                {/* Items */}
+                                                <td className="px-4 py-4">
+                                                    <div className="flex flex-col gap-1">
+                                                        <span
+                                                            className={`text-sm font-medium whitespace-nowrap ${isDark
+                                                                ? "text-gray-400"
+                                                                : "text-gray-500"
+                                                                }`}
+                                                        >
+                                                            {order?.orderItems?.length} {order?.orderItems?.length > 1? "Items" : "Item"}
+                                                        </span>
+
+                                                        <div className='flex space-x-1'>
+                                                            {order?.orderItems?.slice(0, 2)?.map((item, i) => (
+                                                                <img
+                                                                    key={i}
+                                                                    src={item?.image}
+                                                                    alt="img"
+                                                                    loading='lazy'
+                                                                    className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} h-8 w-8 object-contain rounded`}
+                                                                />
+                                                            ))}
+                                                            {order?.orderItems?.length > 2 && (
+                                                                <div className={`h-8 w-8 flex justify-center items-center text-sm font-medium px-2 py-0.5 group rounded relative cursor-pointer ${isDark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"}`}>
+                                                                    <span>
+                                                                        +{order.orderItems.length - 2}
+                                                                    </span>
+                                                                    <div className={`absolute p-1 z-50 left-0 ${idx !== ordersData?.orders?.length - 2 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex animate-fadeIn ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
+                                                                        <div className={`absolute ${idx !== ordersData?.orders?.length - 2 ? "-top-4" : "-bottom-4 rotate-180"} left-1 ${isDark ? "text-gray-800" : "text-gray-200"}`}>
+                                                                            <GoTriangleUp size={26} />
+                                                                        </div>
+                                                                        {order?.orderItems?.slice(2).map((item, i) => (
+                                                                            <div key={i}>
+                                                                                <img src={item?.image} alt="img" className={`${isDark ? "bg-linear-to-br from-blue-900/40 to-purple-900/40" : "bg-linear-to-br from-blue-100 to-purple-100"} min-h-10 min-w-10 object-contain rounded shadow-[0_0px_6px_rgba(0,0,0,0.28)]`} />
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                {/* Amount */}
+                                                <td className="px-4 py-4">
+                                                    <div className="flex flex-col">
+                                                        <span
+                                                            className={`font-bold ${isDark
+                                                                ? "text-gray-100"
+                                                                : "text-gray-800"
+                                                                }`}
+                                                        >
+                                                            ₹
+                                                            {order?.totalAmount?.toLocaleString(
+                                                                "en-IN"
+                                                            )}
+                                                        </span>
+
+                                                        <span
+                                                            className={`text-sm font-bold ${isDark
+                                                                ? "text-gray-400"
+                                                                : "text-gray-500"
+                                                                }`}
+                                                        >
+                                                            {order?.paymentMethod?.toUpperCase()}
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                {/* Status */}
+                                                <td className="px-4 py-4 text-center">
+                                                    <div
+                                                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm whitespace-nowrap ${statusColors[
+                                                            order?.orderStatus?.replace(/\s/g, "")
+                                                        ]
+                                                            }`}
+                                                    >
+                                                        <GoDotFill size={10} />
+
+                                                        <span>
+                                                            {formatStatus(
+                                                                order?.orderStatus
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </>
+                                    ))}
+                                    {loading && (
+                                        <OrderSkeleton />
                                     )}
-                                </div>
-                            </div>
-
-                            <div className='flex flex-col w-[15%]'>
-                                <span className={`${isDark ? "text-gray-100" : "text-gray-800"} font-bold`}>₹{order?.totalAmount?.toLocaleString("en-IN")}</span>
-                                <span className={`${isDark ? "text-gray-400" : "text-gray-500"} font-semibold text-sm`}>{order?.paymentMethod?.toUpperCase()}</span>
-                            </div>
-
-                            <div className='flex items-center justify-center w-[20%]'>
-                                <div className={`flex flex-row w-fit items-center gap-1 px-2 py-0.5 text-sm rounded-full whitespace-nowrap ${statusColors[order?.orderStatus.replace(/\s/g, "")]}`}>
-                                    <GoDotFill size={10} />
-                                    <span>{formatStatus(order?.orderStatus?.charAt(0).toUpperCase() + order?.orderStatus.slice(1))}</span>
-                                </div>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
-                    ))
+                    </div>
                 )}
 
-                {loading ? (
-                    <OrderSkeleton />
-                ) : !orderError && (
+                {!orderError && (
                     <button
-                        className={`text-purple-500 font-bold hover:underline flex items-center justify-center`}
+                        className={`text-purple-500 sticky bottom-0 font-bold hover:underline flex items-center justify-center`}
                         onClick={() => setSkip(prev => prev + limit)}
-                        disabled={(ordersData?.orders?.length >= ordersData?.total) || orderError}
+                        disabled={!hasMore || loading}
                     >
-                        {ordersData?.orders?.length >= ordersData?.total ? "No more results to display" : (
+                        {!hasMore ? "No more results to display" : loading ? (
+                            <span>Loading...</span>
+                        ) : (
                             <>
                                 Load More
                                 <MdKeyboardDoubleArrowRight size={22} />

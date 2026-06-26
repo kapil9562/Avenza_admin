@@ -50,7 +50,8 @@ const getUsers = async (req, res) => {
         const previousMonthEnd = currentMonthStart;
 
         // TOTAL USERS
-        const totalUsers = await User.countDocuments(filter);
+        const totalFilterUsers = await User.countDocuments(filter);
+        const totalUsers = await User.countDocuments();
 
         // NEW USERS
         const currentNewUsers = await User.countDocuments({
@@ -182,7 +183,9 @@ const getUsers = async (req, res) => {
         };
 
         const metaData = {
-            total: totalUsers,
+            total: totalFilterUsers,
+
+            totalCustomers: totalUsers,
 
             new: {
                 count: currentNewUsers,

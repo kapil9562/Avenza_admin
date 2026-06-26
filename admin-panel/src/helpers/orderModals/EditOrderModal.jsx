@@ -123,12 +123,12 @@ export default function EditOrderModal({ order, setEditModal }) {
 
     return (
 
-        <div className="fixed inset-0 z-999 bg-black/40 flex items-center justify-center p-3 md:p-6">
+        <div className="fixed inset-0 z-999 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-3 md:p-6">
 
             <div
                 className={`
-                    w-full max-w-4xl max-h-[92vh]
-                    overflow-hidden rounded-3xl
+                    w-full max-w-4xl sm:max-h-[90vh] max-h-[70vh]
+                    overflow-hidden rounded-xl
                     flex flex-col zoom-modal
                     ${isDark
                         ? "bg-[#0F172A] border border-white/10 text-white"
@@ -139,31 +139,25 @@ export default function EditOrderModal({ order, setEditModal }) {
 
                 {/* Header */}
                 <div
-                    className={`
-                        px-6 py-5 border-b flex items-center justify-between shrink-0
+                    className={`md:p-6 p-4 border-b flex items-center justify-between shrink-0
                         ${isDark ? "border-white/10" : "border-gray-200"}
                     `}
                 >
 
                     <div className="flex items-center gap-4">
 
-                        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center text-2xl">
+                        <div className="p-4 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center text-2xl">
                             <LuPencilLine />
                         </div>
 
                         <div>
-                            <h2 className="text-2xl font-bold">
+                            <h2 className="text-xl font-semibold">
                                 Edit Order
                             </h2>
 
-                            <p
-                                className={`text-sm mt-1 ${isDark
-                                    ? "text-gray-400"
-                                    : "text-gray-500"
-                                    }`}
-                            >
-                                Update shipping details for
-                                <span className="text-purple-500 font-semibold ml-1">
+                            <p className={`flex gap-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                                <span className="sm:block hidden">Update shipping details for</span>
+                                <span className="text-purple-500 font-semibold">
                                     #{order?.orderId}
                                 </span>
                             </p>
@@ -186,14 +180,14 @@ export default function EditOrderModal({ order, setEditModal }) {
                 </div>
 
                 {/* Body */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 md:space-y-6 space-y-4">
 
                     {/* Customer Card */}
                     <div
                         className={`
                             rounded-2xl border p-4 flex items-center gap-4
                             ${isDark
-                                ? "bg-white/[0.03] border-white/10"
+                                ? "bg-white/3 border-white/10"
                                 : "bg-gray-50 border-gray-200"
                             }
                         `}
@@ -243,7 +237,7 @@ export default function EditOrderModal({ order, setEditModal }) {
                         className={`
                             rounded-2xl border p-5
                             ${isDark
-                                ? "bg-white/[0.03] border-white/10"
+                                ? "bg-white/3 border-white/10"
                                 : "bg-gray-50 border-gray-200"
                             }
                         `}
@@ -681,19 +675,10 @@ export default function EditOrderModal({ order, setEditModal }) {
                     </button>
 
                     <button
-                        onClick={handleSave}
-                        className="
-                            h-11 px-5 rounded-xl
-                            bg-gradient-to-b from-purple-400 to-purple-600
-                            text-white font-semibold
-                            flex items-center gap-2
-                            active:scale-95 transition-all
-                            shadow-lg shadow-purple-500/20
-                        "
+                        className={`px-4 py-3 text-sm bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 cursor-pointer active:scale-95 transition-all duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)] from-purple-500 to-purple-700" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)] from-purple-300 to-purple-500"} hover:brightness-110 min-h-12 min-w-30.5 disabled:brightness-90 disabled:cursor-not-allowed`}
                     >
                         <LuPencilLine className="text-lg" />
-
-                        Save Changes
+                        <span>Save Changes</span>
                     </button>
                 </div>
             </div>

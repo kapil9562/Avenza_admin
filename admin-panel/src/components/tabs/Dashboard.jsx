@@ -109,18 +109,53 @@ const Dashboard = () => {
     fetchRecentOrders();
   }, [recentOrders, setRecentOrders, setError, toast]);
 
+  const statsList = [
+    {
+      icon: <FiShoppingBag />,
+      label: "Total Sales",
+      value: "$12,540",
+      color: `${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`,
+      className: `${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`,
+    },
+    {
+      icon: <FiClipboard />,
+      label: "Orders",
+      value: "320",
+      color: `${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`,
+      className: `${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`,
+    },
+    {
+      icon: <FiUsers />,
+      label: "Customers",
+      value: "1,210",
+      color: `${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`,
+      className: `${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`,
+    },
+    {
+      icon: <FiDollarSign />,
+      label: "Revenue",
+      value: "$8,750",
+      color: `${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`,
+      className: `${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`,
+    },
+  ];
+
   return (
-    <div className={`h-[calc(100dvh-60px)] w-full p-4 font-sans text-slate-700 overflow-y-scroll pb-20 scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`w-full p-2 md:p-4 font-sans text-slate-700 ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* 1. Stats Overview Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 xl:gap-6 mb-4">
 
-        <StatCard isDark={isDark} icon={<FiShoppingBag />} label="Total Sales" value="$12,540" color={`${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`} className={`${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} />
-
-        <StatCard isDark={isDark} icon={<FiClipboard />} label="Orders" value="320" color={`${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`} className={`${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`} />
-
-        <StatCard isDark={isDark} icon={<FiUsers />} label="Customers" value="1,210" color={`${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`} />
-
-        <StatCard isDark={isDark} icon={<FiDollarSign />} label="Revenue" value="$8,750" color={`${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`} className={`${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`} />
+        {statsList.map((item, idx) => (
+          <StatCard
+            key={idx}
+            isDark={isDark}
+            icon={item.icon}
+            label={item.label}
+            value={item.value}
+            color={item.color}
+            className={item.className}
+          />
+        ))}
 
       </div>
 
@@ -128,7 +163,7 @@ const Dashboard = () => {
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-8 min-w-0">
           {/* 2. Recent Orders Table */}
-          <div className={`rounded-xl overflow-hidden shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+          <div className={`rounded-xl overflow-hidden shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
             <div className={`border-b py-3 px-4 flex flex-row justify-between items-center ${isDark ? "text-gray-100 border-slate-600" : "text-gray-800 border-slate-50"}`}>
               <h3 className='text-xl font-bold nunitoFont'>Recent Orders</h3>
               <button
@@ -267,9 +302,9 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column (1/3 width) */}
-        <div className="space-y-8 min-w-0">
+        <div className="md:space-y-8 space-y-4 min-w-0">
           {/* 3. Sales Analytics */}
-          <div className={`rounded-xl p-4 shadow-sm ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+          <div className={`rounded-xl p-4 shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800" : "bg-white border-slate-100"}`}>
             <h3 className={`text-lg font-bold nunitoFont ${isDark ? "text-gray-200" : "text-gray-800"}`}>Sales Analytics</h3>
             <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Monthly Sales Overview</p>
             <div className="h-64 w-full min-w-0">
@@ -314,7 +349,7 @@ const Dashboard = () => {
           </div>
 
           {/* 4. Product Categories */}
-          <div className={`rounded-3xl p-6 shadow-sm border ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+          <div className={`rounded-3xl p-6 shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800" : "bg-white border-slate-100"}`}>
             <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>Product Categories</h3>
             <div className="flex items-center">
               <div className="w-1/2 h-40 min-w-0">
@@ -337,7 +372,7 @@ const Dashboard = () => {
           </div>
 
           {/* 5. Quick Actions */}
-          <div className={`rounded-3xl p-6 shadow-sm border ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+          <div className={`rounded-3xl p-6 shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800" : "bg-white border-slate-100"}`}>
             <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>Quick Actions</h3>
             <div className="flex gap-4">
               <button
@@ -362,11 +397,11 @@ const Dashboard = () => {
 
 // Sub-components for cleaner code
 const StatCard = ({ icon, label, value, color, className, isDark }) => (
-  <div className={` p-5 rounded-3xl shadow-md flex items-center gap-4 ${className}`}>
-    <div className={`p-3 rounded-2xl ${color} text-xl`}>{icon}</div>
+  <div className={`md:p-5 p-3 rounded-xl md:rounded-3xl shadow md:shadow-md flex items-center gap-4 ${className}`}>
+    <div className={`md:p-3 p-2 rounded-xl ${color} text-xl`}>{icon}</div>
     <div>
       <p className={`text-sm ${isDark ? "text-slate-100" : "text-slate-400"} font-medium`}>{label}</p>
-      <p className={`text-2xl font-bold ${isDark ? "text-white" : "text-slate-700"} `}>{value}</p>
+      <p className={`md:text-2xl sm:text-xl text-lg font-bold ${isDark ? "text-white" : "text-slate-700"} `}>{value}</p>
     </div>
   </div>
 );

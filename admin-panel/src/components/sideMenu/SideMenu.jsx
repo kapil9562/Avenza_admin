@@ -16,12 +16,12 @@ function SideMenu({ sideMenu, setSideMenu }) {
   const { isDark } = useTheme();
   const sideMenuRef = useRef();
 
-  const tab = location.pathname.replace('/', "");
+  const tab = location?.pathname?.replace('/', "");
 
   const activeTab = useMemo(() => {
     return !tab
       ? "Dashboard"
-      : tab.charAt(0).toUpperCase() + tab.slice(1);
+      : tab?.charAt(0)?.toUpperCase() + tab?.slice(1);
   }, [tab]);
 
   const [open, setOpen] = useState({
@@ -78,8 +78,8 @@ function SideMenu({ sideMenu, setSideMenu }) {
   ];
 
   const handleTab = (tab) => {
-    if(tab === activeTab) return;
-    tab === "Dashboard" ? navigate("/") : navigate(`/${tab.toLowerCase()}`);
+    if (tab === activeTab) return;
+    tab === "Dashboard" ? navigate("/") : navigate(`/${tab?.toLowerCase()}`);
   };
 
   useEffect(() => {
@@ -95,17 +95,17 @@ function SideMenu({ sideMenu, setSideMenu }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [sideMenuRef, setSideMenu]);
 
-  const activeIndex = tabs.findIndex(item => item.tab === activeTab);
+  const activeIndex = tabs?.findIndex(item => item?.tab === activeTab);
   const activeVariant = colorVariants[activeTab];
 
   return (
     <div>
-      <div className={`${isDark ? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full cursor-pointer z-100 ${sideMenu ? "block" : "hidden"}`}></div>
+      <div className={`${isDark ? "bg-black/30" : "bg-black/50"} absolute min-h-dvh w-full cursor-pointer z-150 ${sideMenu ? "block" : "hidden"}`}></div>
       <div
         ref={sideMenuRef}
         className={`${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-gray-200"} 
       min-h-dvh border-r-2 transition-[width,transform,translate] duration-500 pb-20 absolute left-0 z-200 lg:relative lg:translate-x-0 transform-gpu will-change-transform ${sideMenu ? "translate-x-0" : "-translate-x-full"}
-      ${open.status ? "w-60" : "w-16"} overflow-hidden`}
+      ${open?.status ? "w-60" : "w-16"} overflow-hidden`}
       >
 
         {/* TOP */}
@@ -121,7 +121,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
           <button
             onClick={() => setOpen({
               type: "manual",
-              status: !open.status
+              status: !open?.status
             })}
             className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer hidden lg:block`}
           >
@@ -139,13 +139,13 @@ function SideMenu({ sideMenu, setSideMenu }) {
         {/* MENU */}
         <div className="flex relative flex-col mt-4 gap-1 h-full"
           onMouseEnter={() => {
-            if (!open.status) {
+            if (!open?.status) {
               setOpen({ type: "hover", status: true });
             }
           }}
 
           onMouseLeave={() => {
-            if (open.type === "hover") {
+            if (open?.type === "hover") {
               setOpen({ type: "", status: false });
             }
           }}
@@ -153,7 +153,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
 
           {/* Active Slider */}
           <div
-            className={`absolute left-0 rounded-r-full transition-transform duration-300 ease-out ${isDark ? activeVariant.activeDark : activeVariant.activeLight}`}
+            className={`absolute left-0 rounded-r-full transition-transform duration-300 ease-out ${isDark ? activeVariant?.activeDark : activeVariant?.activeLight}`}
             style={{
               transform: `translateY(${activeIndex * 48}px)`,
               width: "100%",
@@ -169,18 +169,18 @@ function SideMenu({ sideMenu, setSideMenu }) {
               <div
                 key={idx}
                 onClick={() => {
-                  handleTab(item.tab);
+                  handleTab(item?.tab);
                   setSideMenu(false);
                 }}
-                className={`flex items-center gap-2 px-4 py-2 cursor-pointer rounded-r-full font-semibold ${isDark ? variant.dark : variant.light}`}
+                className={`flex items-center gap-2 px-4 py-2 cursor-pointer rounded-r-full font-semibold ${isDark ? variant?.dark : variant?.light}`}
               >
                 <span className='text-xl relative z-10'>{item?.icon}</span>
 
                 <span
                   className={`whitespace-nowrap transition-[opacity, width] duration-300 text-lg will-change-transform transform-gpu
-                ${open.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
+                ${open?.status ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}
                 >
-                  {item.tab}
+                  {item?.tab}
                 </span>
               </div>
             );

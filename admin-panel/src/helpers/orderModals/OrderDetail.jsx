@@ -24,7 +24,7 @@ function OrderDetail({ order, formatPfpUrl, setShowDetail }) {
           </div>
           <button className={`flex flex-row gap-1 items-center px-2 py-1 rounded-md cursor-pointer ${isDark ? "text-purple-500 bg-purple-500/10 hover:text-purple-400" : "text-purple-600 bg-purple-600/10 hover:text-purple-800"}`}
             onClick={() => {
-              setShowDetail((prev) => prev.filter((id) => id !== order._id))
+              setShowDetail((prev) => prev.filter((id) => id !== order?._id))
             }}>
             <span><IoIosArrowUp /></span>
             <span className='text-sm'>Close</span>
@@ -38,6 +38,7 @@ function OrderDetail({ order, formatPfpUrl, setShowDetail }) {
               <img src={formatPfpUrl(order?.user?.avatar) || (isDark ? "/user.png" : "/userLight.png")}
                 referrerPolicy="no-referrer"
                 alt="img"
+                loading='lazy'
                 className='min-w-10 min-h-10 max-w-10 max-h-10 rounded-full'
               />
               <div className='flex flex-col'>
@@ -73,6 +74,7 @@ function OrderDetail({ order, formatPfpUrl, setShowDetail }) {
                               <img
                                 src={item?.image}
                                 alt="img"
+                                loading='lazy'
                                 className={`min-w-14 min-h-14 max-w-14 max-h-14 object-contain rounded-sm ${isDark
                                   ? "bg-linear-to-br from-blue-900/40 to-purple-900/40"
                                   : "bg-linear-to-br from-blue-100 to-purple-100"
@@ -182,4 +184,4 @@ function OrderDetail({ order, formatPfpUrl, setShowDetail }) {
   )
 }
 
-export default OrderDetail
+export default React.memo(OrderDetail);

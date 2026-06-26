@@ -21,6 +21,7 @@ import EditOrderModal from '../../helpers/orderModals/EditOrderModal';
 import OrderDetail from '../../helpers/orderModals/OrderDetail';
 import UpdateStatusModal from '../../helpers/orderModals/UpdateStatusModal';
 import { useOrders, useTheme } from '../../context/Context';
+import { AnimatePresence, motion } from "framer-motion";
 
 // Portal Dropdown
 function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order Actions" }) {
@@ -131,13 +132,42 @@ function Orders() {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const location = useLocation();
+  const [statusDropdown, setStatusDropdown] = useState(false);
+  const statusDropdownRef = useRef();
+  const [paymentDropdown, setPaymentDropdown] = useState(false);
+  const paymentDropdownRef = useRef();
   const id = location?.state?.id;
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(e.target)) {
+        setStatusDropdown(false);
+      }
+
+      if (paymentDropdownRef.current && !paymentDropdownRef.current.contains(e.target)) {
+        setPaymentDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [statusDropdownRef, paymentDropdownRef, setStatusDropdown, setPaymentDropdown]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setStatusDropdown(false);
+      setPaymentDropdown(false);
+    };
+    window.addEventListener("scroll", handleScroll, true);
+    return () => window.removeEventListener("scroll", handleScroll, true);
+  }, [setPaymentDropdown, setStatusDropdown]);
 
   // Per-row trigger refs
   const triggerRefs = useRef({});
 
   const { cache, setOrders, setCache, total, setTotal, stats, setStats, paymentMethods, setPaymentMethods } = useOrders();
-  const cacheKey = `${status}-${page}-${payment}-${search}`;
+  const cacheKey = `${status}-${page}-${payment}`;
   const orders = cache[cacheKey];
   const [loading, setLoading] = useState(!(cache?.[cacheKey]));
 
@@ -224,90 +254,168 @@ function Orders() {
   };
 
   const clearFilters = () => {
+    if (stats?.total === total && payment === "All" && status === "All" && !search) return;
     setPayment("All");
     setStatus("All");
     setSearch("");
+    setInput("");
+    setCache({});
   };
 
+  const statsList = [
+    {
+      icon: <FaClipboardList />,
+      label: "Total Orders",
+      value: stats?.total,
+      color: `${isDark ? "bg-blue-900/50 text-blue-600" : "bg-blue-100 text-blue-500"}`,
+      className: `${isDark ? "bg-blue-900/40 text-blue-400 border-blue-700 border" : "bg-linear-to-b from-white via-white to-blue-50 border-b-blue-200"} border-b-4`,
+    },
+    {
+      icon: <FiRefreshCw />,
+      label: "Processing",
+      value: stats?.processing,
+      color: `${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`,
+      className: `${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`,
+    },
+    {
+      icon: <MdOutlineLocalShipping />,
+      label: "Shipped",
+      value: stats?.shipped,
+      color: `${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`,
+      className: `${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`,
+    },
+    {
+      icon: <FaShippingFast />,
+      label: "Out For Delivery",
+      value: stats?.out_for_delivery,
+      color: `${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`,
+      className: `${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`,
+    },
+    {
+      icon: <FiCheckCircle />,
+      label: "Delivered",
+      value: stats?.delivered,
+      color: `${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`,
+      className: `${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`,
+    },
+    {
+      icon: <MdCancel />,
+      label: "Cancelled",
+      value: stats?.cancelled,
+      color: `${isDark ? "bg-red-900/50 text-red-600" : "bg-red-100 text-red-500"}`,
+      className: `${isDark ? "bg-red-900/40 text-red-400 border-red-700 border" : "bg-linear-to-b from-white via-white to-red-50 border-b-red-200"} border-b-4`,
+    },
+  ];
+
   return (
-    <section className={`p-4 space-y-4 h-[calc(100dvh-60px)] w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <section className={`md:p-4 p-2 space-y-4 w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
 
       {/* Stat Cards */}
-      <div className='grid grid-cols-6 gap-4 w-full'>
-        <StatCard icon={<FaClipboardList />} label="Total Orders" value={stats?.total} color={`${isDark ? "bg-blue-900/50 text-blue-600" : "bg-blue-100 text-blue-500"}`} className={`${isDark ? "bg-blue-900/40 text-blue-400 border-blue-700 border" : "bg-linear-to-b from-white via-white to-blue-50 border-b-blue-200"} border-b-4`} isDark={isDark} />
-        <StatCard icon={<FiRefreshCw />} label="Processing" value={stats?.processing} color={`${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`} className={`${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`} isDark={isDark} />
-        <StatCard icon={<MdOutlineLocalShipping />} label="Shipped" value={stats?.shipped} color={`${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`} className={`${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`} isDark={isDark} />
-        <StatCard icon={<FaShippingFast />} label="Out For Delivery" value={stats?.out_for_delivery} color={`${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`} className={`${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`} isDark={isDark} />
-        <StatCard icon={<FiCheckCircle />} label="Delivered" value={stats?.delivered} color={`${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`} className={`${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`} isDark={isDark} />
-        <StatCard icon={<MdCancel />} label="Cancelled" value={stats?.cancelled} color={`${isDark ? "bg-red-900/50 text-red-600" : "bg-red-100 text-red-500"}`} className={`${isDark ? "bg-red-900/40 text-red-400 border-red-700 border" : "bg-linear-to-b from-white via-white to-red-50 border-b-red-200"} border-b-4`} isDark={isDark} />
+      <div className='grid grid-cols-6 md:gap-4 gap-2 w-full'>
+        {statsList.map((item, idx) => (
+          <StatCard
+            key={idx}
+            icon={item.icon}
+            label={item.label}
+            value={item.value}
+            color={item.color}
+            className={item.className}
+            isDark={isDark}
+          />
+        ))}
       </div>
 
       {/* Filters */}
-      <div className='flex flex-row gap-4'>
+      <div className='flex md:flex-row flex-col lg:gap-4 gap-2'>
         {/* Search */}
-        <div className='relative w-xs flex flex-row justify-center items-center'>
+        <div className='relative md:w-xs w-full flex flex-row justify-center items-center'>
           <input
             value={input}
             maxLength={100}
             onChange={(e) => setInput(e.target.value)}
             type="text"
             placeholder='Search orders...'
-            className={`z-10 pr-8 flex w-full px-2 py-1 pl-2 rounded-lg border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
+            className={`z-10 pr-8 flex w-full px-2 sm:py-1 py-2 pl-2 rounded-lg border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
           />
           <IoIosSearch className='absolute right-2 text-2xl font-semibold text-[#8b90c7] z-20 pointer-events-none' />
         </div>
 
-        {/* Status filter */}
-        <div className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark ? "border-slate-700 text-gray-300 border-2" : "border border-gray-200 text-gray-700"}`}>
-          <h1>All Status</h1>
-          <IoIosArrowDown className={`group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
-          <div className={`absolute group-hover:flex hidden w-fit overflow-hidden left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200"}`}>
-            <div onClick={() => handleStatusChange("All")} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800 border-b-2 border-gray-700" : "hover:bg-gray-100 border-b-2 border-gray-200"}`}>
-              <span>All</span>
-            </div>
-            {Object.keys(stats)?.filter((s) => s !== "total")?.map((stat, idx) => (
-              <div key={idx} onClick={() => handleStatusChange(stat)} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"} ${(idx < (Object.keys(stats).length - 2)) && (isDark ? "border-b-2 border-gray-700" : "border-b-2 border-gray-200")}`}>
-                <span className='whitespace-nowrap'>{formatStatus(stat)}</span>
+        <div className='flex flex-wrap lg:gap-4 gap-2'>
+          {/* Status filter */}
+          <div
+            className={`flex flex-row lg:gap-5 gap-4 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark ? "border-slate-700 text-gray-300 border-2" : "border border-gray-200 text-gray-700"}`}
+            onClick={() => setStatusDropdown(prev => !prev)}
+            onMouseLeave={() => setStatusDropdown(false)}
+            ref={statusDropdownRef}
+          >
+            <h1>All Status</h1>
+            <IoIosArrowDown className={`group-hover:rotate-180 ${statusDropdown && "rotate-180"} transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
+            <div className={`absolute ${statusDropdown ? "flex" : "hidden"} group-hover:flex w-fit overflow-hidden left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200"}`}>
+              <div onClick={() => handleStatusChange("All")} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800 border-b-2 border-gray-700" : "hover:bg-gray-100 border-b-2 border-gray-200"}`}>
+                <span>All</span>
               </div>
-            ))}
+              {Object.keys(stats)?.filter((s) => s !== "total")?.map((stat, idx) => (
+                <div key={idx} onClick={() => handleStatusChange(stat)} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"} ${(idx < (Object.keys(stats).length - 2)) && (isDark ? "border-b-2 border-gray-700" : "border-b-2 border-gray-200")}`}>
+                  <span className='whitespace-nowrap'>{formatStatus(stat)}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Payment filter */}
-        <div className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark ? "border-slate-700 text-gray-300 border-2" : "border border-gray-200 text-gray-700"}`}>
-          <h1>All Payments</h1>
-          <IoIosArrowDown className={`group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
-          <div className={`absolute w-full group-hover:flex hidden overflow-hidden left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200"}`}>
-            <div onClick={() => handlePaymentChange("All")} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800 border-b-2 border-gray-700" : "hover:bg-gray-100 border-b-2 border-gray-200"}`}>
-              <span>All</span>
-            </div>
-            {paymentMethods?.map((method, idx) => (
-              <div key={idx} onClick={() => handlePaymentChange(method)} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"} ${(idx < (paymentMethods.length - 1)) && (isDark ? "border-b-2 border-gray-700" : "border-b-2 border-gray-200")}`}>
-                <span>{method}</span>
+          {/* Payment filter */}
+          <div
+            className={`flex flex-row lg:gap-5 gap-4 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark ? "border-slate-700 text-gray-300 border-2" : "border border-gray-200 text-gray-700"}`}
+            onClick={() => setPaymentDropdown(prev => !prev)}
+            onMouseLeave={() => setPaymentDropdown(false)}
+            ref={paymentDropdownRef}
+          >
+            <h1>All Payments</h1>
+            <IoIosArrowDown className={`group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
+            <div className={`absolute w-full ${paymentDropdown ? "flex" : "hidden"} group-hover:flex overflow-hidden left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200"}`}>
+              <div onClick={() => handlePaymentChange("All")} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800 border-b-2 border-gray-700" : "hover:bg-gray-100 border-b-2 border-gray-200"}`}>
+                <span>All</span>
               </div>
-            ))}
+              {paymentMethods?.map((method, idx) => (
+                <div key={idx} onClick={() => handlePaymentChange(method)} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800" : "hover:bg-gray-100"} ${(idx < (paymentMethods.length - 1)) && (isDark ? "border-b-2 border-gray-700" : "border-b-2 border-gray-200")}`}>
+                  <span>{method}</span>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* Refresh Orders */}
+          <button
+            className={`px-3 py-1.5 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
+            onClick={clearFilters}
+          >
+            <FiRefreshCw size={16} />
+            <span>Refresh</span>
+          </button>
         </div>
       </div>
 
       {/* Table Container */}
       <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
+
+        {/* TABLE */}
         <div className="h-[60dvh] overflow-y-auto tableBody scroll-smooth">
           <table className="w-full border-collapse">
 
             {/* Header */}
-            <thead className={`sticky top-0 z-50 border-b ${isDark ? "bg-slate-800 text-gray-100 border-b-slate-700" : "bg-slate-100 border-b-slate-200"}`}>
-              <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
-                <th className="px-4 py-4 w-[5%] font-semibold whitespace-nowrap">Order ID</th>
-                <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Customer</th>
-                <th className="px-4 py-4 w-[15%] font-semibold">Date</th>
-                <th className="px-4 py-4 w-[12%] font-semibold">Items</th>
-                <th className="px-4 py-4 w-[8%] font-semibold whitespace-nowrap">Total Amount</th>
-                <th className="px-4 py-4 w-[10%] font-semibold">Payment</th>
-                <th className="px-4 py-4 w-[10%] font-semibold">Status</th>
-                <th className="px-4 py-4 w-[10%] font-semibold">Action</th>
-              </tr>
-            </thead>
+            {(!error && !loading) &&
+              <thead className={`sticky top-0 z-50 border-b ${isDark ? "bg-slate-800 text-gray-100 border-b-slate-700" : "bg-slate-100 border-b-slate-200"}`}>
+                <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
+                  <th className="px-4 py-4 w-[5%] font-semibold whitespace-nowrap">Order ID</th>
+                  <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Customer</th>
+                  <th className="px-4 py-4 w-[15%] font-semibold">Date</th>
+                  <th className="px-4 py-4 w-[12%] font-semibold">Items</th>
+                  <th className="px-4 py-4 w-[8%] font-semibold whitespace-nowrap">Total Amount</th>
+                  <th className="px-4 py-4 w-[10%] font-semibold">Payment</th>
+                  <th className="px-4 py-4 w-[10%] font-semibold">Status</th>
+                  <th className="px-4 py-4 w-[10%] font-semibold">Action</th>
+                </tr>
+              </thead>
+            }
 
             {/* Body */}
             <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${orders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[50dvh]"}`}>
@@ -325,11 +433,15 @@ function Orders() {
                   <td colSpan="8" className="py-10">
                     <div className="flex flex-col items-center justify-center text-center">
                       <div className={`${isDark ? "bg-purple-800/10" : "bg-purple-100/50"} rounded-full p-5 flex items-center justify-center`}>
-                        <img src="/noResult.webp" alt="img" className="h-35 w-35 object-contain" />
+                        <img
+                          src="/noResult.webp"
+                          alt="img"
+                          className="md:h-35 md:w-35 h-30 w-30 object-contain"
+                        />
                       </div>
                       <h4 className={`${isDark ? "text-gray-300" : "text-gray-800"} font-bold text-2xl`}>{error}</h4>
-                      <p className={`${isDark ? "text-gray-500" : "text-gray-400"} font-semibold text-sm mt-2`}>
-                        We couldn't find any products matching your current filters.
+                      <p className={`${isDark ? "text-gray-500" : "text-gray-400"} px-10 text-center font-semibold text-sm mt-2`}>
+                        We couldn't find any orders matching your current filters.
                       </p>
                       <button
                         className={`p-2 flex flex-row justify-center rounded-lg font-semibold items-center gap-1 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm mt-4 text-purple-600 border ${isDark ? "bg-purple-600/10 border-purple-600 hover:brightness-110" : "bg-purple-100 border-purple-200 hover:bg-purple-200/60"}`}
@@ -507,20 +619,31 @@ function Orders() {
                     </tr>
 
                     {/* Expandable detail row */}
-                    <tr>
-                      <td colSpan={8} className="p-0 border-0">
-                        <div className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${showDetail.includes(order._id) ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-                          <div className="min-h-0 overflow-hidden">
-                            <OrderDetail
-                              order={order}
-                              formatPfpUrl={normalizeGooglePhoto}
-                              setShowDetail={setShowDetail}
-                              idx={order._id}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+                    <AnimatePresence initial={false}>
+                      {showDetail.includes(order._id) && (
+                        <motion.tr
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          <td colSpan={8} className="p-0 border-0">
+                            <motion.div
+                              initial={{ height: 0 }}
+                              animate={{ height: "auto" }}
+                              exit={{ height: 0 }}
+                              transition={{ duration: 0.5 }}
+                              style={{ overflow: "hidden" }}
+                            >
+                              <OrderDetail
+                                order={order}
+                                formatPfpUrl={normalizeGooglePhoto}
+                                setShowDetail={setShowDetail}
+                              />
+                            </motion.div>
+                          </td>
+                        </motion.tr>
+                      )}
+                    </AnimatePresence>
                   </React.Fragment>
                 ))
               )}
@@ -529,18 +652,20 @@ function Orders() {
         </div>
 
         {/* Pagination */}
-        <div className={`flex flex-row justify-between items-center px-4 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
+        <div className={`flex md:flex-row flex-col md:justify-between md:items-center px-4 py-2 md:py-0 border-t-2 min-h-13 ${isDark ? "border-t-gray-800" : "border-t-gray-100"}`}>
           <div>
             <span className='font-semibold text-gray-400'>
               Showing {total > 0 ? (skip + 1) : "0"} to {(skip + 10) < total ? skip + 10 : total} of {total} entries
             </span>
           </div>
-          <div className='flex flex-row gap-4 items-center w-fit'>
+          <div className='flex flex-row gap-4 items-center justify-between w-full md:w-fit'>
+
             <span className='font-semibold text-gray-400'>Page {totalPages > 0 ? page : "0"} of {totalPages}</span>
 
             {showPagination && (
               <div className="flex justify-center items-center">
                 <div className="flex justify-center items-center p-1 sm:p-2 gap-1 sm:gap-2">
+                  {/* Prev */}
                   <button
                     onClick={prevPage}
                     disabled={page === 1 || loading}
@@ -549,6 +674,7 @@ function Orders() {
                     <span className='font-semibold text-gray-400'>Prev</span>
                   </button>
 
+                  {/* Pages */}
                   <div className={`border font-semibold text-gray-400 rounded-lg shadow flex justify-center items-center px-1 py-1 ${isDark ? "border-gray-700 border-2" : "border-gray-200"}`}>
                     <input
                       disabled={loading}
@@ -571,6 +697,7 @@ function Orders() {
                     />
                   </div>
 
+                  {/* Next */}
                   <button
                     onClick={nextPage}
                     disabled={page === totalPages || loading}
@@ -602,13 +729,14 @@ function Orders() {
 
 //StatCard
 const StatCard = ({ icon, label, value, color, className, isDark }) => (
-  <div className={`w-full px-3 py-2 rounded-xl shadow-md flex items-center gap-2 ${className}`}>
-    <div className={`p-2 rounded-xl ${color} text-3xl`}>{icon}</div>
+  <div className={`w-full col-span-3 sm:col-span-2 xl:col-span-1 px-3 py-2 rounded-xl md:shadow-md shadow flex items-center gap-2 ${className}`}>
+    <div className={`p-2 rounded-xl ${color} xl:text-3xl text-xl`}>{icon}</div>
     <div>
       <p className={`text-sm ${isDark ? "text-slate-100" : "text-slate-400"} font-medium`}>{label}</p>
-      <p className={`text-2xl font-bold ${isDark ? "text-white" : "text-slate-700"}`}>{value}</p>
+      <p className={`xl:text-2xl text-xl font-bold ${isDark ? "text-white" : "text-slate-700"}`}>{value}</p>
     </div>
   </div>
 );
+
 
 export default Orders;

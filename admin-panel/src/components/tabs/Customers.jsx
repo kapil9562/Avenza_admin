@@ -78,7 +78,7 @@ export default function Customers() {
   }, [input, setCache]);
 
   const statCard = [
-    { label: "Total Customers", value: meta?.total || "-", icon: FiUsers, light: { icon: "bg-pink-100 text-pink-500", card: "from-white via-white to-pink-50 border-b-pink-200" }, dark: { icon: "bg-pink-900/50 text-pink-400", card: "bg-pink-900/40 text-pink-400 border-pink-700" } },
+    { label: "Total Customers", value: meta?.totalCustomers || "-", icon: FiUsers, light: { icon: "bg-pink-100 text-pink-500", card: "from-white via-white to-pink-50 border-b-pink-200" }, dark: { icon: "bg-pink-900/50 text-pink-400", card: "bg-pink-900/40 text-pink-400 border-pink-700" } },
     { label: "New Customers", value: meta?.new?.count, percentageChange: meta?.new?.growth, icon: LuUserCog, light: { icon: "bg-purple-100 text-purple-500", card: "from-white via-white to-purple-50 border-b-purple-200" }, dark: { icon: "bg-purple-900/50 text-purple-400", card: "bg-purple-900/40 text-purple-400 border-purple-700" } },
     { label: "Repeat Customers", value: meta?.repeat?.count, percentageChange: meta?.repeat?.growth, icon: FiShoppingBag, light: { icon: "bg-green-100 text-green-500", card: "from-white via-white to-green-50 border-b-green-200" }, dark: { icon: "bg-green-900/50 text-green-400", card: "bg-green-900/40 text-green-400 border-green-700" } },
     { label: "Top Customers", value: meta?.top?.count, percentageChange: meta?.top?.growth, icon: LuCrown, light: { icon: "bg-orange-100 text-orange-500", card: "from-white via-white to-orange-50 border-b-orange-200" }, dark: { icon: "bg-orange-900/50 text-orange-400", card: "bg-orange-900/40 text-orange-400 border-orange-700" } },
@@ -90,7 +90,7 @@ export default function Customers() {
   };
 
   const clearFilters = () => {
-    if (selectedRole === "All" && selectedStatus === "All" && !search && (users?.length > 0)) return;
+    if (selectedRole === "All" && selectedStatus === "All" && !search && (users?.length > 0) && (meta?.totalCustomers === meta?.total)) return;
     setSearch("");
     setInput("");
     setCache({});
@@ -106,20 +106,20 @@ export default function Customers() {
   }
 
   return (
-    <div className={`h-[calc(100dvh-60px)] w-fit lg:w-full p-4 font-sans text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+    <div className={`w-full md:p-4 p-2 text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2 mb-4">
         {statCard.map((item) => (<StatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
 
       <div className={`${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "bg-white border-gray-100 shadow-md"} border-2 rounded-xl overflow-hidden`}>
-        <div className="p-4 flex flex-row justify-between items-start">
+        <div className="sm:p-4 p-2 flex flex-col gap-2 sm:flex-row sm:justify-between items-start">
           <div className="flex flex-row gap-1 text-lg">
             <h2 className={`${isDark ? "text-gray-100" : "text-gray-800"} font-semibold`}>All Customers</h2>
             <span className={`${isDark ? "text-gray-400" : "text-gray-600"} font-medium`}>({meta?.total})</span>
           </div>
 
-          <div className="flex flex-row gap-4 items-start">
-            <div className="relative w-xs flex flex-row justify-center items-center">
+          <div className="flex xl:flex-row flex-col gap-4 items-start w-full sm:w-fit">
+            <div className="relative sm:w-xs w-full flex flex-row justify-center items-center">
               <input
                 value={input}
                 maxLength={100}
@@ -131,44 +131,52 @@ export default function Customers() {
               <IoIosSearch className="absolute right-2 text-2xl font-semibold text-[#8b90c7] z-20 pointer-events-none" />
             </div>
 
-            <FilterDropdown
-              isDark={isDark}
-              selectedRole={selectedRole}
-              selectedStatus={selectedStatus}
-              filterHandler={filterHandler}
-              filters={filters}
-            />
+            <div className="flex gap-4">
+              <FilterDropdown
+                isDark={isDark}
+                selectedRole={selectedRole}
+                selectedStatus={selectedStatus}
+                filterHandler={filterHandler}
+                filters={filters}
+              />
 
-            <div className={`flex flex-row gap-2 items-center shadow font-semibold w-fit rounded-md px-3 py-1.5 cursor-pointer ${isDark ? "border-slate-700 text-gray-300 border-2" : "border border-gray-200 text-gray-700"}`}>
-              <FiDownload className={isDark ? "text-gray-300" : "text-gray-800"} />
-              <h1 className="text-sm">Export</h1>
+              <div className={`flex flex-row gap-2 items-center shadow font-semibold w-fit rounded-md px-3 py-1.5 cursor-pointer ${isDark ? "border-slate-700 text-gray-300 border-2" : "border border-gray-200 text-gray-700"}`}>
+                <FiDownload className={isDark ? "text-gray-300" : "text-gray-800"} />
+                <h1 className="text-sm">Export</h1>
+              </div>
+
+              <button
+                className={`px-3 py-1.5 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
+                onClick={clearFilters}
+              >
+                <FiRefreshCw size={16} />
+                <span>Refresh</span>
+              </button>
             </div>
-
-            <button
-              className={`px-3 py-1.5 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
-              onClick={clearFilters}
-            >
-              <FiRefreshCw size={16} />
-              <span>Refresh</span>
-            </button>
           </div>
         </div>
 
+        {/* Table Container */}
         <div className={`border-t-2 overflow-x-auto ${isDark ? "border-gray-800" : "border-gray-100"}`}>
+          {/* TABLE */}
           <div className="h-[55dvh] overflow-y-auto tableBody scroll-smooth">
             <table className="w-full border-collapse">
-              <thead className={`sticky top-0 z-50 ${isDark ? "bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
-                <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
-                  <th className="px-4 py-2 w-[35%] font-semibold whitespace-nowrap text-sm">Customer</th>
-                  <th className="px-4 py-2 min-w-50 w-[20%] font-semibold text-sm">Email</th>
-                  <th className="px-4 py-2 w-[5%] text-sm font-semibold">Orders</th>
-                  <th className="px-4 py-2 w-[12%] text-sm font-semibold">Total Spent</th>
-                  <th className="px-4 py-2 w-[8%] text-sm font-semibold whitespace-nowrap">Joined On</th>
-                  <th className="px-4 py-2 w-[10%] text-sm font-semibold">Role</th>
-                  <th className="px-4 py-2 w-[10%] text-sm font-semibold">Status</th>
-                  <th className="px-4 py-2 w-[5%] text-sm font-semibold">Action</th>
-                </tr>
-              </thead>
+
+              {/* Header */}
+              {(!error && !loading) &&
+                <thead className={`sticky top-0 z-50 ${isDark ? "bg-slate-800 text-gray-100" : "bg-slate-100"}`}>
+                  <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
+                    <th className="px-4 py-2 w-[35%] font-semibold whitespace-nowrap text-sm">Customer</th>
+                    <th className="px-4 py-2 min-w-50 w-[20%] font-semibold text-sm">Email</th>
+                    <th className="px-4 py-2 w-[5%] text-sm font-semibold">Orders</th>
+                    <th className="px-4 py-2 w-[12%] text-sm font-semibold">Total Spent</th>
+                    <th className="px-4 py-2 w-[8%] text-sm font-semibold whitespace-nowrap">Joined On</th>
+                    <th className="px-4 py-2 w-[10%] text-sm font-semibold">Role</th>
+                    <th className="px-4 py-2 w-[10%] text-sm font-semibold">Status</th>
+                    <th className="px-4 py-2 w-[5%] text-sm font-semibold">Action</th>
+                  </tr>
+                </thead>
+              }
 
               <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${users?.length > 0 ? isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200" : "h-[50dvh]"}`}>
                 {loading ? (
@@ -222,7 +230,7 @@ export default function Customers() {
                             />
                             <div className="flex flex-col">
                               <span>{user?.name}</span>
-                              <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm break-all`}>ID: #{user._id}</span>
+                              <span className={`${isDark ? "text-gray-400" : "text-gray-500"} text-sm whitespace-nowrap`}>ID: #{user._id}</span>
                             </div>
                           </div>
                         </td>
@@ -354,13 +362,13 @@ const StatCard = ({ item, isDark }) => {
   const Icon = item.icon;
   const theme = isDark ? item.dark : item.light;
   return (
-    <div className={`px-3 py-2 rounded-2xl shadow-[0px_3px_8px_rgba(0,0,0,0.15)] flex items-center gap-4 border-b-4 ${theme.card}`}>
-      <div className={`p-4 rounded-xl ${theme.icon} text-3xl`}><Icon /></div>
+    <div className={`px-3 md:py-2 py-1 rounded-2xl shadow md:shadow-[0px_3px_8px_rgba(0,0,0,0.15)] flex items-center gap-2 sm:gap-4 border-b-4 ${theme.card}`}>
+      <div className={`md:p-4 p-2 rounded-xl ${theme.icon} md:text-3xl text-xl`}><Icon /></div>
       <div>
         <p className={`text-sm ${isDark ? "text-slate-100" : "text-gray-600"} font-medium`}>{item.label}</p>
-        <p className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>{item.value}</p>
+        <p className={`sm:text-2xl text-lg font-bold ${isDark ? "text-white" : "text-gray-800"}`}>{item.value}</p>
         {item?.percentageChange !== undefined && (
-          <div className="flex flex-row gap-1 font-medium text-sm mt-1">
+          <div className="flex flex-row flex-wrap gap-1 font-medium text-xs sm:text-sm mt-1">
             <div className={`${item?.percentageChange >= 0 ? "text-green-500" : "text-red-500"} flex row gap-1 items-center`}>
               <IoMdArrowUp className={`${item?.percentageChange < 0 && "rotate-180"}`} />
               <span>{item?.percentageChange}%</span>
@@ -475,7 +483,7 @@ function FilterDropdown({ isDark, selectedRole, selectedStatus, filterHandler, f
         {open && (
           <div
             className={`
-              absolute top-full right-0 mt-1.5
+              absolute top-full left-0 mt-1.5
               w-72 rounded-xl overflow-hidden
               border shadow-xl z-100
               ${isDark ? "bg-slate-900 border-slate-700" : "bg-white border-gray-200"}

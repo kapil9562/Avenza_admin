@@ -27,12 +27,19 @@ function Header({ setSideMenu }) {
   return (
     <div className={`sticky top-0 z-100 lg:px-8 px-2 pb-2 sm:pb-0 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"}`}>
       <div className={`min-h-15 flex flex-row items-center justify-between`}>
-        <button
-          onClick={() => setSideMenu(true)}
-          className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer lg:hidden`}
-        >
-          <HiMiniBars3BottomLeft size={22} />
-        </button>
+        <div className='flex gap-2 lg:hidden'>
+          <button
+            onClick={() => setSideMenu(true)}
+            className={`${isDark ? "text-gray-300" : "text-gray-700"} cursor-pointer`}
+          >
+            <HiMiniBars3BottomLeft size={22} />
+          </button>
+          <img
+            src="/logo.png"
+            alt="logo"
+            className={`h-8 w-fit sm:hidden`}
+          />
+        </div>
 
         {/* Search Bar for large screens */}
         <div className='relative w-1/2 flex-row justify-center items-center hidden sm:flex'>
