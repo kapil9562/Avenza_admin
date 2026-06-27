@@ -99,6 +99,7 @@ export const updateUserRole = ({role, userId}) => adminApi.post("/customers/upda
 
 export const updateCustomerStatus = ({userId, status}) => adminApi.patch(`/customers/update-status/${userId}`, {status});
 
+export const getAnalytics = ({salesRange, orderRange}) => adminApi.get(`/get-analytics?salesRange=${salesRange}&orderRange=${orderRange}`);
 
 // { Refresh Auth }
 let isRefreshing = false;

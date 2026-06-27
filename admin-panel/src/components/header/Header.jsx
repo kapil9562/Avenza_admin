@@ -25,8 +25,8 @@ function Header({ setSideMenu }) {
   };
 
   return (
-    <div className={`sticky top-0 z-100 lg:px-8 px-2 pb-2 sm:pb-0 ${isDark ? "bg-[#0F172A] border-b-2 border-gray-800" : "bg-[#F9F9FF] border-b-2 border-gray-200"}`}>
-      <div className={`min-h-15 flex flex-row items-center justify-between`}>
+    <div className={`sticky min-h-15 top-0 z-100 lg:px-8 px-2 pb-2 sm:pb-0 border-b-2 ${isDark ? "bg-[#0F172A] border-slate-800" : "bg-[#F9F9FF] border-slate-200"}`}>
+      <div className={`flex flex-row items-center justify-between`}>
         <div className='flex gap-2 lg:hidden'>
           <button
             onClick={() => setSideMenu(true)}

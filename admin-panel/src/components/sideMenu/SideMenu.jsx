@@ -110,7 +110,7 @@ function SideMenu({ sideMenu, setSideMenu }) {
 
         {/* TOP */}
         <div className={`px-4 border-b-2 flex items-center justify-between min-h-15
-        ${isDark ? "border-slate-800" : "border-gray-300"}`}
+        ${isDark ? "border-slate-800" : "border-gray-200"}`}
         >
           <img
             src="/logo.png"

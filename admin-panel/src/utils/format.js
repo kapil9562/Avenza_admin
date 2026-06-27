@@ -114,10 +114,28 @@ const getRoleDescription = (role) => {
     }
 };
 
-const formatRole = (role) =>
-    role
+const formatRole = (role) => {
+    return role
         ?.split("_")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
+        ?.map(word => word?.charAt(0)?.toUpperCase() + word?.slice(1))
+        ?.join(" ");
+};
 
-export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge, getRoleBadge, getRoleDescription, formatRole };
+const formatValue = (value) => {
+    if (value >= 1_000_000_000_000) return (value / 1_000_000_000_000).toFixed(0) + "T";
+    if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(0) + "B";
+    if (value >= 1_000_000) return (value / 1_000_000).toFixed(0) + "M";
+    if (value >= 1_000) return (value / 1_000).toFixed(0) + "K";
+    return value;
+};
+
+const getCategoryColors = (idx) => {
+    switch (idx) {
+        case 0: return '#ff5ca8';
+        case 1: return '#9b5cff';
+        case 2: return '#47d38b';
+        default: return '#ffb14d';
+    }
+};
+
+export { formatAddress, calSubtotal, normalizeGooglePhoto, formatDate, formatTime, formatStatus, statusColors, getPaymentBadge, getActiveBadge, getRoleBadge, getRoleDescription, formatRole, formatValue, getCategoryColors };

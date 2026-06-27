@@ -44,7 +44,6 @@ const pieData = [
 const renderPercentLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
   const RADIAN = Math.PI / 180;
 
-  // text ko slice ke andar place karne ke liye
   const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
 
   const x = cx + radius * Math.cos(-midAngle * RADIAN);

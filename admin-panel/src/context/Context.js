@@ -48,3 +48,7 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ToastContext = createContext();
 export const useToast = () => useContext(ToastContext);
+
+
+export const AnalyticsContext = createContext();
+export const useAnalytics = () => useContext(AnalyticsContext);
