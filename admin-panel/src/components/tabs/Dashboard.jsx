@@ -11,7 +11,7 @@ import { Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, C
 import { useAnalytics, useDashboard, useTheme } from '../../context/Context';
 import { formatDate, formatStatus, formatTime, normalizeGooglePhoto, statusColors } from '../../utils/format';
 import { getRecentOrders } from '../../api/api';
-import { GoDotFill } from 'react-icons/go';
+import { GoDotFill, GoTriangleUp } from 'react-icons/go';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useNavigate } from 'react-router-dom';
