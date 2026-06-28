@@ -326,7 +326,7 @@ function Orders() {
       </div>
 
       {/* Filters */}
-      <div className='flex md:flex-row flex-col lg:gap-4 gap-2 animate-fadeIn'>
+      <div className='flex md:flex-row flex-col lg:gap-4 gap-2'>
         {/* Search */}
         <div className='relative md:w-xs w-full flex flex-row justify-center items-center'>
           <input
@@ -335,7 +335,7 @@ function Orders() {
             onChange={(e) => setInput(e.target.value)}
             type="text"
             placeholder='Search orders...'
-            className={`z-10 pr-8 flex w-full px-2 sm:py-1 py-2 pl-2 rounded-lg border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
+            className={`z-10 pr-8 flex w-full animate-fadeIn px-2 sm:py-1 py-2 pl-2 rounded-lg border-2 font-semibold text-gray-700 ${isDark ? "focus:border-gray-400 focus:outline-none bg-[#0F172A] placeholder:text-gray-500 text-white border-gray-500" : "border-gray-300 focus:border-[#6B6F9C] focus:outline-none bg-white placeholder:text-gray-500"}`}
           />
           <IoIosSearch className='absolute right-2 text-2xl font-semibold text-[#8b90c7] z-20 pointer-events-none' />
         </div>
@@ -348,8 +348,8 @@ function Orders() {
             onMouseLeave={() => setStatusDropdown(false)}
             ref={statusDropdownRef}
           >
-            <h1>All Status</h1>
-            <IoIosArrowDown className={`group-hover:rotate-180 ${statusDropdown && "rotate-180"} transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
+            <h1 className='animate-fadeIn'>All Status</h1>
+            <IoIosArrowDown className={`group-hover:rotate-180 animate-fadeIn ${statusDropdown && "rotate-180"} transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
             <div className={`absolute ${statusDropdown ? "flex" : "hidden"} group-hover:flex w-fit overflow-hidden left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200"}`}>
               <div onClick={() => handleStatusChange("All")} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800 border-b-2 border-gray-700" : "hover:bg-gray-100 border-b-2 border-gray-200"}`}>
                 <span>All</span>
@@ -369,8 +369,8 @@ function Orders() {
             onMouseLeave={() => setPaymentDropdown(false)}
             ref={paymentDropdownRef}
           >
-            <h1>All Payments</h1>
-            <IoIosArrowDown className={`group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
+            <h1 className='animate-fadeIn'>All Payments</h1>
+            <IoIosArrowDown className={`animate-fadeIn group-hover:rotate-180 transition-all duration-300 ${isDark ? "text-gray-300" : "text-gray-800"}`} />
             <div className={`absolute w-full ${paymentDropdown ? "flex" : "hidden"} group-hover:flex overflow-hidden left-0 top-full z-99 flex-col border-2 rounded-md ${isDark ? "bg-[#0F172A] border-slate-700" : "bg-white border-gray-200"}`}>
               <div onClick={() => handlePaymentChange("All")} className={`flex flex-row justify-between items-center relative group py-2 px-3 ${isDark ? "hover:bg-slate-800 border-b-2 border-gray-700" : "hover:bg-gray-100 border-b-2 border-gray-200"}`}>
                 <span>All</span>
@@ -385,7 +385,7 @@ function Orders() {
 
           {/* Refresh Orders */}
           <button
-            className={`px-3 py-1.5 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
+            className={`animate-fadeIn px-3 py-1.5 bg-linear-to-b flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 will-change-transform text-sm text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
             onClick={clearFilters}
           >
             <FiRefreshCw size={16} />

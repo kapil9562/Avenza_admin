@@ -225,7 +225,7 @@ function Products() {
             }
 
             {/* Category Filter */}
-            <div className='flex flex-row gap-4 justify-between md:justify-start animate-fadeIn'>
+            <div className='flex flex-row gap-4 justify-between md:justify-start'>
                 <div
                     className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark
                         ? "border-slate-700 text-gray-300 border-2"
@@ -237,10 +237,10 @@ function Products() {
                     }}
                     onMouseLeave={() => setOpenCategory(false)}
                 >
-                    <h1>Category</h1>
+                    <h1 className='animate-fadeIn'>Category</h1>
 
                     <IoIosArrowDown
-                        className={`transition-all duration-300 ${openCategory ? "rotate-180" : "group-hover:rotate-180"
+                        className={`transition-all duration-300 animate-fadeIn ${openCategory ? "rotate-180" : "group-hover:rotate-180"
                             } ${isDark ? "text-gray-300" : "text-gray-800"}`}
                     />
 
@@ -298,7 +298,7 @@ function Products() {
                                 </div>
 
                                 <div
-                                    className={`absolute left-full top-0 ml-0.5 z-999 min-w-45 flex-col border-2 rounded-md ${openSubIndex === idx
+                                    className={`absolute left-full top-0 ml-0.5 z-100 min-w-45 flex-col border-2 rounded-md ${openSubIndex === idx
                                         ? "flex"
                                         : "hidden group-hover/sub:flex"
                                         } ${isDark
@@ -329,7 +329,7 @@ function Products() {
                 </div>
 
                 {/* In Stock Toggle */}
-                <div className={`hidden md:flex flex-row gap-4 items-center font-semibold w-fit rounded-md px-2 py-1 ${isDark ? "border-2 border-slate-700 text-gray-300" : "border border-gray-200 text-gray-700 shadow"}`}>
+                <div className={`hidden animate-fadeIn md:flex flex-row gap-4 items-center font-semibold w-fit rounded-md px-2 py-1 ${isDark ? "border-2 border-slate-700 text-gray-300" : "border border-gray-200 text-gray-700 shadow"}`}>
                     <h1>In Stock</h1>
                     <div className='flex justify-center items-center text-[12px]'>
                         <button
@@ -347,7 +347,7 @@ function Products() {
                 </div>
 
                 {/* Deleted items Toggle */}
-                <div className={`hidden md:flex flex-row gap-4 items-center font-semibold w-fit rounded-md px-2 py-1 ${isDark ? "border-2 border-slate-700 text-gray-300" : "border border-gray-200 text-gray-700 shadow"}`}>
+                <div className={`hidden md:flex animate-fadeIn flex-row gap-4 items-center font-semibold w-fit rounded-md px-2 py-1 ${isDark ? "border-2 border-slate-700 text-gray-300" : "border border-gray-200 text-gray-700 shadow"}`}>
                     <h1>Deleted items</h1>
                     <div className='flex justify-center items-center text-[12px]'>
                         <button
@@ -365,7 +365,7 @@ function Products() {
                 </div>
 
                 <button
-                    className={`px-2 py-1 bg-linear-to-b hidden md:flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
+                    className={`px-2 py-1 bg-linear-to-b animate-fadeIn hidden md:flex flex-row justify-center rounded-lg font-semibold items-center gap-2 from-purple-300 to-purple-500 cursor-pointer active:scale-95 transition-transform duration-300 text-white ${isDark ? "shadow-[0px_3px_8px_rgba(0,0,0,1)]" : "shadow-[0px_3px_8px_rgba(0,0,0,0.24)]"}`}
                     onClick={() => navigate('/addproduct')}>
                     <HiPlus size={26} />
                     <span>Add Product</span>
@@ -375,8 +375,8 @@ function Products() {
                     onClick={() => setOpenFilters((p) => !p)}
                     className={`flex md:hidden flex-row gap-2 items-center font-semibold w-fit rounded-md ${isDark ? "text-gray-300" : "text-gray-700"}`}
                 >
-                    <BiFilterAlt className="text-base" />
-                    <span>Filters</span>
+                    <BiFilterAlt className="text-base animate-fadeIn" />
+                    <span className='animate-fadeIn'>Filters</span>
                 </button>
 
                 {/* Filter Dropdown */}
