@@ -14,7 +14,7 @@ function App() {
       <SideMenu sideMenu={sideMenu} setSideMenu={setSideMenu} />
       <main className='w-full overflow-hidden'>
         <Header setSideMenu={setSideMenu} />
-        <div className='overflow-auto sm:max-h-[calc(100dvh-61.6px)] max-h-[calc(100dvh-112.8px)] pb-10'>
+        <div className='overflow-auto sm:max-h-[calc(100dvh-61.6px)] max-h-[calc(100dvh-112.8px)] pb-10 '>
           <Outlet />
         </div>
       </main>

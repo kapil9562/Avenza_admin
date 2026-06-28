@@ -18,11 +18,14 @@ export const ToastProvider = ({ children }) => {
     }, []);
 
     const showToast = useCallback((type, message, duration = 3000) => {
+
+        if (timerRef.current) return;
+        
+        const id = Date.now();
+
         if (timerRef.current) {
             clearTimeout(timerRef.current);
         }
-
-        const id = Date.now();
 
         setCurrentToast((prev) => {
             if (prev?.type === type && prev?.message === message) {

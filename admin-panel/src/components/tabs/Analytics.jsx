@@ -18,9 +18,9 @@ function Analytics() {
   const statCard = getStatCard(overview);
 
   return (
-    <div className={`animate-fadeIn md:p-4 p-2 space-y-4 overflow-hidden nunitoFont ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={` md:p-4 p-2 space-y-4 overflow-hidden nunitoFont ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* Header */}
-      <div>
+      <div className="animate-fadeIn">
         <h1 className={`text-2xl font-bold ${text}`}>
           Analytics Overview
         </h1>
@@ -30,12 +30,12 @@ function Analytics() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2">
+      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2 animate-fadeIn">
         {statCard?.map((item) => (<AnalyticsStatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
 
       {/* Charts */}
-      <div className="grid xl:grid-cols-2 gap-6">
+      <div className="grid xl:grid-cols-2 gap-6 animate-fadeIn">
 
         {/* Sales */}
         <SalesChart />
@@ -45,7 +45,7 @@ function Analytics() {
       </div>
 
       {/* Bottom */}
-      <div className="grid xl:grid-cols-2 gap-6">
+      <div className="grid xl:grid-cols-2 gap-6 animate-fadeIn">
         {/* Products */}
         <TopSellingProducts />
 

@@ -103,14 +103,14 @@ const Dashboard = () => {
   const statCard = getStatCard(overview);
 
   return (
-    <div className={`w-full animate-fadeIn p-2 md:p-4 font-sans space-y-4 text-slate-700 ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`w-full p-2 md:p-4 font-sans space-y-4 text-slate-700 ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
 
       {/* 1. Stats Overview Row */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2">
+      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2 animate-fadeIn">
         {statCard?.map((item) => (<AnalyticsStatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-fadeIn">
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-8 min-w-0">
           {/* 2. Recent Orders Table */}
@@ -130,15 +130,17 @@ const Dashboard = () => {
               <table className="w-full border-collapse">
 
                 {/* Header */}
-                <thead className={`sticky top-0 z-50 border-b ${isDark ? "bg-slate-800 border-b-slate-700 text-gray-100" : "bg-slate-100 border-b-slate-200"}`}>
-                  <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
-                    <th className="px-4 py-4 w-[30%] font-semibold whitespace-nowrap">Order ID</th>
-                    <th className="px-4 py-4 w-[30%] font-semibold">Customer</th>
-                    <th className="px-4 py-4 w-[20%] font-semibold">Items</th>
-                    <th className="px-4 py-4 w-[10%] font-semibold">Status</th>
-                    <th className="px-4 py-4 w-[10%] font-semibold">Date</th>
-                  </tr>
-                </thead>
+                {(!error && !loading) &&
+                  <thead className={`sticky top-0 z-50 border-b ${isDark ? "bg-slate-800 border-b-slate-700 text-gray-100" : "bg-slate-100 border-b-slate-200"}`}>
+                    <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
+                      <th className="px-4 py-4 w-[30%] font-semibold whitespace-nowrap">Order ID</th>
+                      <th className="px-4 py-4 w-[30%] font-semibold">Customer</th>
+                      <th className="px-4 py-4 w-[20%] font-semibold">Items</th>
+                      <th className="px-4 py-4 w-[10%] font-semibold">Status</th>
+                      <th className="px-4 py-4 w-[10%] font-semibold">Date</th>
+                    </tr>
+                  </thead>
+                }
 
                 {/* Body */}
                 <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${recentOrders?.length === 0 && "h-[36dvh]"}`}>
@@ -259,7 +261,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
+      <div className='grid grid-cols-1 xl:grid-cols-2 gap-4 animate-fadeIn'>
         {/* Top Selling Products */}
         <TopSellingProducts />
         {/* Product Categories */}

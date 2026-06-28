@@ -81,29 +81,35 @@ function AddProduct() {
     useEffect(() => {
         if (isEdit) {
             const fetchProduct = async () => {
-                const res = await getSingleProduct({ productId: id });
-                const data = res?.data?.products[0];
-                const formattedImages = data.images?.map(url => ({
-                    id: nanoid(),
-                    file: null,
-                    preview: url,
-                    isExisting: true
-                }));
+                try {
+                    const res = await getSingleProduct({ productId: id });
+                    const data = res?.data?.products[0];
+                    const formattedImages = data?.images?.map(url => ({
+                        id: nanoid(),
+                        file: null,
+                        preview: url,
+                        isExisting: true
+                    }));
 
-                setProduct({
-                    ...data,
-                    images: formattedImages
-                });
+                    setProduct({
+                        ...data,
+                        images: formattedImages
+                    });
 
-                setOriginalProduct(data);
+                    setOriginalProduct(data);
 
-                setParent(data?.parentCategory);
-                setSub(data?.category);
-                setPreview(data?.thumbnail);
+                    setParent(data?.parentCategory);
+                    setSub(data?.category);
+                    setPreview(data?.thumbnail);
+                } catch (error) {
+                    const msg = error?.response?.data?.message || error?.message || "something went wrong !";
+                    toast.error(msg);
+                }
             };
 
             fetchProduct();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, isEdit]);
 
     const [loading, setLoading] = useState(false);
@@ -176,7 +182,7 @@ function AddProduct() {
         const filesToAdd = acceptedFiles.slice(0, remainingSlots);
 
         const newImages = filesToAdd.map(file => ({
-            id:nanoid(),
+            id: nanoid(),
             file,
             preview: URL.createObjectURL(file),
             isExisting: false
@@ -393,6 +399,10 @@ function AddProduct() {
             if (isEdit) {
 
                 if (!isChanged()) {
+                    if (!product?.productId) {
+                        toast.error("No product found!");
+                        return;
+                    }
                     toast.error("No changes detected");
                     setLoading(false);
                     return;
@@ -447,11 +457,13 @@ function AddProduct() {
             setLoading(false);
             const msg = error?.response?.data?.message || error?.message || "something went wrong !"
             toast.error(msg);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className={`p-3 sm:p-4 lg:p-6 w-full pb-20 relative ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+        <div className={`p-3 animate-fadeIn sm:p-4 lg:p-6 w-full pb-20 relative ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
 
             <div className="rounded-xl space-y-4">
                 <div className="flex flex-row items-center justify-between px-2">

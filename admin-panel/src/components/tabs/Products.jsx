@@ -211,7 +211,7 @@ function Products() {
     }, []);
 
     return (
-        <section className={`md:p-4 animate-fadeIn p-2 md:space-y-4 space-y-2 overflow-y-auto w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+        <section className={`md:p-4 p-2 md:space-y-4 space-y-2 overflow-y-auto w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {show &&
                 <div className={`absolute top-0 left-0 h-full w-full z-99 shadow-lg border flex justify-center items-center ${isDark ? "bg-gray-900/50" : "bg-gray-50/30"}`}>
                     {products && products[index] && (
@@ -225,7 +225,7 @@ function Products() {
             }
 
             {/* Category Filter */}
-            <div className='flex flex-row gap-4 justify-between md:justify-start'>
+            <div className='flex flex-row gap-4 justify-between md:justify-start animate-fadeIn'>
                 <div
                     className={`flex flex-row gap-8 items-center shadow font-semibold w-fit rounded-md px-2 py-1 relative group cursor-pointer ${isDark
                         ? "border-slate-700 text-gray-300 border-2"
@@ -441,7 +441,7 @@ function Products() {
 
 
             {/* Table Container */}
-            <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
+            <div className={`animate-fadeIn border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
 
                 {/* TABLE */}
                 <div className="md:h-[70dvh] h-[55dvh] overflow-y-auto tableBody scroll-smooth">
@@ -464,7 +464,7 @@ function Products() {
                         }
 
                         {/* Body */}
-                        <tbody className={`font-semibold animate-fadeIn divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "md:h-[70dvh] h-[55dvh]"}`}>
+                        <tbody className={`font-semibold  divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "md:h-[70dvh] h-[55dvh]"}`}>
                             {loading ? (
                                 <tr>
                                     <td colSpan="8" className="text-center py-20">

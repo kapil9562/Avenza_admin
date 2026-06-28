@@ -104,12 +104,12 @@ export default function Customers() {
   }
 
   return (
-    <div className={`w-full animate-fadeIn md:p-4 p-2 text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
-      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2 mb-4">
+    <div className={`w-full  md:p-4 p-2 text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2 mb-4 animate-fadeIn">
         {statCard.map((item) => (<StatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
 
-      <div className={`${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "bg-white border-gray-100 shadow-md"} border-2 rounded-xl overflow-hidden`}>
+      <div className={`${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "bg-white border-gray-100 shadow-md"} border-2 rounded-xl overflow-hidden animate-fadeIn`}>
         <div className="sm:p-4 p-2 flex flex-col gap-2 sm:flex-row sm:justify-between items-start">
           <div className="flex flex-row gap-1 text-lg">
             <h2 className={`${isDark ? "text-gray-100" : "text-gray-800"} font-semibold`}>All Customers</h2>

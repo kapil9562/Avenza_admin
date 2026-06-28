@@ -84,7 +84,7 @@ function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order A
         width: 190,
         visibility: pos ? "visible" : "hidden", // hidden until position is ready
       }}
-      className={`fixed z-9999 animate-fadeIn whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
+      className={`fixed z-9999 whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
         ? "bg-gray-900 border-slate-700 text-gray-300"
         : "bg-white border-gray-200 text-gray-600"
         }`}
@@ -308,10 +308,10 @@ function Orders() {
   ];
 
   return (
-    <section className={`md:p-4 p-2 space-y-4 animate-fadeIn w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <section className={`md:p-4 p-2 space-y-4 w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
 
       {/* Stat Cards */}
-      <div className='grid grid-cols-6 md:gap-4 gap-2 w-full'>
+      <div className='grid grid-cols-6 md:gap-4 gap-2 w-full animate-fadeIn'>
         {statsList.map((item, idx) => (
           <StatCard
             key={idx}
@@ -326,7 +326,7 @@ function Orders() {
       </div>
 
       {/* Filters */}
-      <div className='flex md:flex-row flex-col lg:gap-4 gap-2'>
+      <div className='flex md:flex-row flex-col lg:gap-4 gap-2 animate-fadeIn'>
         {/* Search */}
         <div className='relative md:w-xs w-full flex flex-row justify-center items-center'>
           <input
@@ -395,7 +395,7 @@ function Orders() {
       </div>
 
       {/* Table Container */}
-      <div className={`border-2 rounded-lg overflow-x-auto ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
+      <div className={`border-2 rounded-lg overflow-x-auto animate-fadeIn ${isDark ? "border-gray-800 shadow-md shadow-[#0d1423]" : "border-gray-300 shadow-md"}`}>
 
         {/* TABLE */}
         <div className="h-[60dvh] overflow-y-auto tableBody scroll-smooth">
@@ -418,7 +418,7 @@ function Orders() {
             }
 
             {/* Body */}
-            <tbody className={`font-semibold animate-fadeIn divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${orders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[50dvh]"}`}>
+            <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${orders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[50dvh]"}`}>
               {loading ? (
                 <tr>
                   <td colSpan="8" className="text-center py-20">
@@ -503,7 +503,7 @@ function Orders() {
                           {order?.orderItems?.length > 1 && (
                             <div className={`ml-1 text-sm font-medium px-2 py-0.5 group rounded-full relative cursor-pointer ${isDark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"}`}>
                               +{order.orderItems.length - 1}
-                              <div className={`absolute p-1 z-50 left-0 ${idx !== orders?.length - 1 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex animate-fadeIn ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
+                              <div className={`absolute p-1 z-50 left-0 ${idx !== orders?.length - 1 ? "top-full mt-2" : "bottom-full mb-2"} gap-1 rounded-md hidden group-hover:flex ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
                                 <div className={`absolute ${idx !== orders?.length - 1 ? "-top-4" : "-bottom-4 rotate-180"} left-1 ${isDark ? "text-gray-800" : "text-gray-200"}`}>
                                   <GoTriangleUp size={26} />
                                 </div>
