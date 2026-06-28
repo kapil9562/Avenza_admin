@@ -5,7 +5,7 @@ import { MdOutlineCurrencyRupee } from "react-icons/md";
 export const getStatCard = (overview) => [
     {
         label: "Total Revenue",
-        value: "₹ " + overview?.totalRevenue?.toLocaleString("en-IN") || "-",
+        value: "₹ " + (overview?.totalRevenue?.toLocaleString("en-IN") ?? "-"),
         percentageChange: overview?.revenueGrowth,
         icon: MdOutlineCurrencyRupee,
         light: {
@@ -19,7 +19,7 @@ export const getStatCard = (overview) => [
     },
     {
         label: "Total Products",
-        value: overview?.totalProducts,
+        value: overview?.totalProducts ?? "-",
         percentageChange: 100,
         icon: AiOutlineProduct,
         light: {
@@ -33,7 +33,7 @@ export const getStatCard = (overview) => [
     },
     {
         label: "Total Customers",
-        value: overview?.totalCustomers,
+        value: overview?.totalCustomers ?? "-",
         percentageChange: overview?.customerGrowth,
         icon: FiUsers,
         light: {
@@ -47,7 +47,7 @@ export const getStatCard = (overview) => [
     },
     {
         label: "Total Orders",
-        value: overview?.totalOrders,
+        value: overview?.totalOrders ?? "-",
         percentageChange: overview?.ordersGrowth,
         icon: FiShoppingBag,
         light: {

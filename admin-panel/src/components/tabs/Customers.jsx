@@ -76,10 +76,60 @@ export default function Customers() {
   }, [input, setCache]);
 
   const statCard = [
-    { label: "Total Customers", value: meta?.totalCustomers || "-", icon: FiUsers, light: { icon: "bg-pink-100 text-pink-500", card: "from-white via-white to-pink-50 border-b-pink-200" }, dark: { icon: "bg-pink-900/50 text-pink-400", card: "bg-pink-900/40 text-pink-400 border-pink-700" } },
-    { label: "New Customers", value: meta?.new?.count, percentageChange: meta?.new?.growth, icon: LuUserCog, light: { icon: "bg-purple-100 text-purple-500", card: "from-white via-white to-purple-50 border-b-purple-200" }, dark: { icon: "bg-purple-900/50 text-purple-400", card: "bg-purple-900/40 text-purple-400 border-purple-700" } },
-    { label: "Repeat Customers", value: meta?.repeat?.count, percentageChange: meta?.repeat?.growth, icon: FiShoppingBag, light: { icon: "bg-green-100 text-green-500", card: "from-white via-white to-green-50 border-b-green-200" }, dark: { icon: "bg-green-900/50 text-green-400", card: "bg-green-900/40 text-green-400 border-green-700" } },
-    { label: "Top Customers", value: meta?.top?.count, percentageChange: meta?.top?.growth, icon: LuCrown, light: { icon: "bg-orange-100 text-orange-500", card: "from-white via-white to-orange-50 border-b-orange-200" }, dark: { icon: "bg-orange-900/50 text-orange-400", card: "bg-orange-900/40 text-orange-400 border-orange-700" } },
+    {
+      label: "Total Customers",
+      value: meta?.totalCustomers ?? "-",
+      icon: FiUsers,
+      light: {
+        icon: "bg-pink-100 text-pink-500",
+        card: "from-white via-white to-pink-50 border-b-pink-200"
+      },
+      dark: {
+        icon: "bg-pink-900/50 text-pink-400",
+        card: "bg-pink-900/40 text-pink-400 border-pink-700"
+      }
+    },
+    {
+      label: "New Customers",
+      value: meta?.new?.count ?? "-",
+      percentageChange: meta?.new?.growth,
+      icon: LuUserCog,
+      light: {
+        icon: "bg-purple-100 text-purple-500",
+        card: "from-white via-white to-purple-50 border-b-purple-200"
+      },
+      dark: {
+        icon: "bg-purple-900/50 text-purple-400",
+        card: "bg-purple-900/40 text-purple-400 border-purple-700"
+      }
+    },
+    {
+      label: "Repeat Customers",
+      value: meta?.repeat?.count ?? "-",
+      percentageChange: meta?.repeat?.growth,
+      icon: FiShoppingBag,
+      light: {
+        icon: "bg-green-100 text-green-500",
+        card: "from-white via-white to-green-50 border-b-green-200"
+      },
+      dark: {
+        icon: "bg-green-900/50 text-green-400",
+        card: "bg-green-900/40 text-green-400 border-green-700"
+      }
+    },
+    {
+      label: "Top Customers",
+      value: meta?.top?.count ?? "-",
+      percentageChange: meta?.top?.growth,
+      icon: LuCrown,
+      light: {
+        icon: "bg-orange-100 text-orange-500",
+        card: "from-white via-white to-orange-50 border-b-orange-200"
+      }, dark: {
+        icon: "bg-orange-900/50 text-orange-400",
+        card: "bg-orange-900/40 text-orange-400 border-orange-700"
+      }
+    },
   ];
 
   const filters = {
