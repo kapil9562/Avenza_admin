@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useTheme, useToast } from "../../context/Context";
+import { useTheme } from "../../context/Context";
 
 import { LuPencilLine } from "react-icons/lu";
 import { IoChevronDown, IoClose } from "react-icons/io5";
@@ -11,7 +10,6 @@ import { normalizeGooglePhoto } from "../../utils/format";
 
 export default function EditOrderModal({ order, setEditModal }) {
 
-    const navigate = useNavigate();
     const { isDark } = useTheme();
 
     const [isStateOpen, setIsStateOpen] = useState(false);

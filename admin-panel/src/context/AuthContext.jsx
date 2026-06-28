@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getCurrentUser, logoutUser } from "../api/api.js";
-import { useNavigate } from "react-router-dom";
 import { AuthContext, useToast } from "./Context.js";
 
 export const AuthProvider = ({ children }) => {

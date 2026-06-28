@@ -84,7 +84,7 @@ function ActionDropdown({ triggerRef, isDark, onClose, actions, title = "Order A
         width: 190,
         visibility: pos ? "visible" : "hidden", // hidden until position is ready
       }}
-      className={`fixed z-9999 whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
+      className={`fixed z-9999 animate-fadeIn whitespace-nowrap flex flex-col items-start text-start rounded-md overflow-hidden border-2 shadow-[0_4px_16px_rgba(0,0,0,0.18)] ${isDark
         ? "bg-gray-900 border-slate-700 text-gray-300"
         : "bg-white border-gray-200 text-gray-600"
         }`}
@@ -308,7 +308,7 @@ function Orders() {
   ];
 
   return (
-    <section className={`md:p-4 p-2 space-y-4 w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <section className={`md:p-4 p-2 space-y-4 animate-fadeIn w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
 
       {/* Stat Cards */}
       <div className='grid grid-cols-6 md:gap-4 gap-2 w-full'>
@@ -418,7 +418,7 @@ function Orders() {
             }
 
             {/* Body */}
-            <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${orders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[50dvh]"}`}>
+            <tbody className={`font-semibold animate-fadeIn divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${orders?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "h-[50dvh]"}`}>
               {loading ? (
                 <tr>
                   <td colSpan="8" className="text-center py-20">

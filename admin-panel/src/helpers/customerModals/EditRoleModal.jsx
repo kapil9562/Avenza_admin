@@ -1,6 +1,5 @@
 import {
     FiX,
-    FiShield,
     FiUsers,
     FiShoppingBag,
     FiPackage,

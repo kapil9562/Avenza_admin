@@ -5,7 +5,6 @@ import {
     FiCheckCircle,
 } from "react-icons/fi";
 import {
-    MdPending,
     MdOutlineLocalShipping,
     MdCancel,
 } from "react-icons/md";

@@ -24,7 +24,6 @@ function Products() {
     const [category, setCategory] = useState("All");
     const [page, setPage] = useState(1);
     const [error, setError] = useState("");
-    const [openIndex, setOpenIndex] = useState();
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const [index, setIdx] = useState();
@@ -151,7 +150,6 @@ function Products() {
         setCategory(filter);
         setPage(1);
         setInputValue(1);
-        setOpenIndex(null);
     }
 
     const handleRestore = async (productId) => {
@@ -212,24 +210,8 @@ function Products() {
         };
     }, []);
 
-    const touchStartY = useRef(0);
-
-    const handleTouchStart = (e) => {
-        touchStartY.current = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = (e) => {
-        const touchEndY = e.changedTouches[0].clientY;
-        const distance = touchEndY - touchStartY.current;
-
-        // swipe down > 60px
-        if (distance > 60) {
-            setOpenFilters(false);
-        }
-    };
-
     return (
-        <section className={`md:p-4 p-2 md:space-y-4 space-y-2 overflow-y-auto w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+        <section className={`md:p-4 animate-fadeIn p-2 md:space-y-4 space-y-2 overflow-y-auto w-full ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
             {show &&
                 <div className={`absolute top-0 left-0 h-full w-full z-99 shadow-lg border flex justify-center items-center ${isDark ? "bg-gray-900/50" : "bg-gray-50/30"}`}>
                     {products && products[index] && (
@@ -482,7 +464,7 @@ function Products() {
                         }
 
                         {/* Body */}
-                        <tbody className={`font-semibold divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "md:h-[70dvh] h-[55dvh]"}`}>
+                        <tbody className={`font-semibold animate-fadeIn divide-y ${isDark ? "divide-slate-700 text-gray-300" : "divide-slate-200 text-gray-800"} ${products?.length > 0 ? (isDark ? "border-b border-b-slate-800" : "border-b border-b-slate-200") : "md:h-[70dvh] h-[55dvh]"}`}>
                             {loading ? (
                                 <tr>
                                     <td colSpan="8" className="text-center py-20">

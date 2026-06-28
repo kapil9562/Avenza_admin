@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { MdDeleteOutline } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { useOrders, useTheme, useToast } from "../../context/Context";
 import { GoDotFill } from "react-icons/go";

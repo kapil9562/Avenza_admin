@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import { ProductsContext } from "./Context";
 
 export const ProductsProvider = ({ children }) => {

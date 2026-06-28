@@ -7,32 +7,20 @@ import {
   FiPlus,
   FiEye
 } from 'react-icons/fi';
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
-  ComposedChart,
-  Sector
-} from 'recharts';
-import { useDashboard, useTheme } from '../../context/Context';
-import { formatDate, formatStatus, formatTime, getPaymentBadge, normalizeGooglePhoto, statusColors } from '../../utils/format';
+import { Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, ComposedChart, Sector } from 'recharts';
+import { useAnalytics, useDashboard, useTheme } from '../../context/Context';
+import { formatDate, formatStatus, formatTime, normalizeGooglePhoto, statusColors } from '../../utils/format';
 import { getRecentOrders } from '../../api/api';
-import { GoDotFill, GoEye } from 'react-icons/go';
+import { GoDotFill } from 'react-icons/go';
 import Lottie from 'lottie-react';
 import adminLoader from '../../assets/adminLoader.json'
 import { useNavigate } from 'react-router-dom';
 import { IoRefresh } from 'react-icons/io5';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { useToast } from '../../context/Context';
-
-// Mock Data for Charts
-const salesData = [
-  { name: 'Jan', sales: 400, trend: 240 },
-  { name: 'Feb', sales: 300, trend: 380 },
-  { name: 'Mar', sales: 600, trend: 450 },
-  { name: 'Apr', sales: 500, trend: 390 },
-  { name: 'May', sales: 800, trend: 600 },
-  { name: 'Jun', sales: 700, trend: 650 },
-];
+import SalesChart from '../../helpers/charts/SalesChart';
+import SalesByCategoryChart from '../../helpers/charts/SalesByCategoryChart';
+import TopSellingProducts from '../../helpers/charts/TopSellingProducts';
 
 const pieData = [
   { name: 'Electronics', value: 35, color: '#FF8A8A' },
@@ -79,7 +67,6 @@ const Dashboard = () => {
   const { isDark } = useTheme();
   const { recentOrders, setRecentOrders, error, setError } = useDashboard();
   const [loading, setLoading] = useState(false);
-  const [showDetail, setShowDetail] = useState([]);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -140,9 +127,9 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className={`w-full p-2 md:p-4 font-sans text-slate-700 ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`w-full animate-fadeIn p-2 md:p-4 font-sans space-y-4 text-slate-700 ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       {/* 1. Stats Overview Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 xl:gap-6 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 xl:gap-6">
 
         {statsList.map((item, idx) => (
           <StatCard
@@ -162,8 +149,8 @@ const Dashboard = () => {
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-8 min-w-0">
           {/* 2. Recent Orders Table */}
-          <div className={`rounded-xl overflow-hidden shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
-            <div className={`border-b py-3 px-4 flex flex-row justify-between items-center ${isDark ? "text-gray-100 border-slate-600" : "text-gray-800 border-slate-50"}`}>
+          <div className={`rounded-xl overflow-hidden shadow h-full ${isDark ? "bg-[#0F172A] border-gray-800 border-2" : "bg-white border-slate-100 border"}`}>
+            <div className={`border-b py-3 px-4 flex flex-row justify-between items-center ${isDark ? "text-gray-100 border-slate-800" : "text-gray-800 border-slate-50"}`}>
               <h3 className='text-xl font-bold nunitoFont'>Recent Orders</h3>
               <button
                 className={`flex flex-row justify-center items-center border-2 px-2 py-1 rounded-md text-sm font-medium ${isDark ? "bg-pink-600/10 border-pink-600 text-pink-400 hover:border-pink-700" : "bg-rose-50/60 border-rose-100 text-rose-400 hover:border-rose-200"}`}
@@ -174,17 +161,17 @@ const Dashboard = () => {
               </button>
             </div>
             {/* Table Container */}
-            <div className="overflow-y-auto scroll-smooth">
+            <div className="overflow-y-auto scroll-smooth min-h-fit h-87">
               <table className="w-full border-collapse">
 
                 {/* Header */}
                 <thead className={`sticky top-0 z-50 border-b ${isDark ? "bg-slate-800 border-b-slate-700 text-gray-100" : "bg-slate-100 border-b-slate-200"}`}>
                   <tr className={`text-left divide-slate-200 divide-x ${isDark ? "divide-slate-700" : "divide-slate-200"}`}>
-                    <th className="px-4 py-4 w-[5%] font-semibold whitespace-nowrap">Order ID</th>
-                    <th className="px-4 py-4 min-w-70 w-[30%] font-semibold">Customer</th>
-                    <th className="px-4 py-4 w-[12%] font-semibold">Items</th>
+                    <th className="px-4 py-4 w-[30%] font-semibold whitespace-nowrap">Order ID</th>
+                    <th className="px-4 py-4 w-[30%] font-semibold">Customer</th>
+                    <th className="px-4 py-4 w-[20%] font-semibold">Items</th>
                     <th className="px-4 py-4 w-[10%] font-semibold">Status</th>
-                    <th className="px-4 py-4 w-[15%] font-semibold">Date</th>
+                    <th className="px-4 py-4 w-[10%] font-semibold">Date</th>
                   </tr>
                 </thead>
 
@@ -229,7 +216,7 @@ const Dashboard = () => {
                         >
 
                           {/* Order ID */}
-                          <td className={`px-4 py-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                          <td className={`px-4 py-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                             #{order.orderId}
                           </td>
 
@@ -301,95 +288,19 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column (1/3 width) */}
-        <div className="md:space-y-8 space-y-4 min-w-0">
-          {/* 3. Sales Analytics */}
-          <div className={`rounded-xl p-4 shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800" : "bg-white border-slate-100"}`}>
-            <h3 className={`text-lg font-bold nunitoFont ${isDark ? "text-gray-200" : "text-gray-800"}`}>Sales Analytics</h3>
-            <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Monthly Sales Overview</p>
-            <div className="h-64 w-full min-w-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={salesData} accessibilityLayer={false}>
-                  <defs>
-                    <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#FF8A8A" stopOpacity={1} />
-                      <stop offset="100%" stopColor="#FF3E9B" stopOpacity={1} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{
-                      fontSize: 12,
-                      fill: isDark ? "#94A3B8" : "#64748B",
-                      fontWeight: 500,
-                    }}
-                  />
-
-                  <YAxis hide />
-                  <Tooltip cursor={false} />
-
-                  <Bar
-                    dataKey="sales"
-                    fill="url(#salesGradient)"
-                    radius={[4, 4, 0, 0]}
-                  />
-
-                  <Line
-                    type="monotone"
-                    dataKey="trend"
-                    stroke="#6395F9"
-                    strokeWidth={3}
-                    dot={{ r: 4, fill: "#6395F9" }}
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* 4. Product Categories */}
-          <div className={`rounded-3xl p-6 shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800" : "bg-white border-slate-100"}`}>
-            <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>Product Categories</h3>
-            <div className="flex items-center">
-              <div className="w-1/2 h-40 min-w-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart stroke="none" >
-                    <Pie stroke="none" data={pieData} innerRadius={0} outerRadius={70} paddingAngle={0} dataKey="value" shape={renderSlice} labelLine={false} label={renderPercentLabel} isAnimationActive={true} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="w-1/2 space-y-2">
-                {pieData.map((item) => (
-                  <div key={item.name} className="flex items-center text-xs">
-                    <span className="w-3 h-3 rounded-sm mr-2" style={{ backgroundColor: item.color }}></span>
-                    <span className={`${isDark ? "text-slate-200" : "text-slate-500"}`}>{item.name}</span>
-                    <span className={`ml-auto font-bold ${isDark ? "text-slate-200" : "text-slate-500"}`}>{item.value}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* 5. Quick Actions */}
-          <div className={`rounded-3xl p-6 shadow-sm border-2 ${isDark ? "bg-[#0F172A] border-gray-800" : "bg-white border-slate-100"}`}>
-            <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>Quick Actions</h3>
-            <div className="flex gap-4">
-              <button
-                className="flex-1 bg-linear-to-b from-orange-400 to-pink-400 text-white py-2 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition cursor-pointer font-semibold"
-                onClick={() => navigate("/addProduct")}
-              >
-                <FiPlus size={16} /> Add Product
-              </button>
-              <button
-                className="flex-1 bg-linear-to-b from-blue-400 to-teal-400 text-white py-2 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition cursor-pointer font-semibold"
-                onClick={() => navigate("/orders")}
-              >
-                <FiEye size={16} /> View Orders
-              </button>
-            </div>
-          </div>
+        <div className="md:space-y-8 space-y-4 min-w-0 h-fit">
+          {/* Sales Analytics */}
+          <SalesChart />
         </div>
       </div>
+
+      <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
+        {/* Top Selling Products */}
+        <TopSellingProducts />
+        {/* Product Categories */}
+        <SalesByCategoryChart />
+      </div>
+
     </div>
   );
 };

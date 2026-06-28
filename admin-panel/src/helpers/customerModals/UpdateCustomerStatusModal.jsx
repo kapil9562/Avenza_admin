@@ -9,7 +9,7 @@ import { LuPencilLine } from 'react-icons/lu';
 import { updateCustomerStatus } from '../../api/api';
 import { useToast } from '../../context/Context';
 
-function UpdateCustomerStatusModal({ currUser, statusModal, setStatusModal, pageNo }) {
+function UpdateCustomerStatusModal({ currUser, setStatusModal, pageNo }) {
     const { isDark } = useTheme();
     const [selectedStatus, setSelectedStatus] = useState(currUser?.isActive);
     const [loading, setLoading] = useState(false);

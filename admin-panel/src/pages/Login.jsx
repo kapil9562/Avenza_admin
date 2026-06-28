@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { MdEmail } from "react-icons/md";
-import { NavLink, useLocation } from 'react-router-dom'
 import { emailLogin } from "../api/api";
 import { IoIosLock } from "react-icons/io";
 import { FaEye, FaEyeSlash } from "react-icons/fa";

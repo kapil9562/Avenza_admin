@@ -10,8 +10,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { IoRefresh } from 'react-icons/io5';
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { BsCheck, BsChevronDown, BsX } from "react-icons/bs";
-import { useNavigate } from 'react-router-dom';
+import { BsX } from "react-icons/bs";
 import { getAllUsers } from '../../api/api';
 import adminLoader from '../../assets/adminLoader.json';
 import { useCustomers, useTheme } from '../../context/Context';
@@ -25,7 +24,6 @@ export default function Customers() {
   const { isDark } = useTheme();
   const [inputValue, setInputValue] = useState("1");
   const [page, setPage] = useState(1);
-  const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
   const [showActions, setShowActions] = useState(null);
@@ -106,7 +104,7 @@ export default function Customers() {
   }
 
   return (
-    <div className={`w-full md:p-4 p-2 text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+    <div className={`w-full animate-fadeIn md:p-4 p-2 text-slate-700 overflow-y-auto scroll-smooth ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
       <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2 mb-4">
         {statCard.map((item) => (<StatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
@@ -352,7 +350,7 @@ export default function Customers() {
       </div>
 
       {editModal && <EditRoleModal editModal={editModal} setEditModal={setEditModal} currUser={currUser} pageNo={page} />}
-      {statusModal && <UpdateCustomerStatusModal statusModal={statusModal} setStatusModal={setStatusModal} currUser={currUser} pageNo={page} />}
+      {statusModal && <UpdateCustomerStatusModal setStatusModal={setStatusModal} currUser={currUser} pageNo={page} />}
       {detailModal && <CustomerDetailModal setDetailModal={setDetailModal} currUser={currUser} />}
     </div>
   );
@@ -381,7 +379,7 @@ const StatCard = ({ item, isDark }) => {
   );
 };
 
-function ActionDropdown({ userId, triggerRef, isDark, onClose, actions }) {
+function ActionDropdown({ triggerRef, isDark, onClose, actions }) {
   const [pos, setPos] = useState(null);
   const dropdownRef = useRef(null);
 
