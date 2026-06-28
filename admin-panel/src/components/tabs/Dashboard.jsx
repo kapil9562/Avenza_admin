@@ -21,6 +21,8 @@ import { useToast } from '../../context/Context';
 import SalesChart from '../../helpers/charts/SalesChart';
 import SalesByCategoryChart from '../../helpers/charts/SalesByCategoryChart';
 import TopSellingProducts from '../../helpers/charts/TopSellingProducts';
+import { getStatCard } from '../../constants/analyticsStats';
+import AnalyticsStatCard from '../../helpers/charts/AnalyticsStatCard';
 
 const pieData = [
   { name: 'Electronics', value: 35, color: '#FF8A8A' },
@@ -95,54 +97,17 @@ const Dashboard = () => {
     fetchRecentOrders();
   }, [recentOrders, setRecentOrders, setError, toast]);
 
-  const statsList = [
-    {
-      icon: <FiShoppingBag />,
-      label: "Total Sales",
-      value: "$12,540",
-      color: `${isDark ? "bg-pink-900/50 text-pink-600" : "bg-pink-100 text-pink-500"}`,
-      className: `${isDark ? "bg-pink-900/40 text-pink-400 border-pink-700 border" : "bg-linear-to-b from-white via-white to-pink-50 border-b-pink-200"} border-b-4`,
-    },
-    {
-      icon: <FiClipboard />,
-      label: "Orders",
-      value: "320",
-      color: `${isDark ? "bg-purple-900/50 text-purple-600" : "bg-purple-100 text-purple-500"}`,
-      className: `${isDark ? "bg-purple-900/40 text-purple-400 border-purple-700 border" : "bg-linear-to-b from-white via-white to-purple-50 border-b-purple-200"} border-b-4`,
-    },
-    {
-      icon: <FiUsers />,
-      label: "Customers",
-      value: "1,210",
-      color: `${isDark ? "bg-green-900/50 text-green-600" : "bg-green-100 text-green-500"}`,
-      className: `${isDark ? "bg-green-900/40 text-green-400 border-green-700 border" : "bg-linear-to-b from-white via-white to-green-50 border-b-green-200"} border-b-4`,
-    },
-    {
-      icon: <FiDollarSign />,
-      label: "Revenue",
-      value: "$8,750",
-      color: `${isDark ? "bg-orange-900/50 text-orange-600" : "bg-orange-100 text-orange-500"}`,
-      className: `${isDark ? "bg-orange-900/40 text-orange-400 border-orange-700 border" : "bg-linear-to-b from-white via-white to-orange-50 border-b-orange-200"} border-b-4`,
-    },
-  ];
+  const { data } = useAnalytics();
+  const overview = data?.data?.overview || {};
+
+  const statCard = getStatCard(overview);
 
   return (
     <div className={`w-full animate-fadeIn p-2 md:p-4 font-sans space-y-4 text-slate-700 ${isDark ? "bg-[#0F172A]" : "bg-[#F9F9FF]"}`}>
+
       {/* 1. Stats Overview Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 xl:gap-6">
-
-        {statsList.map((item, idx) => (
-          <StatCard
-            key={idx}
-            isDark={isDark}
-            icon={item.icon}
-            label={item.label}
-            value={item.value}
-            color={item.color}
-            className={item.className}
-          />
-        ))}
-
+      <div className="grid grid-cols-2 xl:grid-cols-4 md:gap-6 gap-2">
+        {statCard?.map((item) => (<AnalyticsStatCard key={item.label} item={item} isDark={isDark} />))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
