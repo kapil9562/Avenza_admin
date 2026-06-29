@@ -37,7 +37,7 @@ function Header({ setSideMenu }) {
           <img
             src="/logo.png"
             alt="logo"
-            className={`h-8 w-fit sm:hidden`}
+            className={`h-8 sm:w-40 w-25 sm:hidden`}
           />
         </div>
 

@@ -493,7 +493,7 @@ function Orders() {
 
                       {/* Items */}
                       <td className="px-4 py-1">
-                        <div className='flex flex-row gap-1 items-center'>
+                        <div className='flex flex-row gap-1 items-center w-18'>
                           <img
                             src={order?.orderItems[0]?.image}
                             loading='lazy'
