@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { getAnalytics } from "../api/api";
-import { AnalyticsContext } from "./Context";
+import { AnalyticsContext, useAuth } from "./Context";
 import { useQuery } from "@tanstack/react-query";
 
 export const AnalyticsProvider = ({ children }) => {
     const [salesRange, setSalesRange] = useState("monthly");
     const [orderRange, setOrderRange] = useState("monthly");
 
+    const { user } = useAuth();
     const analyticsQuery = useQuery({
         queryKey: [
             "analytics",
@@ -18,6 +19,8 @@ export const AnalyticsProvider = ({ children }) => {
                 salesRange,
                 orderRange,
             }),
+
+        enabled: !!user,
     });
 
     return (
