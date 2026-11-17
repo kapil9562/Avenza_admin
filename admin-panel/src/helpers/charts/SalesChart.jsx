@@ -41,52 +41,59 @@ const SalesChart = () => {
             </div>
 
             <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={salesData} dataKey="revenue" cursor="pointer">
+                {salesData?.length > 0 ?
+                    (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={salesData} dataKey="revenue" cursor="pointer">
 
-                        <defs>
-                            <linearGradient id="pinkGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor={isDark ? "rgba(219, 39, 119, 1)" : "#ff4fa2"} stopOpacity={0.4} />
-                                <stop offset="100%" stopColor={isDark ? "rgba(219, 39, 119, 0.4)" : "#ffd4e8"} stopOpacity={0.3} />
-                            </linearGradient>
-                        </defs>
+                                <defs>
+                                    <linearGradient id="pinkGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor={isDark ? "rgba(219, 39, 119, 1)" : "#ff4fa2"} stopOpacity={0.4} />
+                                        <stop offset="100%" stopColor={isDark ? "rgba(219, 39, 119, 0.4)" : "#ffd4e8"} stopOpacity={0.3} />
+                                    </linearGradient>
+                                </defs>
 
-                        <CartesianGrid strokeDasharray="0" opacity={0.2} vertical={false} />
-                        <XAxis dataKey="_id" axisLine={false} tickLine={false} padding={{ left: 30, right: 30 }} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
-                        <YAxis width={50} dataKey="revenue" axisLine={false} tickLine={false} tickFormatter={(value) => formatValue(value)} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
+                                <CartesianGrid strokeDasharray="0" opacity={0.2} vertical={false} />
+                                <XAxis dataKey="_id" axisLine={false} tickLine={false} padding={{ left: 30, right: 30 }} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
+                                <YAxis width={50} dataKey="revenue" axisLine={false} tickLine={false} tickFormatter={(value) => formatValue(value)} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
 
-                        <Tooltip
-                            contentStyle={{
-                                backgroundColor: isDark ? "#101828" : "#ffffff",
-                                border: isDark ? "2px solid #252D3B" : "2px solid #E5E7EB",
-                                borderRadius: "8px",
-                                boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
-                            }}
-                            labelStyle={{
-                                color: isDark ? "#e2e8f0" : "#1e293b"
-                            }}
-                            itemStyle={{
-                                color: "#a855f7"
-                            }}
-                            cursor={{
-                                stroke: "#a855f7",
-                                strokeWidth: 1,
-                                strokeDasharray: "4 4"
-                            }}
-                            formatter={(value) => [`₹${value}`, "Revenue"]}
-                        />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: isDark ? "#101828" : "#ffffff",
+                                        border: isDark ? "2px solid #252D3B" : "2px solid #E5E7EB",
+                                        borderRadius: "8px",
+                                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+                                    }}
+                                    labelStyle={{
+                                        color: isDark ? "#e2e8f0" : "#1e293b"
+                                    }}
+                                    itemStyle={{
+                                        color: "#a855f7"
+                                    }}
+                                    cursor={{
+                                        stroke: "#a855f7",
+                                        strokeWidth: 1,
+                                        strokeDasharray: "4 4"
+                                    }}
+                                    formatter={(value) => [`₹${value}`, "Revenue"]}
+                                />
 
-                        <Area
-                            cursor="pointer"
-                            type="monotone"
-                            dataKey="revenue"
-                            stroke="#ff4fa2"
-                            fill="url(#pinkGradient)"
-                            dot={{ r: 5, fill: "#ff4fa2", fillOpacity: 1 }}
-                            strokeWidth={3}
-                        />
-                    </AreaChart>
-                </ResponsiveContainer>
+                                <Area
+                                    cursor="pointer"
+                                    type="monotone"
+                                    dataKey="revenue"
+                                    stroke="#ff4fa2"
+                                    fill="url(#pinkGradient)"
+                                    dot={{ r: 5, fill: "#ff4fa2", fillOpacity: 1 }}
+                                    strokeWidth={3}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className='h-full w-full flex justify-center items-center'>
+                            <span className={`font-semibold ${isDark? "text-gray-600" : "text-gray-400"}`}>No Data Available</span>
+                        </div>
+                    )}
             </div>
         </div>
     );

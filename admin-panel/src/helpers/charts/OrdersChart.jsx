@@ -41,37 +41,44 @@ const OrdersChart = () => {
             </div>
 
             <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={orderData}>
-                        <CartesianGrid strokeDasharray="0" opacity={0.2} vertical={false} />
-                        <XAxis dataKey="_id" axisLine={false} tickLine={false} padding={{ left: 30, right: 30 }} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
-                        <YAxis width={50} allowDecimals={false} tickCount={5} dataKey="orders" axisLine={false} tickLine={false} tickFormatter={(value) => formatValue(value)} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
+                {orderData?.length > 0 ?
+                    (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={orderData}>
+                                <CartesianGrid strokeDasharray="0" opacity={0.2} vertical={false} />
+                                <XAxis dataKey="_id" axisLine={false} tickLine={false} padding={{ left: 30, right: 30 }} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
+                                <YAxis width={50} allowDecimals={false} tickCount={5} dataKey="orders" axisLine={false} tickLine={false} tickFormatter={(value) => formatValue(value)} tick={{ fontSize: 14, fontWeight: 600, fill: isDark ? "#dadada" : "#787878" }} />
 
-                        <Tooltip
-                            contentStyle={{
-                                backgroundColor: isDark ? "#101828" : "#ffffff",
-                                border: isDark ? "2px solid #252D3B" : "2px solid #E5E7EB",
-                                borderRadius: "8px",
-                                boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
-                            }}
-                            labelStyle={{
-                                color: isDark ? "#e2e8f0" : "#1e293b"
-                            }}
-                            itemStyle={{
-                                color: "#a855f7"
-                            }}
-                            cursor={{
-                                fill: "rgba(168, 85, 247, 0.1)"
-                            }}
-                        />
-                        <Bar
-                            maxBarSize={40}
-                            dataKey="orders"
-                            fill="#a855f7"
-                            radius={[4, 4, 0, 0]}
-                        />
-                    </BarChart>
-                </ResponsiveContainer>
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: isDark ? "#101828" : "#ffffff",
+                                        border: isDark ? "2px solid #252D3B" : "2px solid #E5E7EB",
+                                        borderRadius: "8px",
+                                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+                                    }}
+                                    labelStyle={{
+                                        color: isDark ? "#e2e8f0" : "#1e293b"
+                                    }}
+                                    itemStyle={{
+                                        color: "#a855f7"
+                                    }}
+                                    cursor={{
+                                        fill: "rgba(168, 85, 247, 0.1)"
+                                    }}
+                                />
+                                <Bar
+                                    maxBarSize={40}
+                                    dataKey="orders"
+                                    fill="#a855f7"
+                                    radius={[4, 4, 0, 0]}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className='h-full w-full flex justify-center items-center'>
+                            <span className={`font-semibold ${isDark ? "text-gray-600" : "text-gray-400"}`}>No Data Available</span>
+                        </div>
+                    )}
             </div>
         </div>
     )

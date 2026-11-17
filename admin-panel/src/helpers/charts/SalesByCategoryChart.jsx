@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAnalytics, useTheme } from '../../context/Context';
-import { getCategoryColors } from '../../utils/format';
+import { formatValue, getCategoryColors } from '../../utils/format';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 
 const SalesByCategoryChart = () => {
@@ -40,7 +40,7 @@ const SalesByCategoryChart = () => {
                             </Pie>
                         </PieChart>
                         <div className="text-xl text-black absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center">
-                            <span className={`${text} font-bold`}>₹{overview?.totalRevenue?.toLocaleString("en-IN")}</span>
+                            <span title={`₹${overview?.totalRevenue?.toLocaleString("en-IN")}`} className={`${text} font-bold cursor-pointer`}>₹{formatValue(overview?.totalRevenue)}</span>
                             <span className={`${subText} text-sm font-semibold`}>Total Sales</span>
                         </div>
                     </ResponsiveContainer>

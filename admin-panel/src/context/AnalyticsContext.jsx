@@ -4,7 +4,7 @@ import { AnalyticsContext, useAuth } from "./Context";
 import { useQuery } from "@tanstack/react-query";
 
 export const AnalyticsProvider = ({ children }) => {
-    const [salesRange, setSalesRange] = useState("monthly");
+    const [salesRange, setSalesRange] = useState("yearly");
     const [orderRange, setOrderRange] = useState("monthly");
 
     const { user } = useAuth();
